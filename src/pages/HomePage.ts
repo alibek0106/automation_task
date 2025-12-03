@@ -8,7 +8,7 @@ export class HomePage {
 
     constructor(readonly page: Page) {
         this.signupLoginLink = page.getByRole('link', { name: 'Signup / Login' }).describe('Signup / Login link');
-        this.loggedInText = page.getByText('Logged in as').describe('Logged in text');
+        this.loggedInText = page.locator('li').filter({ hasText: 'Logged in as' }).describe('Logged in text');
         this.deleteAccountLink = page.getByRole('link', { name: 'Delete Account' }).describe('Delete Account link');
     }
 

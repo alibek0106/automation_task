@@ -4,6 +4,7 @@ export const Routes = {
         LOGIN: '/login',
         SIGNUPT: '/signup',
         ACCOUNT_CREATED: '/account_created',
+        HOME_TITLE: 'Automation Exercise',
     },
     API: {
         CREATE_ACCOUNT: '/api/createAccount',

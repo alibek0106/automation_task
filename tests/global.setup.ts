@@ -4,6 +4,8 @@ import { DataFactory } from '../src/utils/DataFactory';
 import { UserService } from '../src/api/UserService';
 import { LoginPage } from '../src/pages/LoginPage';
 import { HomePage } from '../src/pages/HomePage';
+import fs from 'fs';
+import path from 'path';
 
 setup('authenticate', async ({ page, request }) => {
     const user = DataFactory.generateUser();
@@ -22,4 +24,6 @@ setup('authenticate', async ({ page, request }) => {
     await expect(homePage.loggedInText, 'User should be logged in').toBeVisible();
 
     await page.context().storageState({ path: STORAGE_STATE });
+    const userDataPath = path.join(process.cwd(), 'playwright/.auth/user.json');
+    fs.writeFileSync(userDataPath, JSON.stringify(user, null, 2));
 })
