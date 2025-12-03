@@ -6,9 +6,11 @@ export class DataFactory {
         const firstName = faker.person.firstName();
         const lastName = faker.person.lastName();
 
+        const uniqueSuffix = faker.string.alphanumeric(8);
+
         return {
             name: `${firstName} ${lastName}`,
-            email: faker.internet.email({ firstName, lastName, provider: `test${Date.now()}.com` }),
+            email: faker.internet.email({ firstName, lastName, provider: `test${uniqueSuffix}.com` }),
             password: faker.internet.password({ length: 10 }),
             title: faker.helpers.arrayElement(['Mr', 'Mrs']),
             firstName: firstName,
