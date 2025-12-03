@@ -4,6 +4,8 @@ import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
+export const STORAGE_STATE = path.join(__dirname, 'playwright/.auth/user.json');
+
 export default defineConfig({
     testDir: './tests',
     fullyParallel: true,
@@ -19,8 +21,13 @@ export default defineConfig({
     },
     projects: [
         {
+            name: 'setup',
+            testMatch: /global\.setup\.ts/,
+        },
+        {
             name: 'chromium',
-            use: { ...devices['Desktop Chrome'] },
+            dependencies: ['setup'],
+            use: { ...devices['Desktop Chrome'], storageState: STORAGE_STATE, },
         },
     ],
 });
