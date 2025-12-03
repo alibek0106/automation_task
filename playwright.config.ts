@@ -1,26 +1,31 @@
 import { defineConfig, devices } from '@playwright/test';
-import dotenv from 'dotenv';
-import path from 'path';
-
-dotenv.config({ path: path.resolve(__dirname, '.env') });
 
 export default defineConfig({
-    testDir: './tests',
-    fullyParallel: true,
-    forbidOnly: !!process.env.CI,
-    retries: process.env.CI ? 2 : 0,
-    workers: process.env.CI ? 4 : 4, // at least 4 workers
-    reporter: 'html',
-    use: {
-        baseURL: 'https://www.automationexercise.com',
-        trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
-        video: 'retain-on-failure',
+  testDir: './tests/specs',
+  timeout: 60_000, // Increased for form interactions
+  retries: 1,
+  workers: 4, // Minimum 4 workers for parallel execution
+  fullyParallel: true, // Enable full parallel execution
+  reporter: [
+    ['list'],
+    ['html', { open: 'never', outputFolder: 'playwright-report' }],
+    ['json', { outputFile: 'playwright-report/results.json' }]
+  ],
+  use: {
+    testIdAttribute: 'data-qa',
+    acceptDownloads: true,
+    viewport: { width: 1920, height: 1080 },
+    baseURL: 'https://www.automationexercise.com/',
+    headless: false,
+    screenshot: 'only-on-failure',
+    video: 'retain-on-failure',
+    trace: 'retain-on-failure',
+    actionTimeout: 15_000, // Timeout for individual actions
+  },
+  projects: [
+    {
+      name: 'Chromium',
+      use: { ...devices['Desktop Chrome'] },
     },
-    projects: [
-        {
-            name: 'chromium',
-            use: { ...devices['Desktop Chrome'] },
-        },
-    ],
+  ],
 });
