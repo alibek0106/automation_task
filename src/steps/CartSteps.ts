@@ -53,17 +53,4 @@ export class CartSteps {
 
         return productsToAdd; // Return names so test knows what to expect
     }
-
-    // Changes the quantity of a product to a terget value
-    async updateProductQuantity(productName: string, targetQty: number, currentQty: number) {
-        if (targetQty === currentQty) return;
-
-        if (targetQty > currentQty) {
-            const needed = targetQty - currentQty;
-            await this.addProductWithQuantity(productName, needed);
-        } else {
-            await this.productsPage.navigateToCart();
-            await this.addProductWithQuantity(productName, targetQty);
-        }
-    }
 }

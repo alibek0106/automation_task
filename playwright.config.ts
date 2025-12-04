@@ -28,7 +28,6 @@ export default defineConfig({
         },
         {
             name: 'chromium',
-            dependencies: ['setup'],
             use: { ...devices['Desktop Chrome'], storageState: STORAGE_STATE, },
         },
     ],
