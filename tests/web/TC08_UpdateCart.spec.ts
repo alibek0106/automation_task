@@ -1,5 +1,5 @@
 import { isolatedTest as test, expect } from '../../src/fixtures';
-import { PRODUCT_NAMES } from '../../src/constants/ProductData';
+import { PRODUCT_NAMES, PRODUCT_PRICES } from '../../src/constants/ProductData';
 
 test.describe('TC08: Update Product Quantity in Cart', { tag: '@Abdykarimov' }, () => {
 
@@ -11,7 +11,7 @@ test.describe('TC08: Update Product Quantity in Cart', { tag: '@Abdykarimov' }, 
     }) => {
         // 1. Arrange: Login and Add Product (Qty 1)
         const productName = PRODUCT_NAMES[0]; // e.g., "Blue Top"
-        const pricePerUnit = 500; // Known price for Blue Top
+        const pricePerUnit = PRODUCT_PRICES[0]; // Known price for Blue Top
 
         await test.step(`Add ${productName} with Quantity 1`, async () => {
             await cartSteps.addProductWithQuantity(productName, 1);
@@ -68,7 +68,7 @@ test.describe('TC08: Update Product Quantity in Cart', { tag: '@Abdykarimov' }, 
 
         // 6. Act: Independent Updates (Multiple Products)
         const product2 = PRODUCT_NAMES[1]; // "Men Tshirt" (Price 400)
-        const price2 = 400;
+        const price2 = PRODUCT_PRICES[1];
 
         await test.step('Add second product and verify mixed totals', async () => {
             await cartSteps.addProductWithQuantity(product2, 3);

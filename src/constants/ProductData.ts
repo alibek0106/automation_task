@@ -7,3 +7,4 @@ export const ProductData = {
 } as const;
 
 export const PRODUCT_NAMES = ProductData.products.map(p => p.name);
+export const PRODUCT_PRICES = ProductData.products.map(p => p.price);
