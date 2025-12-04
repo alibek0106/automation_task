@@ -1,7 +1,8 @@
 import { Page, Locator } from '@playwright/test';
 import { User } from '../models/UserModels';
+import { BasePage } from './BasePage';
 
-export class SignupPage {
+export class SignupPage extends BasePage {
     readonly titleMr: Locator;
     readonly titleMrs: Locator;
     readonly password: Locator;
@@ -23,7 +24,8 @@ export class SignupPage {
     readonly createAccountBtn: Locator;
     readonly accountInfoHeading: Locator;
 
-    constructor(readonly page: Page) {
+    constructor(page: Page) {
+        super(page);
         this.accountInfoHeading = page.getByText('Enter Account Information').describe('Account Info Heading');
         this.titleMr = page.getByLabel('Mr.').describe('Title Mr');
         this.titleMrs = page.getByLabel('Mrs.').describe('Title Mrs');

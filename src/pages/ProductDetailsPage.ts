@@ -1,7 +1,7 @@
 import { Page, Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class ProductDetailsPage {
-    readonly page: Page;
+export class ProductDetailsPage extends BasePage {
     readonly quantityInput: Locator;
     readonly addToCartBtn: Locator;
     readonly productName: Locator;
@@ -9,7 +9,7 @@ export class ProductDetailsPage {
     readonly continueShoppingBtn: Locator;
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.quantityInput = page.getByRole('spinbutton').describe('Quantity input');
         this.addToCartBtn = page.getByRole('button', { name: 'Add to cart' }).filter({ hasNotText: /Category|Brands|Subscription/ }).describe('Add to cart button');
         this.productName = page.getByRole('heading', { level: 2 }).filter({ hasNotText: /Category|Brands|Subscription/ }).describe('Product name');

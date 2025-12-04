@@ -1,14 +1,14 @@
 import { Page, Locator } from '@playwright/test';
 import { Routes } from '../constants/Routes';
+import { BasePage } from './BasePage';
 
-export class ProductsPage {
-    readonly page: Page;
+export class ProductsPage extends BasePage {
     readonly continueShoppingBtn: Locator;
     readonly viewCartLink: Locator;
     readonly productCards: Locator;
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.continueShoppingBtn = page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping Button');
         this.viewCartLink = page.getByText(' Cart', { exact: true }).describe('View Cart Link');
         this.productCards = page.locator('.product-image-wrapper');

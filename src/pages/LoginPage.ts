@@ -1,6 +1,7 @@
 import { Page, Locator } from '@playwright/test';
+import { BasePage } from './BasePage';
 
-export class LoginPage {
+export class LoginPage extends BasePage {
     readonly signupNameInput: Locator;
     readonly signupEmailInput: Locator;
     readonly signupBtn: Locator;
@@ -10,7 +11,8 @@ export class LoginPage {
     readonly loginBtn: Locator;
     readonly loginHeader: Locator;
 
-    constructor(readonly page: Page) {
+    constructor(page: Page) {
+        super(page);
         this.signupNameInput = page.locator('[data-qa="signup-name"]').describe('Signup name input');
         this.signupEmailInput = page.locator('[data-qa="signup-email"]').describe('Signup email input');
         this.signupBtn = page.locator('[data-qa="signup-button"]').describe('Signup button');

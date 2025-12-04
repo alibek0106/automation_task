@@ -1,13 +1,13 @@
 import { Page, Locator } from '@playwright/test';
 import { CartItem } from '../models/ProductModels';
+import { BasePage } from './BasePage';
 
-export class CartPage {
-    readonly page: Page;
+export class CartPage extends BasePage {
     readonly emptyCartMessage: Locator;
     readonly cartTable: Locator;
 
     constructor(page: Page) {
-        this.page = page;
+        super(page);
         this.emptyCartMessage = page.getByText('Cart is empty!');
         this.cartTable = page
             .getByRole('table')
