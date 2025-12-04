@@ -4,6 +4,21 @@ import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
+/**
+ * Get worker-specific storage state path
+ * Each worker gets its own authenticated session to avoid conflicts
+ */
+export function getWorkerStorageState(workerIndex: number): string {
+    return path.join(__dirname, `playwright/.auth/worker-${workerIndex}.json`);
+}
+
+/**
+ * Get worker-specific user data path
+ */
+export function getWorkerUserData(workerIndex: number): string {
+    return path.join(__dirname, `playwright/.auth/user-${workerIndex}.json`);
+}
+
 export default defineConfig({
     testDir: './tests',
     fullyParallel: true,
@@ -19,8 +34,16 @@ export default defineConfig({
     },
     projects: [
         {
+            name: 'setup',
+            testMatch: /global\.setup\.ts/,
+        },
+        {
             name: 'chromium',
-            use: { ...devices['Desktop Chrome'] },
+            dependencies: ['setup'],
+            use: {
+                ...devices['Desktop Chrome'],
+                // Storage state set per-worker via fixture
+            },
         },
     ],
 });

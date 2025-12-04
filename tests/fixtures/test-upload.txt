@@ -1,0 +1,1 @@
+This is a test file for contact form upload validation. It contains sample text to verify file upload functionality works correctly.
