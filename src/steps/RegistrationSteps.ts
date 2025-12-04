@@ -1,3 +1,4 @@
+import { Page } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { SignupPage } from '../pages/SignupPage';
@@ -6,6 +7,7 @@ import { User } from '../models/UserModels';
 
 export class RegistrationSteps {
     constructor(
+        private page: Page,
         private homePage: HomePage,
         private loginPage: LoginPage,
         private signupPage: SignupPage,

@@ -14,7 +14,7 @@ export default defineConfig({
     workers: process.env.CI ? 4 : 4, // at least 4 workers
     reporter: 'html',
     use: {
-        baseURL: 'https://www.automationexercise.com',
+        baseURL: process.env.BASE_URL || 'https://www.automationexercise.com',
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
