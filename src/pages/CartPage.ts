@@ -93,4 +93,18 @@ export class CartPage {
         }
         return total;
     }
+
+    // Gets the exact numeric quantity of a specific product
+    async getProductQuantity(productName: string): Promise<number> {
+        const row = this.getProductRow(productName);
+        const quantityText = await row.getByRole('cell').nth(3).innerText();
+        return parseInt(quantityText, 10);
+    }
+
+    // Gets the exact numeric total price of a specific product
+    async getProductTotal(productName: string): Promise<number> {
+        const row = this.getProductRow(productName);
+        const totalText = await row.getByRole('cell').nth(4).innerText();
+        return parseInt(totalText.replace(/\D/g, ''), 10);
+    }
 }
