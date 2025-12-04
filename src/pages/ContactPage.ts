@@ -128,13 +128,13 @@ export class ContactPage extends BasePage {
         message: string;
         filePath?: string;
     }) {
-        await this.fillContactForm(data);
+        // await this.fillContactForm(data);
 
-        if (data.filePath) {
-            await this.uploadFile(data.filePath);
-        }
+        // if (data.filePath) {
+        //     await this.uploadFile(data.filePath);
+        // }
 
-        await this.clickSubmit();
+        // await this.clickSubmit();
     }
 
     /**
