@@ -1,5 +1,4 @@
 import { test, expect } from '../../src/fixtures';
-import { DataFactory } from '../../src/utils/DataFactory';
 
 test.describe('TC07: User Logout Functionality', () => {
 
@@ -7,8 +6,6 @@ test.describe('TC07: User Logout Functionality', () => {
         page,
         homePage,
         loginPage,
-        signupPage,
-        accountCreatedPage,
         productsPage,
         cartPage,
         authedUser

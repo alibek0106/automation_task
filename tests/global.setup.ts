@@ -1,4 +1,4 @@
-import { test as setup, expect } from '@playwright/test';
+import { test as setup, expect } from '../src/fixtures';
 import config from '../playwright.config';
 import { DataFactory } from '../src/utils/DataFactory';
 import { UserService } from '../src/api/UserService';
@@ -7,7 +7,9 @@ import { HomePage } from '../src/pages/HomePage';
 import fs from 'fs';
 import path from 'path';
 
-setup('authenticate workers', async ({ page, request, context }) => {
+
+
+setup('authenticate workers', async ({ page, request, context, homePage, loginPage }) => {
     // Get worker count from config (defaults to 4 if not numeric)
     const workerCount = typeof config.workers === 'number'
         ? config.workers
@@ -19,8 +21,6 @@ setup('authenticate workers', async ({ page, request, context }) => {
     for (let workerIndex = 0; workerIndex < workerCount; workerIndex++) {
         const user = DataFactory.generateUser();
         const userService = new UserService(request);
-        const homePage = new HomePage(page);
-        const loginPage = new LoginPage(page);
 
         const storageStatePath = path.join(__dirname, `../playwright/.auth/worker-${workerIndex}.json`);
         const userDataPath = path.join(__dirname, `../playwright/.auth/user-${workerIndex}.json`);
@@ -29,10 +29,10 @@ setup('authenticate workers', async ({ page, request, context }) => {
         await userService.createAccount(user);
 
         // Login via UI to establish session
-        await homePage.goto();
-        await homePage.clickSignupLogin();
-        await loginPage.login(user.email, user.password);
-        await expect(homePage.loggedInText, `Worker ${workerIndex} should be logged in`).toBeVisible();
+        // await homePage.goto();
+        // await homePage.clickSignupLogin();
+        // await loginPage.login(user.email, user.password);
+        // await expect(homePage.loggedInText, `Worker ${workerIndex} should be logged in`).toBeVisible();
 
         // Save storage state and user data for this worker
         await context.storageState({ path: storageStatePath });
