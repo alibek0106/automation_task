@@ -17,6 +17,10 @@ export class ProductDetailsPage {
         this.continueShoppingBtn = page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping button');
     }
 
+    async getProductNameText(): Promise<string> {
+        return await this.productName.innerText();
+    }
+
     async setQuantity(quantity: number) {
         await this.quantityInput.fill(String(quantity));
     }

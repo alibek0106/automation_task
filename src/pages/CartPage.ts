@@ -3,32 +3,49 @@ import { CartItem } from '../models/ProductModels';
 
 export class CartPage {
     readonly page: Page;
+    readonly emptyCartMessage: Locator;
+    readonly cartTable: Locator;
 
     constructor(page: Page) {
         this.page = page;
+        this.emptyCartMessage = page.getByText('Cart is empty!');
+        this.cartTable = page
+            .getByRole('table')
+            .filter({ hasText: 'Item' })
+            .filter({ hasText: 'Quantity' });
     }
 
-    private getDataRows(): Locator {
-        return this.page.getByRole('table').getByRole('row').filter({ hasNotText: 'Description' });
+    private getAllRows(): Locator {
+        return this.cartTable
+            .getByRole('row')
+            .filter({ hasNotText: 'Description' }) // Skip Header
+            .filter({ hasNotText: 'Item' });       // Safety Skip
     }
 
-    // Extracts formatted data from a specific cart row.
-    async getCartItem(index: number): Promise<CartItem> {
-        const row = this.getDataRows().nth(index);
+    getProductRow(productName: string): Locator {
+        return this.getAllRows()
+            .filter({ has: this.page.getByRole('link', { name: productName, exact: true }) });
+    }
+
+    getRowByIndex(index: number): Locator {
+        return this.getAllRows().nth(index);
+    }
+
+    private async extractRowData(row: Locator): Promise<CartItem> {
         const cells = row.getByRole('cell');
 
+        // Semantic Location Strategy
         const name = await cells.nth(1).getByRole('link').innerText();
         const priceText = await cells.nth(2).innerText();
         const quantityText = await cells.nth(3).getByRole('button').innerText();
         const totalText = await cells.nth(4).innerText();
-
         const rowId = await row.getAttribute('id');
 
-        // Helper to clean "Rs. 500" -> 500
+        // Parsing Logic
         const cleanPrice = (val: string) => parseInt(val.replace(/\D/g, ''), 10);
 
         return {
-            id: rowId || `unknown-${index}`,
+            id: rowId || 'unknown',
             name: name.trim(),
             price: cleanPrice(priceText),
             quantity: parseInt(quantityText, 10),
@@ -36,8 +53,44 @@ export class CartPage {
         };
     }
 
-    // Returns the total number of product rows in the cart
+    async getProductByName(productName: string): Promise<CartItem> {
+        const row = this.getProductRow(productName);
+        return await this.extractRowData(row);
+    }
+
+    /**
+     * Get data for a product by index (e.g. "Get the first item in cart")
+     */
+    async getProductByIndex(index: number): Promise<CartItem> {
+        const row = this.getRowByIndex(index);
+        return await this.extractRowData(row);
+    }
+
+    /**
+     * Remove a specific product by name
+     */
+    async removeProduct(productName: string): Promise<void> {
+        const row = this.getProductRow(productName);
+        // Find 'a' tag in the 6th cell (Index 5)
+        const deleteBtn = row.getByRole('cell').nth(5).locator('a');
+        await deleteBtn.click();
+    }
+
     async getCartCount(): Promise<number> {
-        return await this.getDataRows().count();
+        if (await this.emptyCartMessage.isVisible()) return 0;
+        return await this.getAllRows().count();
+    }
+
+    /**
+     * Calculates total of all visible rows
+     */
+    async getCalculatedTotal(): Promise<number> {
+        const count = await this.getCartCount();
+        let total = 0;
+        for (let i = 0; i < count; i++) {
+            const item = await this.getProductByIndex(i);
+            total += item.total;
+        }
+        return total;
     }
 }

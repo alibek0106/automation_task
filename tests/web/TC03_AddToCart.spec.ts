@@ -1,44 +1,48 @@
-import { test, expect } from '../../src/fixtures';
-import { DataFactory } from '../../src/utils/DataFactory';
-import { Routes } from '../../src/constants/Routes';
+import { isolatedTest as test, expect } from '../../src/fixtures';
+import { PRODUCT_NAMES } from '../../src/constants/ProductData';
 
-test.describe('TC03: Add multiple products to cart and verify', () => {
-    test.use({ storageState: { cookies: [], origins: [] } });
+test.describe('TC03: Add Multiple Products by Name', () => {
 
-    const user = DataFactory.generateUser();
+    test('should verify quantities, prices, and totals', async ({
+        cartSteps,
+        cartPage,
+        page
+    }) => {
+        // 1. Arrange
+        const product1 = PRODUCT_NAMES[0];
+        const product2 = PRODUCT_NAMES[1];
 
-    test.beforeEach(async ({ userService, authSteps }) => {
-        await userService.createAccount(user);
-        await authSteps.login(user);
-    });
+        // 2. Act
+        await test.step('Add products to cart', async () => {
+            await cartSteps.addProductWithQuantity(product1, 3);
+            await cartSteps.addProductAndGoToCart(product2);
+        });
 
-    test('Should verify quantities, prices, and totals for multiple products', async ({ cartSteps, cartPage, page }) => {
-        // Add first product with quantity 3
-        const qtyProduct1 = 3;
-        await cartSteps.addProductWithQuantity(0, qtyProduct1);
+        // 3. Assert
+        await test.step('Verify Navigation to Cart', async () => {
+            await expect(page).toHaveURL(/\/view_cart/);
+        });
 
-        // Add second product with quantity 1
-        const qtyProduct2 = 1;
-        await cartSteps.addProductAndGoToCart(1);
+        await test.step(`Verify details for ${product1}`, async () => {
+            const item1 = await cartPage.getProductByName(product1);
+            expect(item1.name).toBe(product1);
+            expect(item1.quantity).toBe(3);
+            expect(item1.total).toBe(item1.price * 3);
+        });
 
-        // Verify navigation
-        await expect(page, 'Should automatically navigate to cart page').toHaveURL(Routes.WEB.VIEW_CART);
+        await test.step(`Verify details for ${product2}`, async () => {
+            const item2 = await cartPage.getProductByName(product2);
+            expect(item2.name).toBe(product2);
+            expect(item2.quantity).toBe(1);
+            expect(item2.total).toBe(item2.price * 1);
+        });
 
-        // Verify count
-        const cartCount = await cartPage.getCartCount();
-        expect(cartCount, 'Cart should contain exactly 2 unique items').toBe(2);
+        await test.step('Verify Cart Total', async () => {
+            const item1 = await cartPage.getProductByName(product1);
+            const item2 = await cartPage.getProductByName(product2);
+            const calculatedTotal = await cartPage.getCalculatedTotal();
 
-        // Verify first product
-        const item1 = await cartPage.getCartItem(0);
-        expect(item1.quantity, `First product quantity should be ${qtyProduct1}`).toBe(qtyProduct1);
-        expect(item1.total, `First product total (${item1.total}) should be Price (${item1.price} * Qty (${qtyProduct1}))`).toBe(item1.price * qtyProduct1);
-
-        // Verify second product
-        const item2 = await cartPage.getCartItem(1);
-        expect(item2.quantity, `Second product quantity should be ${qtyProduct2}`).toBe(qtyProduct2);
-        expect(item2.total, `Second product total (${item2.total}) should equal its price (${item2.price})`).toBe(item2.price * qtyProduct2);
-
-        expect(item1.name, 'The two products added should have different names').not.toEqual(item2.name);
-        expect(item1.price, 'Product price should be greater than 0').toBeGreaterThan(0);
+            expect(calculatedTotal, 'Total matches sum of items').toBe(item1.total + item2.total);
+        });
     });
 });

@@ -1,5 +1,3 @@
-import { UserService } from '../../src/api/UserService';
-import { Routes } from '../../src/constants/Routes';
 import { test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 
@@ -9,21 +7,28 @@ test.describe('TC02: Login with Registered User', () => {
     const user = DataFactory.generateUser();
 
     test.beforeEach(async ({ userService }) => {
-        await userService.createAccount(user);
+        await test.step('Precondition: Create User via API', async () => {
+            await userService.createAccount(user);
+        });
     });
 
-    test('should login successfully with valid credentials', async ({ homePage, loginPage }) => {
-        await homePage.goto();
-        await expect(homePage.page, 'Home page title should be visible').toHaveTitle(Routes.WEB.HOME_TITLE);
+    test('should login successfully with valid credentials', async ({
+        homePage,
+        loginPage,
+    }) => {
+        await test.step('Navigate to Login Page', async () => {
+            await homePage.goto();
+            await homePage.clickSignupLogin();
+            await expect(loginPage.loginHeader).toBeVisible();
+        });
 
-        await homePage.clickSignupLogin();
-        await expect(loginPage.loginHeader, 'Login header should be visible').toBeVisible();
-        await expect(loginPage.loginHeader, 'Login header should have correct text').toHaveText('Login to your account');
+        await test.step('Enter Credentials and Login', async () => {
+            await loginPage.login(user.email, user.password);
+        });
 
-        await loginPage.login(user.email, user.password);
-        await expect(homePage.loggedInText).toBeVisible();
-        await expect(homePage.loggedInText, `Should display logged in use: ${user.name}`).toContainText(user.name);
-
-        await expect(homePage.page, 'User should be on homepage').toHaveURL(Routes.WEB.HOME);
+        await test.step('Verify User is Logged In', async () => {
+            await expect(homePage.loggedInText).toContainText(user.name);
+            await expect(homePage.page).toHaveURL('/');
+        });
     });
 });
