@@ -3,7 +3,7 @@ import { TestData } from '../../src/constants/TestData';
 
 test.describe('TC05: Search Product and Verify Results', () => {
 
-  test('should search for products and verify results', async ({
+  test('@meladze should search for products and verify results', async ({
     homePage,
     productsPage,
     productDetailsPage

@@ -94,11 +94,6 @@ export const TestData = {
             '@test.com',
             'test@.com',
         ],
-        /** Test file for upload */
-        TEST_FILE: {
-            name: 'test-upload.txt',
-            content: 'This is a test file for contact form upload validation.',
-        },
         /** Expected success message */
         SUCCESS_MESSAGE: 'Success! Your details have been submitted successfully.',
     },

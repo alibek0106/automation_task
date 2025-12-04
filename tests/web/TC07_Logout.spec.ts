@@ -3,7 +3,7 @@ import { DataFactory } from '../../src/utils/DataFactory';
 
 test.describe('TC07: User Logout Functionality', () => {
 
-  test('should successfully logout and terminate session', async ({
+  test('@meladze should successfully logout and terminate session', async ({
     homePage,
     loginPage,
     signupPage,

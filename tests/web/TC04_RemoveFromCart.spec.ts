@@ -1,6 +1,6 @@
 import { isolatedTest as test, expect } from '../../src/fixtures';
 
-test.describe('TC04: Remove Product from Cart', () => {
+test.describe('TC04: Remove Product from Cart', { tag: '@Abdykarimov' }, () => {
 
     test('should verify removal of products', async ({
         cartSteps,
