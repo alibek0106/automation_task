@@ -1,7 +1,7 @@
 import { isolatedTest as test, expect } from '../../src/fixtures';
 import { PRODUCT_NAMES } from '../../src/constants/ProductData';
 
-test.describe('TC08: Update Product Quantity in Cart', () => {
+test.describe('TC08: Update Product Quantity in Cart @Abdykarimov', () => {
 
     test('should verify quantity updates and total recalculations', async ({
         cartSteps,

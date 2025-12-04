@@ -1,7 +1,7 @@
 import { test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 
-test.describe('TC02: Login with Registered User', () => {
+test.describe('TC02: Login with Registered User @Abdykarimov', () => {
     test.use({ storageState: { cookies: [], origins: [] } });
 
     const user = DataFactory.generateUser();
