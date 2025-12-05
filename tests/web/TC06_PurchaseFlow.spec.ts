@@ -4,7 +4,7 @@ import { TestData } from '../../src/constants/TestData';
 
 test.describe('TC06: Complete End-to-End Purchase Flow', () => {
 
-  test('@meladze should complete end-to-end purchase flow', async ({
+  test('@meladze should complete end-to-end purchase flow', { tag: '@meladze' }, async ({
     page,
     homePage,
     loginPage,
