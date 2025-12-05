@@ -11,6 +11,7 @@ export class PaymentPage extends BasePage {
   readonly payButton: Locator;
   readonly orderPlacedHeading: Locator;
   readonly successMessage: Locator;
+  readonly deleteAccountBtn: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -27,6 +28,7 @@ export class PaymentPage extends BasePage {
     // Order Success
     this.orderPlacedHeading = page.locator('h2[data-qa="order-placed"]').describe('Order placed heading');
     this.successMessage = page.getByText('Congratulations! Your order has been confirmed!').describe('Success message');
+    this.deleteAccountBtn = page.getByRole('link', { name: ' Delete Account' }).describe('Delete Account button');
   }
 
   async verifyPaymentPageVisible() {
@@ -55,5 +57,9 @@ export class PaymentPage extends BasePage {
     await this.orderPlacedHeading.waitFor({ state: 'visible', timeout: 10000 });
     await expect(this.orderPlacedHeading).toContainText('Order Placed!');
     await expect(this.successMessage).toBeVisible();
+  }
+
+  async deleteAccount() {
+    await this.deleteAccountBtn.click();
   }
 }
