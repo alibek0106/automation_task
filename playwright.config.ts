@@ -4,7 +4,20 @@ import path from 'path';
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
 
-export const STORAGE_STATE = path.join(__dirname, 'playwright/.auth/user.json');
+/**
+ * Get worker-specific storage state path
+ * Each worker gets its own authenticated session to avoid conflicts
+ */
+export function getWorkerStorageState(workerIndex: number): string {
+    return path.join(__dirname, `playwright/.auth/worker-${workerIndex}.json`);
+}
+
+/**
+ * Get worker-specific user data path
+ */
+export function getWorkerUserData(workerIndex: number): string {
+    return path.join(__dirname, `playwright/.auth/user-${workerIndex}.json`);
+}
 
 export default defineConfig({
     testDir: './tests',
@@ -14,12 +27,10 @@ export default defineConfig({
     workers: process.env.CI ? 4 : 4, // at least 4 workers
     reporter: 'html',
     use: {
-        baseURL: process.env.BASE_URL || 'https://www.automationexercise.com',
+        baseURL: 'https://www.automationexercise.com',
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
-        actionTimeout: 50000,
-        navigationTimeout: 50000,
     },
     projects: [
         {
@@ -29,7 +40,10 @@ export default defineConfig({
         {
             name: 'chromium',
             dependencies: ['setup'],
-            use: { ...devices['Desktop Chrome'], storageState: STORAGE_STATE, },
+            use: {
+                ...devices['Desktop Chrome'],
+                // Storage state set per-worker via fixture
+            },
         },
     ],
 });

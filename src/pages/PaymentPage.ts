@@ -16,17 +16,17 @@ export class PaymentPage extends BasePage {
     super(page);
 
     // Payment Form - using name attributes for reliability
-    this.paymentHeading = page.getByRole('heading', { name: 'Payment' }).describe('Payment Heading');
-    this.nameOnCardInput = page.locator('input[name="name_on_card"]').describe('Name On Card Input');
-    this.cardNumberInput = page.locator('input[name="card_number"]').describe('Card Number Input');
-    this.cvcInput = page.locator('input[name="cvc"]').describe('CVC Input');
-    this.expiryMonthInput = page.locator('input[name="expiry_month"]').describe('Expiry Month Input');
-    this.expiryYearInput = page.locator('input[name="expiry_year"]').describe('Expiry Year Input');
-    this.payButton = page.locator('button[data-qa="pay-button"]').describe('Pay Button');
+    this.paymentHeading = page.getByRole('heading', { name: 'Payment' }).describe('Payment heading');
+    this.nameOnCardInput = page.locator('input[name="name_on_card"]').describe('Name on card input');
+    this.cardNumberInput = page.locator('input[name="card_number"]').describe('Card number input');
+    this.cvcInput = page.locator('input[name="cvc"]').describe('CVC input');
+    this.expiryMonthInput = page.locator('input[name="expiry_month"]').describe('Expiry month input');
+    this.expiryYearInput = page.locator('input[name="expiry_year"]').describe('Expiry year input');
+    this.payButton = page.locator('button[data-qa="pay-button"]').describe('Pay button');
 
     // Order Success
-    this.orderPlacedHeading = page.locator('h2[data-qa="order-placed"]').describe('Order Placed Heading');
-    this.successMessage = page.getByText('Congratulations! Your order has been confirmed!').describe('Success Message');
+    this.orderPlacedHeading = page.locator('h2[data-qa="order-placed"]').describe('Order placed heading');
+    this.successMessage = page.getByText('Congratulations! Your order has been confirmed!').describe('Success message');
   }
 
   async verifyPaymentPageVisible() {
