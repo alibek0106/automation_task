@@ -16,17 +16,17 @@ export class PaymentPage extends BasePage {
     super(page);
 
     // Payment Form - using name attributes for reliability
-    this.paymentHeading = page.getByRole('heading', { name: 'Payment' });
-    this.nameOnCardInput = page.locator('input[name="name_on_card"]');
-    this.cardNumberInput = page.locator('input[name="card_number"]');
-    this.cvcInput = page.locator('input[name="cvc"]');
-    this.expiryMonthInput = page.locator('input[name="expiry_month"]');
-    this.expiryYearInput = page.locator('input[name="expiry_year"]');
-    this.payButton = page.locator('button[data-qa="pay-button"]');
+    this.paymentHeading = page.getByRole('heading', { name: 'Payment' }).describe('Payment Heading');
+    this.nameOnCardInput = page.locator('input[name="name_on_card"]').describe('Name On Card Input');
+    this.cardNumberInput = page.locator('input[name="card_number"]').describe('Card Number Input');
+    this.cvcInput = page.locator('input[name="cvc"]').describe('CVC Input');
+    this.expiryMonthInput = page.locator('input[name="expiry_month"]').describe('Expiry Month Input');
+    this.expiryYearInput = page.locator('input[name="expiry_year"]').describe('Expiry Year Input');
+    this.payButton = page.locator('button[data-qa="pay-button"]').describe('Pay Button');
 
     // Order Success
-    this.orderPlacedHeading = page.locator('h2[data-qa="order-placed"]');
-    this.successMessage = page.getByText('Congratulations! Your order has been confirmed!');
+    this.orderPlacedHeading = page.locator('h2[data-qa="order-placed"]').describe('Order Placed Heading');
+    this.successMessage = page.getByText('Congratulations! Your order has been confirmed!').describe('Success Message');
   }
 
   async verifyPaymentPageVisible() {

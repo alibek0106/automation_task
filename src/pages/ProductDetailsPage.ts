@@ -16,7 +16,7 @@ export class ProductDetailsPage extends BasePage {
         this.productName = page.getByRole('heading', { level: 2 }).filter({ hasNotText: /Category|Brands|Subscription/ }).describe('Product name');
         this.viewCartModalLink = page.getByRole('link', { name: 'View Cart' }).filter({ hasText: 'View Cart' }).describe('View Cart Modal Link');
         this.continueShoppingBtn = page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping button');
-        this.productInfo = page.locator('.product-information');
+        this.productInfo = page.locator('.product-information').describe('Product Information');
     }
 
     async getProductNameText(): Promise<string> {

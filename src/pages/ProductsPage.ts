@@ -26,25 +26,25 @@ export class ProductsPage extends BasePage {
         super(page);
 
         // Navigation
-        this.productsNavLink = page.getByRole('link', { name: 'Products' });
+        this.productsNavLink = page.getByRole('link', { name: 'Products' }).describe('Products Navigation Link');
         this.continueShoppingBtn = page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping Button');
         this.viewCartLink = page.getByText(' Cart', { exact: true }).describe('View Cart Link');
 
         // Headings - using role for better semantics
-        this.allProductsHeading = page.getByRole('heading', { name: 'All Products' });
-        this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' });
+        this.allProductsHeading = page.getByRole('heading', { name: 'All Products' }).describe('All Products Heading');
+        this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' }).describe('Searched Products Heading');
 
         // Search
-        this.searchInput = page.locator('input#search_product');
-        this.searchButton = page.locator('button#submit_search');
+        this.searchInput = page.locator('input#search_product').describe('Search Input');
+        this.searchButton = page.locator('button#submit_search').describe('Search Button');
 
         // Products
-        this.productCards = page.locator('.product-image-wrapper');
-        this.productItems = page.locator('.features_items .col-sm-4');
+        this.productCards = page.locator('.product-image-wrapper').describe('Product Cards');
+        this.productItems = page.locator('.features_items .col-sm-4').describe('Product Items');
 
         // Sidebar
-        this.categorySidebar = page.locator('#accordian');
-        this.brandsSidebar = page.locator('.brands_products');
+        this.categorySidebar = page.locator('#accordian').describe('Category Sidebar');
+        this.brandsSidebar = page.locator('.brands_products').describe('Brands Sidebar');
     }
 
     async goto() {
