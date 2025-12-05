@@ -2,7 +2,7 @@ import { test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 import { Routes } from '../../src/constants/Routes';
 
-test.describe('TC10: Verify Subscription in home page', { tag: '@Abdykarimov' }, () => {
+test.describe('TC11: Verify Subscription in home page', { tag: '@Abdykarimov' }, () => {
 
     test('User subscription to the newsletter', async ({
         page,
