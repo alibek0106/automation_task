@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class LoginPage extends BasePage {
@@ -33,5 +33,10 @@ export class LoginPage extends BasePage {
         await this.loginEmailInput.fill(email);
         await this.loginPasswordInput.fill(pass);
         await this.loginBtn.click();
+    }
+
+    async verifyLoginFormVisible() {
+        await expect(this.loginEmailInput).toBeVisible();
+        await expect(this.loginPasswordInput).toBeVisible();
     }
 }

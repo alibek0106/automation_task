@@ -45,4 +45,8 @@ test.describe('TC03: Add Multiple Products by Name', { tag: '@Abdykarimov' }, ()
             expect(calculatedTotal, 'Total matches sum of items').toBe(item1.total + item2.total);
         });
     });
+<<<<<<< HEAD
 });
+=======
+});
+>>>>>>> origin/Luka-Finished-Task-Finally

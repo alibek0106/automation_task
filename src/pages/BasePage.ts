@@ -1,5 +1,9 @@
-import { Page, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
 
+/**
+ * BasePage - Base class for all page objects
+ * Provides common page reference and navigation
+ */
 export abstract class BasePage {
     readonly page: Page;
 
@@ -7,23 +11,31 @@ export abstract class BasePage {
         this.page = page;
     }
 
-    async goto(path: string) {
-        await this.page.goto(path);
+    /**
+     * Navigate to a specific URL
+     */
+    async goto(url: string): Promise<void> {
+        await this.page.goto(url);
     }
 
-    async reload() {
-        await this.page.reload();
-    }
-
+    /**
+     * Get current page URL
+     */
     getUrl(): string {
         return this.page.url();
     }
 
-    async getTitle(): Promise<string> {
-        return await this.page.title();
+    /**
+     * Navigate back in history
+     */
+    async goBack(): Promise<void> {
+        await this.page.goBack();
     }
 
-    async waitForUrl(url: string | RegExp) {
-        await this.page.waitForURL(url);
+    /**
+     * Wait for the page to load completely
+     */
+    async waitForLoadState(state: 'load' | 'domcontentloaded' | 'networkidle' = 'load'): Promise<void> {
+        await this.page.waitForLoadState(state);
     }
 }

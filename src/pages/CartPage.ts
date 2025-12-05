@@ -1,18 +1,20 @@
-import { Page, Locator } from '@playwright/test';
-import { CartItem } from '../models/ProductModels';
+import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { CartItem } from '../models/ProductModels';
 
 export class CartPage extends BasePage {
     readonly emptyCartMessage: Locator;
     readonly cartTable: Locator;
+    readonly proceedToCheckoutBtn: Locator;
 
     constructor(page: Page) {
         super(page);
-        this.emptyCartMessage = page.getByText('Cart is empty!').describe('Empty Cart Message');
+        this.emptyCartMessage = page.getByText('Cart is empty!');
         this.cartTable = page
             .getByRole('table')
             .filter({ hasText: 'Item' })
-            .filter({ hasText: 'Quantity' }).describe('Cart Table');
+            .filter({ hasText: 'Quantity' });
+        this.proceedToCheckoutBtn = page.getByText('Proceed To Checkout');
     }
 
     private getAllRows(): Locator {
@@ -94,14 +96,23 @@ export class CartPage extends BasePage {
         return total;
     }
 
-    // Gets the exact numeric quantity of a specific product
+    async clickProceedToCheckout() {
+        await this.proceedToCheckoutBtn.click();
+    }
+
+    async verifyRegisterLoginModal() {
+        const registerLoginModal = this.page.locator('.modal-content');
+        await expect(registerLoginModal).toBeVisible({ timeout: 5000 });
+        const registerLink = registerLoginModal.getByRole('link', { name: /Register.*Login/i });
+        await expect(registerLink).toBeVisible();
+    }
+
     async getProductQuantity(productName: string): Promise<number> {
         const row = this.getProductRow(productName);
         const quantityText = await row.getByRole('cell').nth(3).innerText();
         return parseInt(quantityText, 10);
     }
 
-    // Gets the exact numeric total price of a specific product
     async getProductTotal(productName: string): Promise<number> {
         const row = this.getProductRow(productName);
         const totalText = await row.getByRole('cell').nth(4).innerText();
