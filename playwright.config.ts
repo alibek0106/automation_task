@@ -12,7 +12,10 @@ export default defineConfig({
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 4 : 4, // at least 4 workers
-    reporter: 'html',
+    reporter: [
+        ['html'],
+        ['list']
+    ],
     use: {
         baseURL: process.env.BASE_URL || 'https://www.automationexercise.com',
         trace: 'on-first-retry',
