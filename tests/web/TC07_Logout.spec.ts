@@ -1,3 +1,4 @@
+import { Routes } from '../../src/constants/Routes';
 import { test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 
@@ -46,7 +47,7 @@ test.describe('TC07: User Logout Functionality', () => {
     await loginPage.verifyLoginFormVisible();
 
     // Verify protected pages require re-login
-    await paymentPage.goto('/payment');
+    await paymentPage.goto(Routes.WEB.PAYMENT);
     await paymentPage.waitForLoadState('domcontentloaded');
     await homePage.verifyLoggedInNotVisible();
     await expect(homePage.signupLoginLink).toBeVisible();

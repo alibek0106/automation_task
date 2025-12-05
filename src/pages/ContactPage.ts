@@ -1,5 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { Routes } from '../constants/Routes';
 
 export class ContactPage extends BasePage {
   // Header
@@ -23,17 +24,16 @@ export class ContactPage extends BasePage {
     // Header
     this.getInTouchHeading = page.getByRole('heading', { name: 'Get In Touch' });
 
-    // Form fields - using stable locators
-    this.nameInput = page.locator('[data-qa="name"]');
-    this.emailInput = page.locator('[data-qa="email"]');
-    this.subjectInput = page.locator('[data-qa="subject"]');
-    this.messageTextarea = page.locator('[data-qa="message"]');
-    this.fileUploadInput = page.locator('input[name="upload_file"]');
-    this.submitButton = page.locator('[data-qa="submit-button"]');
+    this.nameInput = page.locator('[data-qa="name"]').describe('Name input');
+    this.emailInput = page.locator('[data-qa="email"]').describe('Email input');
+    this.subjectInput = page.locator('[data-qa="subject"]').describe('Subject input');
+    this.messageTextarea = page.locator('[data-qa="message"]').describe('Message textarea');
+    this.fileUploadInput = page.locator('input[name="upload_file"]').describe('File upload input');
+    this.submitButton = page.locator('[data-qa="submit-button"]').describe('Submit button');
 
     // Messages
-    this.successMessage = page.locator('.status.alert.alert-success');
-    this.alertSuccess = page.locator('.alert-success');
+    this.successMessage = page.locator('.status.alert.alert-success').describe('Success message');
+    this.alertSuccess = page.locator('.alert-success').describe('Alert success');
   }
 
   /**
@@ -128,13 +128,7 @@ export class ContactPage extends BasePage {
     message: string;
     filePath?: string;
   }) {
-    // await this.fillContactForm(data);
-
-    // if (data.filePath) {
-    //     await this.uploadFile(data.filePath);
-    // }
-
-    // await this.clickSubmit();
+    await this.fillContactForm(data);
   }
 
   /**
@@ -169,7 +163,7 @@ export class ContactPage extends BasePage {
   async verifyFormClearedOrRedirected() {
     // Check if form is cleared OR if we're on a different page
     const currentUrl = this.getUrl();
-    const isContactPage = currentUrl.includes('/contact_us');
+    const isContactPage = currentUrl.includes(Routes.WEB.CONTACT_US);
 
     if (isContactPage) {
       // If still on contact page, verify fields are empty

@@ -35,12 +35,12 @@ export class ProductsPage extends BasePage {
     this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' });
 
     // Search
-    this.searchInput = page.locator('input#search_product');
-    this.searchButton = page.locator('button#submit_search');
+    this.searchInput = page.locator('input#search_product').describe('Search input');
+    this.searchButton = page.locator('button#submit_search').describe('Search button');
 
     // Products
-    this.productCards = page.locator('.product-image-wrapper');
-    this.productItems = page.locator('.features_items .col-sm-4');
+    this.productCards = page.locator('.product-image-wrapper').describe('Product cards');
+    this.productItems = page.locator('.features_items .col-sm-4').describe('Product items');
 
     // Sidebar
     this.categorySidebar = page.locator('#accordian');
