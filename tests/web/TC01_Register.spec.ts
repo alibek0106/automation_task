@@ -1,8 +1,8 @@
-import { test, expect } from '../../src/fixtures';
+import { isolatedTest as test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 
 test.describe('TC01: User Registration', { tag: '@Abdykarimov' }, () => {
-    test.use({ storageState: { cookies: [], origins: [] } });
+    // test.use({ storageState: { cookies: [], origins: [] } });
 
     test('should register a new user with complete profile', async ({
         registrationSteps,

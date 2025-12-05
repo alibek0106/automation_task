@@ -3,7 +3,7 @@ import { TestData } from '../../src/constants/TestData';
 
 test.describe('TC09: Product Category and Brand Filtering', () => {
 
-  test('@meladze should verify product filtering by category and brand', async ({
+  test('@meladze should verify product filtering by category and brand', { tag: '@meladze' }, async ({
     homePage,
     productsPage
   }) => {

@@ -24,17 +24,16 @@ export class ContactPage extends BasePage {
     // Header
     this.getInTouchHeading = page.getByRole('heading', { name: 'Get In Touch' }).describe('Get In Touch Heading');
 
-    // Form fields - using stable locators
-    this.nameInput = page.locator('[data-qa="name"]').describe('Name Input');
-    this.emailInput = page.locator('[data-qa="email"]').describe('Email Input');
-    this.subjectInput = page.locator('[data-qa="subject"]').describe('Subject Input');
-    this.messageTextarea = page.locator('[data-qa="message"]').describe('Message Textarea');
-    this.fileUploadInput = page.locator('input[name="upload_file"]').describe('File Upload Input');
-    this.submitButton = page.locator('[data-qa="submit-button"]').describe('Submit Button');
+    this.nameInput = page.locator('[data-qa="name"]').describe('Name input');
+    this.emailInput = page.locator('[data-qa="email"]').describe('Email input');
+    this.subjectInput = page.locator('[data-qa="subject"]').describe('Subject input');
+    this.messageTextarea = page.locator('[data-qa="message"]').describe('Message textarea');
+    this.fileUploadInput = page.locator('input[name="upload_file"]').describe('File upload input');
+    this.submitButton = page.locator('[data-qa="submit-button"]').describe('Submit button');
 
     // Messages
-    this.successMessage = page.locator('.status.alert.alert-success').describe('Success Message');
-    this.alertSuccess = page.locator('.alert-success').describe('Alert');
+    this.successMessage = page.locator('.status.alert.alert-success').describe('Success message');
+    this.alertSuccess = page.locator('.alert-success').describe('Alert success');
   }
 
   /**
@@ -129,13 +128,7 @@ export class ContactPage extends BasePage {
     message: string;
     filePath?: string;
   }) {
-    // await this.fillContactForm(data);
-
-    // if (data.filePath) {
-    //     await this.uploadFile(data.filePath);
-    // }
-
-    // await this.clickSubmit();
+    await this.fillContactForm(data);
   }
 
   /**
