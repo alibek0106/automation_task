@@ -1,4 +1,4 @@
-import { expect } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { ProductsPage } from '../pages/ProductsPage';
 import { ProductDetailsPage } from '../pages/ProductDetailsPage';
 import { PRODUCT_NAMES } from '../constants/ProductData';
@@ -13,10 +13,10 @@ export class CartSteps {
      * Adds a specific product by Name with custom quantity
      */
     async addProductWithQuantity(productName: string, quantity: number) {
-        await this.productsPage.goto();
-
-        // Action: Select by Name
-        await this.productsPage.viewProductByName(productName);
+        await test.step(`Add "${productName}" with quantity ${quantity}`, async () => {
+            await this.productsPage.goto();
+            await this.productsPage.viewProductByName(productName);
+        })
 
         // Verify we landed on the right page
         // We expect the heading to match the name we clicked

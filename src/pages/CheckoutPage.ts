@@ -11,11 +11,11 @@ export class CheckoutPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.deliveryAddressSection = page.locator('#address_delivery').describe('Delivery Address Section');
-    this.billingAddressSection = page.locator('#address_invoice').describe('Billing Address Section');
-    this.orderReviewTable = page.locator('table.table-condensed').describe('Order Review Table');
-    this.commentTextarea = page.locator('textarea[name="message"]').describe('Comment Textarea');
-    this.placeOrderButton = page.getByRole('link', { name: 'Place Order' }).describe('Place Order Button');
+    this.deliveryAddressSection = page.locator('#address_delivery').describe('Delivery address section');
+    this.billingAddressSection = page.locator('#address_invoice').describe('Billing address section');
+    this.orderReviewTable = page.locator('table.table-condensed').describe('Order review table');
+    this.commentTextarea = page.locator('textarea[name="message"]').describe('Comment textarea');
+    this.placeOrderButton = page.getByRole('link', { name: 'Place Order' }).describe('Place order button');
   }
 
   async verifyCheckoutPageVisible() {

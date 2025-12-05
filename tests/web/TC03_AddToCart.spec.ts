@@ -1,5 +1,6 @@
 import { isolatedTest as test, expect } from '../../src/fixtures';
 import { PRODUCT_NAMES } from '../../src/constants/ProductData';
+import { Routes } from '../../src/constants/Routes';
 
 test.describe('TC03: Add Multiple Products by Name', { tag: '@Abdykarimov' }, () => {
 
@@ -20,21 +21,21 @@ test.describe('TC03: Add Multiple Products by Name', { tag: '@Abdykarimov' }, ()
 
         // 3. Assert
         await test.step('Verify Navigation to Cart', async () => {
-            await expect(page).toHaveURL(/\/view_cart/);
+            await expect(page, 'Page should have expected URL').toHaveURL(Routes.WEB.VIEW_CART);
         });
 
         await test.step(`Verify details for ${product1}`, async () => {
             const item1 = await cartPage.getProductByName(product1);
-            expect(item1.name).toBe(product1);
-            expect(item1.quantity).toBe(3);
-            expect(item1.total).toBe(item1.price * 3);
+            expect(item1.name, 'Item name should match').toBe(product1);
+            expect(item1.quantity, 'Item quantity should match').toBe(3);
+            expect(item1.total, 'Item total should match').toBe(item1.price * 3);
         });
 
         await test.step(`Verify details for ${product2}`, async () => {
             const item2 = await cartPage.getProductByName(product2);
-            expect(item2.name).toBe(product2);
-            expect(item2.quantity).toBe(1);
-            expect(item2.total).toBe(item2.price * 1);
+            expect(item2.name, 'Item name should match').toBe(product2);
+            expect(item2.quantity, 'Item quantity should match').toBe(1);
+            expect(item2.total, 'Item total should match').toBe(item2.price * 1);
         });
 
         await test.step('Verify Cart Total', async () => {

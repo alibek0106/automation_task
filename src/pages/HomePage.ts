@@ -12,7 +12,7 @@ export class HomePage extends BasePage {
         super(page);
         this.signupLoginLink = page.getByRole('link', { name: 'Signup / Login' }).describe('Signup / Login link');
         this.loggedInText = page.locator('li').filter({ hasText: 'Logged in as' }).describe('Logged in text');
-        this.deleteAccountLink = page.getByRole('link', { name: 'Delete Account' }).describe('Delete Account link');
+        this.deleteAccountLink = page.getByRole('link', { name: ' Delete Account' }).describe('Delete Account link');
         this.logoutLink = page.getByRole('link', { name: 'Logout' }).describe('Logout link');
     }
 
@@ -34,5 +34,9 @@ export class HomePage extends BasePage {
 
     async verifyLoggedInNotVisible() {
         await expect(this.page.getByText('Logged in as')).not.toBeVisible();
+    }
+
+    async deleteAccount() {
+        await this.deleteAccountLink.click();
     }
 }

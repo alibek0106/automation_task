@@ -1,25 +1,24 @@
-import { test, expect } from '../../src/fixtures';
+import { Routes } from '../../src/constants/Routes';
+import { isolatedTest as test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 
 test.describe('TC02: Login with Registered User', { tag: '@Abdykarimov' }, () => {
     test.use({ storageState: { cookies: [], origins: [] } });
 
-    const user = DataFactory.generateUser();
-
-    test.beforeEach(async ({ userService }) => {
-        await test.step('Precondition: Create User via API', async () => {
-            await userService.createAccount(user);
-        });
-    });
-
     test('should login successfully with valid credentials', async ({
         homePage,
         loginPage,
+        userService
     }) => {
+        const user = DataFactory.generateUser();
+        await test.step('Precondition: Create User via API', async () => {
+            await userService.createAccount(user);
+        });
+
         await test.step('Navigate to Login Page', async () => {
             await homePage.goto();
             await homePage.clickSignupLogin();
-            await expect(loginPage.loginHeader).toBeVisible();
+            await expect(loginPage.loginHeader).toHaveText('Login to your account');
         });
 
         await test.step('Enter Credentials and Login', async () => {
@@ -28,7 +27,7 @@ test.describe('TC02: Login with Registered User', { tag: '@Abdykarimov' }, () =>
 
         await test.step('Verify User is Logged In', async () => {
             await expect(homePage.loggedInText).toContainText(user.name);
-            await expect(homePage.page).toHaveURL('/');
+            await expect(homePage.page).toHaveURL(Routes.WEB.HOME);
         });
     });
 });
