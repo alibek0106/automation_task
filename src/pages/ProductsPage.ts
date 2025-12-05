@@ -53,7 +53,7 @@ export class ProductsPage extends BasePage {
 
   async navigateToProducts() {
     await this.productsNavLink.click();
-    await this.waitForLoadState('domcontentloaded');
+    await this.waitForLoadState('load');
   }
 
   async verifyAllProductsVisible() {

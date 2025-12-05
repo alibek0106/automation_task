@@ -1,53 +1,51 @@
 import { test, expect } from '../../src/fixtures';
 import { TestData } from '../../src/constants/TestData';
 
-test.describe('TC05: Search Product and Verify Results', () => {
+test.describe('TC05: Search Product and Verify Results', { tag: '@meladze' }, () => {
 
-  test('@meladze should search for products and verify results', { tag: '@meladze' }, async ({
+  test('should search for products and verify results', async ({
     homePage,
     productsPage,
     productDetailsPage
   }) => {
 
-    // Navigate to homepage
-    await homePage.goto();
+    await test.step('Navigate to Products page', async () => {
+      await homePage.goto();
+      await productsPage.navigateToProducts();
+      await productsPage.verifyAllProductsVisible();
+      await productsPage.verifySearchBoxVisible();
+    });
 
-    // Navigate to Products page
-    await productsPage.navigateToProducts();
+    await test.step('Search for first product and verify results', async () => {
+      const searchTerm1 = TestData.SEARCH.VALID_TERM_1;
+      await productsPage.searchProduct(searchTerm1);
+      await productsPage.verifySearchedProductsVisible();
+      await productsPage.verifyProductListContains(searchTerm1);
+    });
 
-    // Verify "ALL PRODUCTS" page and search box
-    await productsPage.verifyAllProductsVisible();
-    await productsPage.verifySearchBoxVisible();
+    await test.step('Verify product card details', async () => {
+      await productsPage.verifyProductCardDetails();
+    });
 
-    // Search for "T-Shirt" and verify results
-    const searchTerm1 = TestData.SEARCH.VALID_TERM_1;
-    await productsPage.searchProduct(searchTerm1);
-    await productsPage.verifySearchedProductsVisible();
-    await productsPage.verifyProductListContains(searchTerm1);
+    await test.step('View product details page', async () => {
+      await productsPage.clickFirstViewProduct();
+      await productDetailsPage.verifyProductDetailsVisible();
+    });
 
-    // Verify product card details
-    await productsPage.verifyProductCardDetails();
+    await test.step('Search for second product and verify results', async () => {
+      await productsPage.navigateToProducts();
+      const searchTerm2 = TestData.SEARCH.VALID_TERM_2;
+      await productsPage.searchProduct(searchTerm2);
+      await productsPage.verifySearchedProductsVisible();
+      await productsPage.verifyProductListContains(searchTerm2);
+    });
 
-    // Click on first product and verify details page
-    await productsPage.clickFirstViewProduct();
-    await productDetailsPage.verifyProductDetailsVisible();
-
-    // Return to products page for next steps
-    await productsPage.navigateToProducts();
-
-    // Perform search with different keyword
-    const searchTerm2 = TestData.SEARCH.VALID_TERM_2;
-    await productsPage.searchProduct(searchTerm2);
-    await productsPage.verifySearchedProductsVisible();
-    await productsPage.verifyProductListContains(searchTerm2);
-
-    // Perform search with non-existent product
-    const invalidTerm = TestData.SEARCH.INVALID_TERM;
-    await productsPage.searchProduct(invalidTerm);
-    await productsPage.verifySearchedProductsVisible();
-
-    // Verify results are empty for invalid search
-    const productCount = await productsPage.getProductCount();
-    expect(productCount).toBe(0);
+    await test.step('Search for invalid product and verify no results', async () => {
+      const invalidTerm = TestData.SEARCH.INVALID_TERM;
+      await productsPage.searchProduct(invalidTerm);
+      await productsPage.verifySearchedProductsVisible();
+      const productCount = await productsPage.getProductCount();
+      expect(productCount).toBe(0);
+    });
   });
 });

@@ -2,80 +2,143 @@ import { Routes } from '../../src/constants/Routes';
 import { test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 
-test.describe('TC07: User Logout Functionality', () => {
+test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
 
-  test('@meladze should successfully logout and terminate session', { tag: '@meladze' }, async ({
+  test('should logout successfully', async ({
+    homePage,
+    loginPage,
+    signupPage,
+    accountCreatedPage,
+  }) => {
+    const user = DataFactory.generateUser();
+
+    await test.step('Register and login new user', async () => {
+      await homePage.goto();
+      await homePage.clickSignupLogin();
+      await loginPage.signup(user.name, user.email);
+      await signupPage.fillAccountDetails(user);
+      await signupPage.submit();
+      await expect(accountCreatedPage.successMessage).toBeVisible();
+      await accountCreatedPage.clickContinue();
+      await expect(homePage.loggedInText).toContainText(user.name);
+      await expect(homePage.logoutLink).toBeVisible();
+    });
+
+    await test.step('Logout and verify logged out state', async () => {
+      await homePage.clickLogout();
+      await homePage.verifyLoggedInNotVisible();
+      await loginPage.verifyLoginFormVisible();
+    });
+  });
+
+  test('should terminate session after logout', async ({
     homePage,
     loginPage,
     signupPage,
     accountCreatedPage,
     productsPage,
     cartPage,
-    paymentPage
   }) => {
-    // Generate user for this test
     const user = DataFactory.generateUser();
 
-    // Login with new user (register first)
-    await homePage.goto();
-    await homePage.clickSignupLogin();
-    await loginPage.signup(user.name, user.email);
-    await signupPage.fillAccountDetails(user);
-    await signupPage.submit();
+    await test.step('Register and login new user', async () => {
+      await homePage.goto();
+      await homePage.clickSignupLogin();
+      await loginPage.signup(user.name, user.email);
+      await signupPage.fillAccountDetails(user);
+      await signupPage.submit();
+      await expect(accountCreatedPage.successMessage).toBeVisible();
+      await accountCreatedPage.clickContinue();
+      await expect(homePage.loggedInText).toContainText(user.name);
+    });
 
-    // Complete account creation
-    await expect(accountCreatedPage.successMessage).toBeVisible();
-    await accountCreatedPage.clickContinue();
+    await test.step('Logout', async () => {
+      await homePage.clickLogout();
+      await homePage.verifyLoggedInNotVisible();
+    });
 
-    // Verify logged in status
-    await expect(homePage.loggedInText).toContainText(user.name);
-    await expect(homePage.logoutLink).toBeVisible();
+    await test.step('Verify session is terminated for checkout', async () => {
+      await productsPage.navigateToProducts();
+      await productsPage.verifyAllProductsVisible();
+      await productsPage.addProductToCart(0);
+      await productsPage.navigateToCart();
+      await cartPage.clickProceedToCheckout();
+      await cartPage.verifyRegisterLoginModal();
+    });
+  });
 
-    // Navigate to different pages
-    await productsPage.navigateToProducts();
-    await productsPage.verifyAllProductsVisible();
-    await homePage.verifyLoggedInVisible();
+  test('should require login for protected pages after logout', async ({
+    homePage,
+    loginPage,
+    signupPage,
+    accountCreatedPage,
+    paymentPage,
+  }) => {
+    const user = DataFactory.generateUser();
 
-    await productsPage.navigateToCart();
-    await homePage.verifyLoggedInVisible();
+    await test.step('Register and login new user', async () => {
+      await homePage.goto();
+      await homePage.clickSignupLogin();
+      await loginPage.signup(user.name, user.email);
+      await signupPage.fillAccountDetails(user);
+      await signupPage.submit();
+      await expect(accountCreatedPage.successMessage).toBeVisible();
+      await accountCreatedPage.clickContinue();
+      await expect(homePage.loggedInText).toContainText(user.name);
+    });
 
-    // Click Logout link
-    await homePage.clickLogout();
+    await test.step('Logout', async () => {
+      await homePage.clickLogout();
+      await homePage.verifyLoggedInNotVisible();
+    });
 
-    // Verify user is logged out
-    await homePage.verifyLoggedInNotVisible();
-    await loginPage.verifyLoginFormVisible();
+    await test.step('Verify protected pages require re-login', async () => {
+      await paymentPage.goto(Routes.WEB.PAYMENT);
+      await paymentPage.waitForLoadState('domcontentloaded');
+      await homePage.verifyLoggedInNotVisible();
+      await expect(homePage.signupLoginLink).toBeVisible();
+    });
+  });
 
-    // Verify protected pages require re-login
-    await paymentPage.goto(Routes.WEB.PAYMENT);
-    await paymentPage.waitForLoadState('domcontentloaded');
-    await homePage.verifyLoggedInNotVisible();
-    await expect(homePage.signupLoginLink).toBeVisible();
+  test('should not restore session with back button', async ({
+    homePage,
+    loginPage,
+    signupPage,
+    accountCreatedPage,
+    productsPage,
+  }) => {
+    const user = DataFactory.generateUser();
 
-    // Verify back button does not restore session
-    await homePage.goBack();
-    await homePage.verifyLoggedInNotVisible();
+    await test.step('Register and login new user', async () => {
+      await homePage.goto();
+      await homePage.clickSignupLogin();
+      await loginPage.signup(user.name, user.email);
+      await signupPage.fillAccountDetails(user);
+      await signupPage.submit();
+      await expect(accountCreatedPage.successMessage).toBeVisible();
+      await accountCreatedPage.clickContinue();
+      await expect(homePage.loggedInText).toContainText(user.name);
+    });
 
-    await homePage.goto();
-    await homePage.verifyLoggedInNotVisible();
-    await expect(homePage.signupLoginLink).toBeVisible();
+    await test.step('Verify logged in state across different pages', async () => {
+      await productsPage.navigateToProducts();
+      await productsPage.verifyAllProductsVisible();
+      await homePage.verifyLoggedInVisible();
+      await productsPage.navigateToCart();
+      await homePage.verifyLoggedInVisible();
+    });
 
-    // Verify session is completely terminated
-    await productsPage.navigateToProducts();
-    await productsPage.verifyAllProductsVisible();
+    await test.step('Logout', async () => {
+      await homePage.clickLogout();
+      await homePage.verifyLoggedInNotVisible();
+    });
 
-    await productsPage.addProductToCart(0);
-
-    await productsPage.navigateToCart();
-
-    await cartPage.clickProceedToCheckout();
-    await cartPage.verifyRegisterLoginModal();
-
-    // Verify user must login again
-    await homePage.goto();
-    await homePage.clickSignupLogin();
-
-    await loginPage.login(user.email, user.password);
-    await expect(homePage.loggedInText).toContainText(user.name);
+    await test.step('Verify back button does not restore session', async () => {
+      await homePage.goBack();
+      await homePage.verifyLoggedInNotVisible();
+      await homePage.goto();
+      await homePage.verifyLoggedInNotVisible();
+      await expect(homePage.signupLoginLink).toBeVisible();
+    });
   });
 });

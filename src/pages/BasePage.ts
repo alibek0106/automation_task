@@ -13,9 +13,14 @@ export abstract class BasePage {
 
   /**
    * Navigate to a specific URL
+   * Using 'load' with extended timeout to ensure all resources load
+   * before interactions, preventing element-not-found errors
    */
   async goto(url: string): Promise<void> {
-    await this.page.goto(url);
+    await this.page.goto(url, {
+      waitUntil: 'load',
+      timeout: 60000 // 60 seconds timeout for slow-loading pages
+    });
   }
 
   /**
