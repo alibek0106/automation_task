@@ -88,8 +88,4 @@ test.describe('TC08: Update Product Quantity in Cart', { tag: '@Abdykarimov' }, 
             expect(actualTotal, `Cart total should match (${pricePerUnit}*2 + ${price2}*3)`).toBe(expectedTotal);
         });
     });
-<<<<<<< HEAD
 });
-=======
-});
->>>>>>> origin/Luka-Finished-Task-Finally
