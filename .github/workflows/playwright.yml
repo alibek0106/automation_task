@@ -4,12 +4,6 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to run tests on'
-        required: true
-        default: 'main'
-        type: string
 
 permissions:
   contents: read
@@ -29,8 +23,6 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
-      with:
-        ref: ${{ github.event.inputs.branch || github.ref }}
 
     - name: Setup pnpm
       uses: pnpm/action-setup@v4
@@ -89,18 +81,29 @@ jobs:
     steps:
     - name: Download test results
       uses: actions/download-artifact@v4
+      if: always()
       with:
         name: playwright-report
         path: playwright-report/
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
+      if: always()
 
-    - name: Upload artifact for Pages
+    - name: Prepare report for GitHub Pages
+      if: always()
+      run: |
+        mkdir -p github-pages-site
+        cp -r playwright-report/* github-pages-site/
+
+    - name: Upload to GitHub Pages
       uses: actions/upload-pages-artifact@v3
+      if: always()
       with:
-        path: playwright-report/
+        path: github-pages-site/
 
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
+      if: always()
+
