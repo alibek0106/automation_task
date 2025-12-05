@@ -11,7 +11,7 @@ export class ProductsPage extends BasePage {
         super(page);
         this.continueShoppingBtn = page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping Button');
         this.viewCartLink = page.getByText(' Cart', { exact: true }).describe('View Cart Link');
-        this.productCards = page.locator('.product-image-wrapper');
+        this.productCards = page.locator('.product-image-wrapper').describe('Product Cards');
     }
 
     async goto() {

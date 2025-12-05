@@ -8,11 +8,11 @@ export class CartPage extends BasePage {
 
     constructor(page: Page) {
         super(page);
-        this.emptyCartMessage = page.getByText('Cart is empty!');
+        this.emptyCartMessage = page.getByText('Cart is empty!').describe('Empty Cart Message');
         this.cartTable = page
             .getByRole('table')
             .filter({ hasText: 'Item' })
-            .filter({ hasText: 'Quantity' });
+            .filter({ hasText: 'Quantity' }).describe('Cart Table');
     }
 
     private getAllRows(): Locator {
