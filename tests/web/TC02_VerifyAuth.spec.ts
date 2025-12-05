@@ -1,3 +1,4 @@
+import { Routes } from '../../src/constants/Routes';
 import { isolatedTest as test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 
@@ -17,7 +18,7 @@ test.describe('TC02: Login with Registered User', { tag: '@Abdykarimov' }, () =>
         await test.step('Navigate to Login Page', async () => {
             await homePage.goto();
             await homePage.clickSignupLogin();
-            await expect(loginPage.loginHeader).toBeVisible();
+            await expect(loginPage.loginHeader).toHaveText('Login to your account');
         });
 
         await test.step('Enter Credentials and Login', async () => {
@@ -26,7 +27,7 @@ test.describe('TC02: Login with Registered User', { tag: '@Abdykarimov' }, () =>
 
         await test.step('Verify User is Logged In', async () => {
             await expect(homePage.loggedInText).toContainText(user.name);
-            await expect(homePage.page).toHaveURL('/');
+            await expect(homePage.page).toHaveURL(Routes.WEB.HOME);
         });
     });
 });
