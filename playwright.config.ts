@@ -10,12 +10,15 @@ export default defineConfig({
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 4 : 4, // at least 4 workers
-    reporter: 'html',
+    reporter: [
+        ['html'],
+        ['list']
+    ],
     use: {
         baseURL: 'https://www.automationexercise.com',
-        trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
-        video: 'retain-on-failure',
+        trace: 'on',
+        screenshot: 'on',
+        video: 'on',
     },
     projects: [
         {
