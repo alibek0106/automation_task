@@ -8,7 +8,6 @@ test.describe('TC15: Place Order: Register before Checkout', { tag: '@Abdykarimo
     test('User registration before checkout and place order', async ({
         page,
         homePage,
-        productsPage,
         cartSteps,
         registrationSteps,
         checkoutSteps,
@@ -24,7 +23,7 @@ test.describe('TC15: Place Order: Register before Checkout', { tag: '@Abdykarimo
         // 2. Steps 1-3: Launch & Verify Home
         await test.step('Navigate to Home', async () => {
             await homePage.goto();
-            await expect(page).toHaveTitle(Routes.WEB.HOME_TITLE);
+            await expect(page, 'Page should have expected title').toHaveTitle(Routes.WEB.HOME_TITLE);
         });
 
         // 3. Steps 4-7: Register User (Before Shopping)
@@ -33,19 +32,19 @@ test.describe('TC15: Place Order: Register before Checkout', { tag: '@Abdykarimo
             await registrationSteps.performFullRegistration(user);
 
             // Step 6: Verify Account Created
-            await expect(accountCreatedPage.successMessage).toBeVisible();
-            await expect(accountCreatedPage.successMessage).toHaveText('Account Created!');
+            await expect(accountCreatedPage.successMessage, 'Successfull account creation message should be visible').toBeVisible();
+            await expect(accountCreatedPage.successMessage, 'Successfull account creation message should have expected text').toHaveText('Account Created!');
             await registrationSteps.finishAccountCreation(); // Clicks "Continue"
 
             // Step 7: Verify Logged in
-            await expect(homePage.loggedInText).toContainText(user.name);
+            await expect(homePage.loggedInText, 'User should be logged in').toContainText(user.name);
         });
 
         // 4. Steps 8-10: Add Product & View Cart
         await test.step('Add products to cart', async () => {
             await cartSteps.addProductAndGoToCart(productToAdd);
 
-            await expect(page).toHaveURL(Routes.WEB.VIEW_CART);
+            await expect(page, 'Page should have expected URL').toHaveURL(Routes.WEB.VIEW_CART);
         });
 
         // 5. Steps 11-12: Checkout & Review
@@ -66,7 +65,7 @@ test.describe('TC15: Place Order: Register before Checkout', { tag: '@Abdykarimo
         // 8. Steps 17-18: Delete Account
         await test.step('Delete Account', async () => {
             await paymentPage.deleteAccount();
-            await expect(accountDeletedPage.deletedHeader).toBeVisible();
+            await expect(accountDeletedPage.deletedHeader, 'Account should be successfully deleted').toBeVisible();
             await accountDeletedPage.clickContinue();
         });
     });

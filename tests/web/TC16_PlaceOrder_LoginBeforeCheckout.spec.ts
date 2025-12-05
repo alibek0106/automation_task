@@ -28,7 +28,7 @@ test.describe('TC16: Place Order: Login before Checkout', { tag: '@Abdykarimov' 
         // 3. Steps 1-3: Launch & Verify Home
         await test.step('Navigate to Home', async () => {
             await homePage.goto();
-            await expect(page).toHaveTitle(Routes.WEB.HOME_TITLE);
+            await expect(page, 'Page should have expected title').toHaveTitle(Routes.WEB.HOME_TITLE);
         });
 
         // 4. Steps 4-6: Login (UI Flow)
@@ -36,7 +36,7 @@ test.describe('TC16: Place Order: Login before Checkout', { tag: '@Abdykarimov' 
             await homePage.clickSignupLogin();
 
             // Verify Login Header
-            await expect(loginPage.loginHeader).toBeVisible();
+            await expect(loginPage.loginHeader, 'Login header should be visible').toBeVisible();
 
             // Perform Login
             await loginPage.login(user.email, user.password);
@@ -51,7 +51,7 @@ test.describe('TC16: Place Order: Login before Checkout', { tag: '@Abdykarimov' 
             await cartSteps.addProductAndGoToCart(productToAdd);
 
             // Step 9: Verify Cart Page
-            await expect(page).toHaveURL(Routes.WEB.VIEW_CART);
+            await expect(page, 'Page should have expected URL').toHaveURL(Routes.WEB.VIEW_CART);
         });
 
         // 6. Steps 10-11: Checkout & Review
@@ -72,7 +72,7 @@ test.describe('TC16: Place Order: Login before Checkout', { tag: '@Abdykarimov' 
         // 9. Steps 16-17: Delete Account
         await test.step('Delete Account', async () => {
             await paymentPage.deleteAccount();
-            await expect(accountDeletedPage.deletedHeader).toBeVisible();
+            await expect(accountDeletedPage.deletedHeader, 'Account should be successfully deleted').toBeVisible();
             await accountDeletedPage.clickContinue();
         });
     });

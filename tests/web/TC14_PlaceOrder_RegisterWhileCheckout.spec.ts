@@ -15,7 +15,6 @@ test.describe('TC14: Place Order: Register while Checkout', { tag: '@Abdykarimov
         checkoutSteps,
         accountCreatedPage,
         paymentPage,
-        homePage: { logoutLink }, // Destructuring for specific assertion
         accountDeletedPage
     }) => {
         // 1. Data Setup
@@ -42,7 +41,7 @@ test.describe('TC14: Place Order: Register while Checkout', { tag: '@Abdykarimov
         // 5. Register User
         await test.step('Register New Account', async () => {
             await registrationSteps.performFullRegistration(user);
-            await expect(accountCreatedPage.successMessage).toBeVisible();
+            await expect(accountCreatedPage.successMessage, 'Successfull account creation message should be visible').toBeVisible();
             await registrationSteps.finishAccountCreation();
 
             // Verify "Logged in as..."
