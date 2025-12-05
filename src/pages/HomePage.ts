@@ -7,13 +7,21 @@ export class HomePage extends BasePage {
     readonly loggedInText: Locator;
     readonly deleteAccountLink: Locator;
     readonly logoutLink: Locator;
+    readonly subscriptionHeading: Locator;
+    readonly subscriptionEmailInput: Locator;
+    readonly subscriptionSubmitBtn: Locator;
+    readonly subscriptionSuccessMsg: Locator;
 
     constructor(page: Page) {
         super(page);
         this.signupLoginLink = page.getByRole('link', { name: 'Signup / Login' }).describe('Signup / Login link');
         this.loggedInText = page.locator('li').filter({ hasText: 'Logged in as' }).describe('Logged in text');
-        this.deleteAccountLink = page.getByRole('link', { name: 'Delete Account' }).describe('Delete Account link');
+        this.deleteAccountLink = page.getByRole('link', { name: ' Delete Account' }).describe('Delete Account link');
         this.logoutLink = page.getByRole('link', { name: 'Logout' }).describe('Logout link');
+        this.subscriptionHeading = page.getByRole('heading', { name: 'Subscription', level: 2 }).describe('Subscribtion heading');
+        this.subscriptionEmailInput = page.getByPlaceholder('Your email address').describe('Email Input Field');
+        this.subscriptionSubmitBtn = page.locator('#subscribe').describe('Subscribe button');
+        this.subscriptionSuccessMsg = page.getByText('You have been successfully subscribed!').describe('Subscription success message');
     }
 
     async goto() {
@@ -34,5 +42,15 @@ export class HomePage extends BasePage {
 
     async verifyLoggedInNotVisible() {
         await expect(this.page.getByText('Logged in as')).not.toBeVisible();
+    }
+
+    async deleteAccount() {
+        await this.deleteAccountLink.click();
+    }
+
+    async performSubscription(email: string) {
+        await this.subscriptionHeading.scrollIntoViewIfNeeded();
+        await this.subscriptionEmailInput.fill(email);
+        await this.subscriptionSubmitBtn.click();
     }
 }
