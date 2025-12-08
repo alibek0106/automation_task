@@ -4,10 +4,11 @@ export const Routes = {
         LOGIN: '/login',
         SIGNUP: '/signup',
         PRODUCTS: '/products',
+        PAYMENT: '/payment',
+        CONTACT_US: '/contact_us',
         VIEW_CART: /\/view_cart/,
         ACCOUNT_CREATED: '/account_created',
         HOME_TITLE: 'Automation Exercise',
-        CONTACT_US: '/contact_us',
     },
     API: {
         CREATE_ACCOUNT: '/api/createAccount',

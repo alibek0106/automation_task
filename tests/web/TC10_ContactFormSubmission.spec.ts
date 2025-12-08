@@ -2,9 +2,9 @@ import { test } from '../../src/fixtures';
 import { TestData } from '../../src/constants/TestData';
 import path from 'path';
 
-test.describe('TC10: Contact Form Submission with File Upload', () => {
+test.describe('TC10: Contact Form Submission with File Upload', { tag: '@meladze' }, () => {
   // TO aleksey: this test case could't be finished i think there is some problems with website
-  test('@meladze should submit contact form with all details including file upload', async ({
+  test('should submit contact form with all details including file upload', async ({
     homePage,
     contactPage,
     authedUser

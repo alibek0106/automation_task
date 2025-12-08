@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, Locator } from '@playwright/test';
 
 /**
  * BasePage - Base class for all page objects
@@ -6,9 +6,17 @@ import { Page } from '@playwright/test';
  */
 export abstract class BasePage {
     readonly page: Page;
+    readonly subscriptionHeading: Locator;
+    readonly subscriptionEmailInput: Locator;
+    readonly subscriptionSubmitBtn: Locator;
+    readonly subscriptionSuccessMsg: Locator;
 
     constructor(page: Page) {
         this.page = page;
+        this.subscriptionHeading = page.getByRole('heading', { name: 'Subscription', level: 2 }).describe('Subscribtion heading');
+        this.subscriptionEmailInput = page.getByPlaceholder('Your email address').describe('Email Input Field');
+        this.subscriptionSubmitBtn = page.locator('#subscribe').describe('Subscribe button');
+        this.subscriptionSuccessMsg = page.getByText('You have been successfully subscribed!').describe('Subscription success message');
     }
 
     /**
@@ -37,5 +45,11 @@ export abstract class BasePage {
      */
     async waitForLoadState(state: 'load' | 'domcontentloaded' | 'networkidle' = 'load'): Promise<void> {
         await this.page.waitForLoadState(state);
+    }
+
+    async performSubscription(email: string) {
+        await this.subscriptionHeading.scrollIntoViewIfNeeded();
+        await this.subscriptionEmailInput.fill(email);
+        await this.subscriptionSubmitBtn.click();
     }
 }

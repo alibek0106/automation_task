@@ -6,6 +6,7 @@ export class CartPage extends BasePage {
     readonly emptyCartMessage: Locator;
     readonly cartTable: Locator;
     readonly proceedToCheckoutBtn: Locator;
+    readonly checkoutModalRegisterLoginLink: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -15,6 +16,7 @@ export class CartPage extends BasePage {
             .filter({ hasText: 'Item' })
             .filter({ hasText: 'Quantity' });
         this.proceedToCheckoutBtn = page.getByText('Proceed To Checkout').describe('Proceed To Checkout Button');
+        this.checkoutModalRegisterLoginLink = page.getByRole('link', { name: 'Register / Login' });
     }
 
     private getAllRows(): Locator {
@@ -98,6 +100,10 @@ export class CartPage extends BasePage {
 
     async clickProceedToCheckout() {
         await this.proceedToCheckoutBtn.click();
+    }
+
+    async clickRegisterLoginFromModal() {
+        await this.checkoutModalRegisterLoginLink.click();
     }
 
     async verifyRegisterLoginModal() {

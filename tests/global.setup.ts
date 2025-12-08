@@ -1,29 +1,37 @@
-import { test as setup, expect } from '@playwright/test';
-import { STORAGE_STATE } from '../playwright.config';
+import { test as setup, expect } from '../src/fixtures';
+import config from '../playwright.config';
 import { DataFactory } from '../src/utils/DataFactory';
 import { UserService } from '../src/api/UserService';
-import { LoginPage } from '../src/pages/LoginPage';
-import { HomePage } from '../src/pages/HomePage';
 import fs from 'fs';
 import path from 'path';
 
-setup('authenticate', async ({ page, request }) => {
-    const user = DataFactory.generateUser();
-    const userService = new UserService(request);
-    const homePage = new HomePage(page);
-    const loginPage = new LoginPage(page);
+setup('authenticate workers', async ({ request, context }) => {
+    // Get worker count from config (defaults to 4 if not numeric)
+    const workerCount = typeof config.workers === 'number'
+        ? config.workers
+        : 4;
 
-    // Create user via API
-    await userService.createAccount(user);
+    // Create unique account for each worker
+    for (let workerIndex = 0; workerIndex < workerCount; workerIndex++) {
+        const user = DataFactory.generateUser();
+        const userService = new UserService(request);
 
-    // Login via UI
-    await homePage.goto();
-    await homePage.clickSignupLogin();
-    await loginPage.login(user.email, user.password);
+        const storageStatePath = path.join(__dirname, `../playwright/.auth/worker-${workerIndex}.json`);
+        const userDataPath = path.join(__dirname, `../playwright/.auth/user-${workerIndex}.json`);
 
-    await expect(homePage.loggedInText, 'User should be logged in').toBeVisible();
+        // Create user via API
+        await userService.createAccount(user);
+        await context.storageState({ path: storageStatePath });
+        fs.writeFileSync(userDataPath, JSON.stringify(user, null, 2));
 
-    await page.context().storageState({ path: STORAGE_STATE });
-    const userDataPath = path.join(process.cwd(), 'playwright/.auth/user.json');
-    fs.writeFileSync(userDataPath, JSON.stringify(user, null, 2));
-})
+        console.log(`✓ Worker ${workerIndex}: ${user.email}`);
+
+        // Clear session for next worker (if not last iteration)
+        if (workerIndex < workerCount - 1) {
+            await context.clearCookies();
+        }
+    }
+});
+
+// Increase timeout for setup - creating multiple accounts takes time
+setup.setTimeout(120000); // 2 minutes for creating N accounts
