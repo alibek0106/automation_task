@@ -39,6 +39,3 @@ setup('authenticate workers', async ({ page, request, context, homePage, loginPa
         }
     }
 });
-
-// Increase timeout for setup - creating multiple accounts takes time
-setup.setTimeout(120000); 
