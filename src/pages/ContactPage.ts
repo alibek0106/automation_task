@@ -22,7 +22,7 @@ export class ContactPage extends BasePage {
     super(page);
 
     // Header
-    this.getInTouchHeading = page.getByRole('heading', { name: 'Get In Touch' });
+    this.getInTouchHeading = page.getByRole('heading', { name: 'Get In Touch' }).describe('Get In Touch Heading');
 
     this.nameInput = page.locator('[data-qa="name"]').describe('Name input');
     this.emailInput = page.locator('[data-qa="email"]').describe('Email input');
@@ -40,7 +40,7 @@ export class ContactPage extends BasePage {
    * Navigate to contact us page
    */
   async goto() {
-    await super.goto('/contact_us');
+    await super.goto(Routes.WEB.CONTACT_US);
   }
 
   /**

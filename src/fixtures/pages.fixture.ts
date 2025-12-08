@@ -10,6 +10,7 @@ import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { PaymentPage } from '../pages/PaymentPage';
 import { ContactPage } from '../pages/ContactPage';
+import { AccountDeletedPage } from '../pages/AccountDeletedPage';
 
 export type PageFixtures = {
   homePage: HomePage;
@@ -23,6 +24,7 @@ export type PageFixtures = {
   checkoutPage: CheckoutPage;
   paymentPage: PaymentPage;
   contactPage: ContactPage;
+  accountDeletedPage: AccountDeletedPage;
 };
 
 export const pageFixtures = {
@@ -58,5 +60,8 @@ export const pageFixtures = {
   },
   contactPage: async ({ page }: { page: Page }, use: (p: ContactPage) => Promise<void>) => {
     await use(new ContactPage(page));
+  },
+  accountDeletedPage: async ({ page }: { page: Page }, use: (p: AccountDeletedPage) => Promise<void>) => {
+    await use(new AccountDeletedPage(page));
   },
 };

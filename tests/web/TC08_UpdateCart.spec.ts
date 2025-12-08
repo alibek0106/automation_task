@@ -1,4 +1,3 @@
-
 import { isolatedTest as test, expect } from '../../src/fixtures';
 import { PRODUCT_NAMES, PRODUCT_PRICES } from '../../src/constants/ProductData';
 

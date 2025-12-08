@@ -1,4 +1,4 @@
-import { test as setup, expect } from '../src/fixtures';
+import { test as setup } from '../src/fixtures';
 import config from '../playwright.config';
 import { DataFactory } from '../src/utils/DataFactory';
 import { UserService } from '../src/api/UserService';

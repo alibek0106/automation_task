@@ -4,7 +4,6 @@ playwright-report/
 playwright/.auth/
 blob-report/
 playwright/.cache/
-.env
 .DS_Store
 dist/
 .auth
