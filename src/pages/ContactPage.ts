@@ -54,8 +54,7 @@ export class ContactPage extends BasePage {
    * Verify "GET IN TOUCH" form is displayed
    */
   async verifyGetInTouchFormVisible() {
-    await expect(this.getInTouchHeading).toBeVisible();
-    await expect(this.page.getByText('Get In Touch')).toBeVisible();
+    await expect(this.getInTouchHeading, 'Get In Touch Heading should be visible').toBeVisible();
   }
 
   /**

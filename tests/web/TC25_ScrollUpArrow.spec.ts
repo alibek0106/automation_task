@@ -1,3 +1,4 @@
+import { Routes } from '../../src/constants/Routes';
 import { test, expect } from '../../src/fixtures';
 
 test.describe('TC25: Verify Scroll Up using Arrow button and Scroll Down functionality', { tag: '@meladze' }, () => {
@@ -12,7 +13,7 @@ test.describe('TC25: Verify Scroll Up using Arrow button and Scroll Down functio
       await expect(
         homePage.page,
         'Homepage should be loaded successfully with correct title'
-      ).toHaveTitle(/Automation Exercise/);
+      ).toHaveTitle(Routes.WEB.HOME_TITLE);
     });
 
     await test.step('Scroll down page to bottom', async () => {

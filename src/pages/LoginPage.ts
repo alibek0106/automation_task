@@ -36,7 +36,7 @@ export class LoginPage extends BasePage {
     }
 
     async verifyLoginFormVisible() {
-        await expect(this.loginEmailInput).toBeVisible();
-        await expect(this.loginPasswordInput).toBeVisible();
+        await expect(this.loginEmailInput, 'Login email input should be visible').toBeVisible();
+        await expect(this.loginPasswordInput, 'Login password input should be visible').toBeVisible();
     }
 }

@@ -40,7 +40,7 @@ export class CartSteps {
             await this.productsPage.viewProductByName(productName);
 
             await this.detailsPage.addToCart();
-            await expect(this.detailsPage.viewCartModalLink).toBeVisible();
+            await expect(this.detailsPage.viewCartModalLink, 'View cart modal link is not visible').toBeVisible();
             await this.detailsPage.clickViewCartFromModal();
         })
     }

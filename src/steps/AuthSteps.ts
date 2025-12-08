@@ -19,7 +19,7 @@ export class AuthSteps {
             await this.homePage.goto();
             await this.homePage.clickSignupLogin();
             await this.loginPage.login(user.email, user.password);
-            await expect(this.homePage.loggedInText).toContainText(user.name);
+            await expect(this.homePage.loggedInText, 'Logged in text should contain user name').toContainText(user.name);
         })
     }
 }

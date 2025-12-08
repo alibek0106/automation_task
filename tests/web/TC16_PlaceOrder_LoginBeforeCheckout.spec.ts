@@ -42,7 +42,7 @@ test.describe('TC16: Place Order: Login before Checkout', { tag: '@Abdykarimov' 
             await loginPage.login(user.email, user.password);
 
             // Verify Logged in state
-            await expect(homePage.loggedInText).toContainText(user.name);
+            await expect(homePage.loggedInText, 'Logged in text should contain username').toContainText(user.name);
         });
 
         // 5. Steps 7-9: Add Product & View Cart

@@ -44,7 +44,7 @@ test.describe('TC05: Search Product and Verify Results', { tag: '@meladze' }, ()
       await productsPage.searchProduct(invalidTerm);
       await productsPage.verifySearchedProductsVisible();
       const productCount = await productsPage.getProductCount();
-      expect(productCount).toBe(0);
+      expect(productCount, 'Product count should be 0').toBe(0);
     });
   });
 });

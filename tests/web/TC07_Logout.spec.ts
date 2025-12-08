@@ -14,10 +14,10 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
     await test.step('Register and login new user', async () => {
       await registrationSteps.startRegistration(user);
       await registrationSteps.fillAccountDetails(user);
-      await expect(accountCreatedPage.successMessage).toBeVisible();
+      await expect(accountCreatedPage.successMessage, 'Account Created message should be visible').toBeVisible();
       await registrationSteps.finishAccountCreation();
-      await expect(homePage.loggedInText).toContainText(user.name);
-      await expect(homePage.logoutLink).toBeVisible();
+      await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
+      await expect(homePage.logoutLink, 'Logout link should be visible').toBeVisible();
     });
 
     await test.step('Logout and verify logged out state', async () => {
@@ -39,9 +39,9 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
     await test.step('Register and login new user', async () => {
       await registrationSteps.startRegistration(user);
       await registrationSteps.fillAccountDetails(user);
-      await expect(accountCreatedPage.successMessage).toBeVisible();
+      await expect(accountCreatedPage.successMessage, 'Account Created message should be visible').toBeVisible();
       await registrationSteps.finishAccountCreation();
-      await expect(homePage.loggedInText).toContainText(user.name);
+      await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
     });
 
     await test.step('Logout', async () => {
@@ -70,9 +70,9 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
     await test.step('Register and login new user', async () => {
       await registrationSteps.startRegistration(user);
       await registrationSteps.fillAccountDetails(user);
-      await expect(accountCreatedPage.successMessage).toBeVisible();
+      await expect(accountCreatedPage.successMessage, 'Account Created message should be visible').toBeVisible();
       await registrationSteps.finishAccountCreation();
-      await expect(homePage.loggedInText).toContainText(user.name);
+      await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
     });
 
     await test.step('Logout', async () => {
@@ -84,7 +84,7 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
       await paymentPage.goto(Routes.WEB.PAYMENT);
       await paymentPage.waitForLoadState('domcontentloaded');
       await homePage.verifyLoggedInNotVisible();
-      await expect(homePage.signupLoginLink).toBeVisible();
+      await expect(homePage.signupLoginLink, 'Signup/Login link should be visible').toBeVisible();
     });
   });
 
@@ -99,9 +99,9 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
     await test.step('Register and login new user', async () => {
       await registrationSteps.startRegistration(user);
       await registrationSteps.fillAccountDetails(user);
-      await expect(accountCreatedPage.successMessage).toBeVisible();
+      await expect(accountCreatedPage.successMessage, 'Account Created message should be visible').toBeVisible();
       await registrationSteps.finishAccountCreation();
-      await expect(homePage.loggedInText).toContainText(user.name);
+      await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
     });
 
     await test.step('Verify logged in state across different pages', async () => {
@@ -124,7 +124,7 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
       await homePage.verifyLoggedInNotVisible();
       await homePage.goto();
       await homePage.verifyLoggedInNotVisible();
-      await expect(homePage.signupLoginLink).toBeVisible();
+      await expect(homePage.signupLoginLink, 'Signup/Login link should be visible').toBeVisible();
     });
   });
 });

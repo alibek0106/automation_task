@@ -4,9 +4,11 @@ import { BasePage } from './BasePage';
 export class AccountDeletedPage extends BasePage {
   readonly deletedMessage: Locator;
   readonly continueBtn: Locator;
+  readonly deletedHeader: Locator;
 
   constructor(page: Page) {
     super(page);
+    this.deletedHeader = page.getByRole('heading', { name: 'Account Deleted!' }).describe('Deleted page header');
     this.deletedMessage = page.getByText('Account Deleted!').describe('Account deleted message');
     this.continueBtn = page.locator('[data-qa="continue-button"]').describe('Continue button');
   }

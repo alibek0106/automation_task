@@ -18,7 +18,7 @@ export class CheckoutSteps {
     async proceedToCheckoutExpectLoginModal() {
         await test.step('Proceed to checkout (Expect Login Modal)', async () => {
             await this.cartPage.clickProceedToCheckout();
-            await expect(this.cartPage.checkoutModalRegisterLoginLink).toBeVisible();
+            await expect(this.cartPage.checkoutModalRegisterLoginLink, 'Checkout modal register/login link is not visible').toBeVisible();
             await this.cartPage.clickRegisterLoginFromModal();
         });
     }
@@ -29,7 +29,7 @@ export class CheckoutSteps {
     async proceedToCheckoutSuccess() {
         await test.step('Proceed to checkout (Logged In)', async () => {
             await this.cartPage.clickProceedToCheckout();
-            await expect(this.checkoutPage.deliveryAddressSection).toBeVisible();
+            await expect(this.checkoutPage.deliveryAddressSection, 'Delivery address section is not visible').toBeVisible();
         });
     }
 
@@ -44,7 +44,7 @@ export class CheckoutSteps {
         await test.step('Enter payment details and confirm', async () => {
             await this.paymentPage.fillPaymentDetails(payment.nameOnCard, payment.cardNumber, payment.cvc, payment.expiryMonth, payment.expiryYear);
             await this.paymentPage.clickPayAndConfirm();
-            await expect(this.paymentPage.successMessage).toBeVisible();
+            await expect(this.paymentPage.successMessage, 'Success message is not visible').toBeVisible();
         })
     }
 }

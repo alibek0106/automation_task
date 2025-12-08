@@ -23,7 +23,7 @@ test.describe('TC04: Remove Product from Cart', { tag: '@Abdykarimov' }, () => {
         // 2. Act: Remove first product
         await test.step('Remove product', async () => {
             await cartPage.removeProduct(productToRemove);
-            await expect(cartPage.getProductRow(productToRemove)).toHaveCount(0);
+            await expect(cartPage.getProductRow(productToRemove), 'Product row should be removed').toHaveCount(0);
         });
 
         // 3. Assert: Verify remaining state
@@ -31,16 +31,16 @@ test.describe('TC04: Remove Product from Cart', { tag: '@Abdykarimov' }, () => {
             expect(await cartPage.getCartCount(), 'Count should be 1').toBe(1);
 
             const remainingItem = await cartPage.getProductByName(productToKeep);
-            expect(remainingItem.name).toBe(productToKeep);
+            expect(remainingItem.name, 'Remaining item name should match').toBe(productToKeep);
 
             const newTotal = await cartPage.getCalculatedTotal();
-            expect(newTotal).toBe(remainingItem.total);
+            expect(newTotal, 'New total should match remaining item total').toBe(remainingItem.total);
         });
 
         // 4. Act: Empty Cart
         await test.step('Empty the cart', async () => {
             await cartPage.removeProduct(productToKeep);
-            await expect(cartPage.emptyCartMessage).toHaveText('Cart is empty!');
+            await expect(cartPage.emptyCartMessage, 'Empty cart message should have expected text').toHaveText('Cart is empty!');
         });
     });
 });

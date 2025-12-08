@@ -45,11 +45,11 @@ export class HomePage extends BasePage {
   }
 
   async verifyLoggedInVisible() {
-    await expect(this.page.getByText('Logged in as')).toBeVisible();
+    await expect(this.loggedInText, 'Logged in text should be visible').toBeVisible();
   }
 
   async verifyLoggedInNotVisible() {
-    await expect(this.page.getByText('Logged in as')).not.toBeVisible();
+    await expect(this.loggedInText, 'Logged in text should not be visible').not.toBeVisible();
   }
 
   async scrollToBottom() {
@@ -61,11 +61,11 @@ export class HomePage extends BasePage {
   }
 
   async verifySubscriptionVisible() {
-    await expect(this.subscriptionText).toBeVisible();
+    await expect(this.subscriptionText, 'Subscription text should be visible').toBeVisible();
   }
 
   async verifyFullFledgedTextVisible() {
-    await expect(this.fullFledgedText).toBeVisible();
+    await expect(this.fullFledgedText, 'Full-Fledged text should be visible').toBeVisible();
   }
 
   async clickScrollUpArrow() {
@@ -73,8 +73,8 @@ export class HomePage extends BasePage {
   }
 
   async verifyRecommendedItemsVisible() {
-    await expect(this.recommendedItemsHeading).toBeVisible();
-    await expect(this.recommendedProductItems.first()).toBeVisible();
+    await expect(this.recommendedItemsHeading, 'Recommended items heading should be visible').toBeVisible();
+    await expect(this.recommendedProductItems.first(), 'Recommended product items should be visible').toBeVisible();
   }
 
   async getRecommendedProductName(index: number): Promise<string> {

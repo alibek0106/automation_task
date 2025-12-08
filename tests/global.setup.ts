@@ -4,6 +4,7 @@ import { DataFactory } from '../src/utils/DataFactory';
 import { UserService } from '../src/api/UserService';
 import fs from 'fs';
 import path from 'path';
+import { expect } from '@playwright/test';
 
 setup('authenticate workers', async ({ page, request, context, homePage, loginPage }) => {
     // Get worker count from config (defaults to 4 if not numeric)

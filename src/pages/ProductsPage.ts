@@ -3,88 +3,48 @@ import { Routes } from '../constants/Routes';
 import { BasePage } from './BasePage';
 
 export class ProductsPage extends BasePage {
-    // Navigation & Actions
-    readonly productsNavLink: Locator;
-    readonly continueShoppingBtn: Locator;
-    readonly viewCartLink: Locator;
+  // Navigation & Actions
+  readonly productsNavLink: Locator;
+  readonly continueShoppingBtn: Locator;
+  readonly viewCartLink: Locator;
+
+  // Search
+  readonly searchInput: Locator;
+  readonly searchButton: Locator;
+  readonly allProductsHeading: Locator;
+  readonly searchedProductsHeading: Locator;
+
+  // Product Cards
+  readonly productCards: Locator;
+  readonly productItems: Locator;
+
+  // Sidebar - Categories & Brands
+  readonly categorySidebar: Locator;
+  readonly brandsSidebar: Locator;
+
+  constructor(page: Page) {
+    super(page);
+
+    // Navigation
+    this.productsNavLink = page.getByRole('link', { name: 'Products' }).describe('Products Navigation Link');
+    this.continueShoppingBtn = page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping Button');
+    this.viewCartLink = page.getByText(' Cart', { exact: true }).describe('View Cart Link');
+
+    // Headings - using role for better semantics
+    this.allProductsHeading = page.getByRole('heading', { name: 'All Products' }).describe('All Products Heading');
+    this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' }).describe('Searched Products Heading');
 
     // Search
-    readonly searchInput: Locator;
-    readonly searchButton: Locator;
-    readonly allProductsHeading: Locator;
-    readonly searchedProductsHeading: Locator;
-
-    // Product Cards
-    readonly productCards: Locator;
-    readonly productItems: Locator;
-
-    // Sidebar - Categories & Brands
-    readonly categorySidebar: Locator;
-    readonly brandsSidebar: Locator;
-
-    constructor(page: Page) {
-        super(page);
-
-        // Navigation
-        this.productsNavLink = page.getByRole('link', { name: 'Products' }).describe('Products Navigation Link');
-        this.continueShoppingBtn = page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping Button');
-        this.viewCartLink = page.getByText(' Cart', { exact: true }).describe('View Cart Link');
-
-        // Headings - using role for better semantics
-        this.allProductsHeading = page.getByRole('heading', { name: 'All Products' }).describe('All Products Heading');
-        this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' }).describe('Searched Products Heading');
-
-        // Search
-        this.searchInput = page.locator('input#search_product').describe('Search Input');
-        this.searchButton = page.locator('button#submit_search').describe('Search Button');
-
-        // Products
-        this.productCards = page.locator('.product-image-wrapper').describe('Product Cards');
-        this.productItems = page.locator('.features_items .col-sm-4').describe('Product Items');
-
-        // Sidebar
-        this.categorySidebar = page.locator('#accordian').describe('Category Sidebar');
-        this.brandsSidebar = page.locator('.brands_products').describe('Brands Sidebar');
-    }
-
-    async goto() {
-        await super.goto(Routes.WEB.PRODUCTS);
-    }
-
-    async navigateToProducts() {
-        await this.productsNavLink.click();
-        await this.waitForLoadState('domcontentloaded');
-    }
-
-    async verifyAllProductsVisible() {
-        await expect(this.allProductsHeading).toBeVisible();
-        await expect(this.productItems.first()).toBeVisible();
-    }
-
-    async verifySearchBoxVisible() {
-        await expect(this.searchInput).toBeVisible();
-    }
-
-    async searchProduct(productName: string) {
-        await this.searchInput.fill(productName);
-        await this.searchButton.click();
-    }
-
-    async verifySearchedProductsVisible() {
-        await expect(this.searchedProductsHeading).toBeVisible();
-    }
-
-    // Search
-    this.searchInput = page.locator('input#search_product').describe('Search input');
-    this.searchButton = page.locator('button#submit_search').describe('Search button');
+    this.searchInput = page.locator('input#search_product').describe('Search Input');
+    this.searchButton = page.locator('button#submit_search').describe('Search Button');
 
     // Products
-    this.productCards = page.locator('.product-image-wrapper').describe('Product cards');
-    this.productItems = page.locator('.features_items .col-sm-4').describe('Product items');
+    this.productCards = page.locator('.product-image-wrapper').describe('Product Cards');
+    this.productItems = page.locator('.features_items .col-sm-4').describe('Product Items');
 
     // Sidebar
-    this.categorySidebar = page.locator('#accordian');
-    this.brandsSidebar = page.locator('.brands_products');
+    this.categorySidebar = page.locator('#accordian').describe('Category Sidebar');
+    this.brandsSidebar = page.locator('.brands_products').describe('Brands Sidebar');
   }
 
   async goto() {
@@ -93,16 +53,16 @@ export class ProductsPage extends BasePage {
 
   async navigateToProducts() {
     await this.productsNavLink.click();
-    await this.waitForLoadState('load');
+    await this.waitForLoadState('domcontentloaded');
   }
 
   async verifyAllProductsVisible() {
-    await expect(this.allProductsHeading).toBeVisible();
-    await expect(this.productItems.first()).toBeVisible();
+    await expect(this.allProductsHeading, 'All products heading should be visible').toBeVisible();
+    await expect(this.productItems.first(), 'First product item should be visible').toBeVisible();
   }
 
   async verifySearchBoxVisible() {
-    await expect(this.searchInput).toBeVisible();
+    await expect(this.searchInput, 'Search input should be visible').toBeVisible();
   }
 
   async searchProduct(productName: string) {
@@ -111,27 +71,27 @@ export class ProductsPage extends BasePage {
   }
 
   async verifySearchedProductsVisible() {
-    await expect(this.searchedProductsHeading).toBeVisible();
+    await expect(this.searchedProductsHeading, 'Searched products heading should be visible').toBeVisible();
   }
 
   async verifyProductListContains(searchTerm: string) {
     await this.productItems.first().waitFor({ state: 'visible' });
     const count = await this.productItems.count();
-    expect(count).toBeGreaterThan(0);
+    expect(count, 'Product list should contain at least one item').toBeGreaterThan(0);
 
     // Check first few items to ensure relevance
     for (let i = 0; i < Math.min(count, 3); i++) {
       const productCard = this.productItems.nth(i);
-      await expect(productCard).toContainText(searchTerm, { ignoreCase: true });
+      await expect(productCard, 'Product card should contain search term').toContainText(searchTerm, { ignoreCase: true });
     }
   }
 
   async verifyProductCardDetails() {
     const firstProduct = this.productItems.first();
-    await expect(firstProduct.locator('.productinfo img')).toBeVisible();
-    await expect(firstProduct.locator('.productinfo h2')).toBeVisible();
-    await expect(firstProduct.locator('.productinfo p')).toBeVisible();
-    await expect(firstProduct.locator('.choose a')).toBeVisible();
+    await expect(firstProduct.locator('.productinfo img'), 'Product image should be visible').toBeVisible();
+    await expect(firstProduct.locator('.productinfo h2'), 'Product name should be visible').toBeVisible();
+    await expect(firstProduct.locator('.productinfo p'), 'Product price should be visible').toBeVisible();
+    await expect(firstProduct.locator('.choose a'), 'Product action buttons should be visible').toBeVisible();
   }
 
   async clickFirstViewProduct() {
@@ -148,7 +108,7 @@ export class ProductsPage extends BasePage {
 
   async verifyCategoryTitle(title: string) {
     const heading = this.page.locator('h2.title');
-    await expect(heading).toContainText(title, { ignoreCase: true });
+    await expect(heading, 'Category title should contain expected text').toContainText(title, { ignoreCase: true });
   }
 
   async selectBrand(brandName: string) {
@@ -181,13 +141,13 @@ export class ProductsPage extends BasePage {
   }
 
   async verifyCategorySidebarVisible() {
-    await expect(this.categorySidebar).toBeVisible();
-    await expect(this.page.getByText('Category', { exact: true })).toBeVisible();
+    await expect(this.categorySidebar, 'Category sidebar should be visible').toBeVisible();
+    await expect(this.page.getByText('Category', { exact: true }), 'Category text should be visible').toBeVisible();
   }
 
   async verifyBrandsSidebarVisible() {
-    await expect(this.brandsSidebar).toBeVisible();
-    await expect(this.page.getByText('Brands', { exact: true })).toBeVisible();
+    await expect(this.brandsSidebar, 'Brands sidebar should be visible').toBeVisible();
+    await expect(this.page.getByText('Brands', { exact: true }), 'Brands text should be visible').toBeVisible();
   }
 
   async getProductCount(): Promise<number> {
@@ -196,6 +156,6 @@ export class ProductsPage extends BasePage {
 
   async verifyProductCountGreaterThan(min: number) {
     const count = await this.getProductCount();
-    expect(count).toBeGreaterThan(min);
+    expect(count, 'Product count should be greater than expected').toBeGreaterThan(min);
   }
 }

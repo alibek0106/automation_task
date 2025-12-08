@@ -4,7 +4,6 @@ import { TestData } from '../../src/constants/TestData';
 
 test.describe('TC06: Complete End-to-End Purchase Flow', { tag: '@meladze' }, () => {
   test('should complete end-to-end purchase flow', async ({
-    page,
     homePage,
     registrationSteps,
     accountCreatedPage,
@@ -18,9 +17,9 @@ test.describe('TC06: Complete End-to-End Purchase Flow', { tag: '@meladze' }, ()
     await test.step('Register new user', async () => {
       await registrationSteps.startRegistration(user);
       await registrationSteps.fillAccountDetails(user);
-      await expect(accountCreatedPage.successMessage).toBeVisible();
+      await expect(accountCreatedPage.successMessage, 'Account Created message should be visible').toBeVisible();
       await registrationSteps.finishAccountCreation();
-      await expect(homePage.loggedInText).toContainText(user.name);
+      await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
     });
 
     await test.step('Add products to cart', async () => {
@@ -32,7 +31,7 @@ test.describe('TC06: Complete End-to-End Purchase Flow', { tag: '@meladze' }, ()
 
     await test.step('Verify cart contents', async () => {
       await productsPage.navigateToCart();
-      expect(await cartPage.getCartCount()).toBe(2);
+      expect(await cartPage.getCartCount(), 'Cart count should be 2').toBe(2);
     });
 
     await test.step('Proceed to checkout and verify details', async () => {
@@ -40,7 +39,7 @@ test.describe('TC06: Complete End-to-End Purchase Flow', { tag: '@meladze' }, ()
       await checkoutPage.verifyCheckoutPageVisible();
       await checkoutPage.verifyAddressDetails('delivery', user);
       await checkoutPage.verifyAddressDetails('billing', user);
-      await expect(checkoutPage.orderReviewTable).toBeVisible();
+      await expect(checkoutPage.orderReviewTable, 'Order review table should be visible').toBeVisible();
     });
 
     await test.step('Place order', async () => {
@@ -64,7 +63,7 @@ test.describe('TC06: Complete End-to-End Purchase Flow', { tag: '@meladze' }, ()
     await test.step('Verify cart is empty after order', async () => {
       await productsPage.navigateToCart();
       const cartCount = await cartPage.getCartCount();
-      expect(cartCount).toBe(0);
+      expect(cartCount, 'Cart count should be 0').toBe(0);
     });
   });
 });

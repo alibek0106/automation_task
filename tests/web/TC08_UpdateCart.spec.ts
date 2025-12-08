@@ -7,7 +7,6 @@ test.describe('TC08: Update Product Quantity in Cart', { tag: '@Abdykarimov' }, 
         cartSteps,
         cartPage,
         productsPage,
-        page
     }) => {
         // 1. Arrange: Login and Add Product (Qty 1)
         const productName = PRODUCT_NAMES[0]; // e.g., "Blue Top"
@@ -43,14 +42,14 @@ test.describe('TC08: Update Product Quantity in Cart', { tag: '@Abdykarimov' }, 
             expect(subtotal, 'Subtotal should be Price * 5').toBe(pricePerUnit * 5);
 
             const cartTotal = await cartPage.getCalculatedTotal();
-            expect(cartTotal).toBe(subtotal); // Since only 1 product type
+            expect(cartTotal, 'Cart total should match subtotal').toBe(subtotal); // Since only 1 product type
         });
 
         // 4. Act: Decrease Quantity to 2
         // Since we can't edit, we must Remove then Add 2
         await test.step('Decrease Quantity to 2 (Re-add workflow)', async () => {
             await cartPage.removeProduct(productName);
-            await expect(cartPage.getProductRow(productName)).toHaveCount(0);
+            await expect(cartPage.getProductRow(productName), 'Product row should be removed').toHaveCount(0);
 
             await cartSteps.addProductWithQuantity(productName, 2);
         });
@@ -76,11 +75,11 @@ test.describe('TC08: Update Product Quantity in Cart', { tag: '@Abdykarimov' }, 
 
             // Verify Product 1 (Still 2)
             const qty1 = await cartPage.getProductQuantity(productName);
-            expect(qty1).toBe(2);
+            expect(qty1, 'Product 1 quantity should be 2').toBe(2);
 
             // Verify Product 2 (New 3)
             const qty2 = await cartPage.getProductQuantity(product2);
-            expect(qty2).toBe(3);
+            expect(qty2, 'Product 2 quantity should be 3').toBe(3);
 
             // Verify Cart Total
             const expectedTotal = (pricePerUnit * 2) + (price2 * 3);

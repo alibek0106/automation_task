@@ -18,7 +18,7 @@ test.describe('TC02: Login with Registered User', { tag: '@Abdykarimov' }, () =>
         await test.step('Navigate to Login Page', async () => {
             await homePage.goto();
             await homePage.clickSignupLogin();
-            await expect(loginPage.loginHeader).toHaveText('Login to your account');
+            await expect(loginPage.loginHeader, 'Login Header should be visible').toHaveText('Login to your account');
         });
 
         await test.step('Enter Credentials and Login', async () => {
@@ -26,8 +26,8 @@ test.describe('TC02: Login with Registered User', { tag: '@Abdykarimov' }, () =>
         });
 
         await test.step('Verify User is Logged In', async () => {
-            await expect(homePage.loggedInText).toContainText(user.name);
-            await expect(homePage.page).toHaveURL(Routes.WEB.HOME);
+            await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
+            await expect(homePage.page, 'Page should have expected URL').toHaveURL(Routes.WEB.HOME);
         });
     });
 });

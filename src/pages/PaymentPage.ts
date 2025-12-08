@@ -55,8 +55,8 @@ export class PaymentPage extends BasePage {
 
   async verifyOrderPlaced() {
     await this.orderPlacedHeading.waitFor({ state: 'visible', timeout: 10000 });
-    await expect(this.orderPlacedHeading).toContainText('Order Placed!');
-    await expect(this.successMessage).toBeVisible();
+    await expect(this.orderPlacedHeading, 'Order placed heading should contain text "Order Placed!"').toContainText('Order Placed!');
+    await expect(this.successMessage, 'Success message should be visible').toBeVisible();
   }
 
   async deleteAccount() {

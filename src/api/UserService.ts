@@ -27,12 +27,12 @@ export class UserService extends ApiClient {
         };
 
         const response = await this.post(Routes.API.CREATE_ACCOUNT, formData);
-        expect(response.status()).toBe(StatusCode.OK);
+        expect(response.status(), 'Response status should be 200').toBe(StatusCode.OK);
 
         const parsed = ApiResponseSchema.parse(await response.json());
 
-        expect(parsed.responseCode).toBe(StatusCode.CREATED);
-        expect(parsed.message).toBe('User created!');
+        expect(parsed.responseCode, 'Response code should be 201').toBe(StatusCode.CREATED);
+        expect(parsed.message, 'Response message should be "User created!"').toBe('User created!');
 
         return parsed;
     }

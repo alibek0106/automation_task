@@ -1,3 +1,4 @@
+import { Routes } from '../../src/constants/Routes';
 import { test, expect } from '../../src/fixtures';
 
 test.describe('TC22: Add to cart from Recommended items', { tag: '@meladze' }, () => {
@@ -30,7 +31,7 @@ test.describe('TC22: Add to cart from Recommended items', { tag: '@meladze' }, (
         productName,
         'Product name should not be empty'
       ).toBeTruthy();
-      
+
       await homePage.addRecommendedItemToCart(0);
     });
 
@@ -46,13 +47,13 @@ test.describe('TC22: Add to cart from Recommended items', { tag: '@meladze' }, (
       await expect(
         cartPage.page,
         'Should navigate to cart page'
-      ).toHaveURL(/view_cart/);
-      
+      ).toHaveURL(Routes.WEB.VIEW_CART);
+
       await expect(
         cartPage.cartTable,
         'Cart table should be visible'
       ).toBeVisible();
-      
+
       // Verify the product we added is in the cart
       const productRow = cartPage.getProductRow(productName);
       await expect(

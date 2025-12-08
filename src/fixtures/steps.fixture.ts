@@ -1,4 +1,4 @@
-import { Page, BrowserContext } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { AuthSteps } from '../steps/AuthSteps';
 import { PageFixtures } from './pages.fixture';
 import { RegistrationSteps } from '../steps/RegistrationSteps';
@@ -13,11 +13,11 @@ export type StepsFixtures = {
 };
 
 export const stepsFixtures = {
-    authSteps: async ({ page, context, homePage, loginPage }: PageFixtures & { page: Page, context: BrowserContext }, use: (s: AuthSteps) => Promise<void>) => {
-        await use(new AuthSteps(page, homePage, loginPage, context));
+    authSteps: async ({ page, homePage, loginPage }: PageFixtures & { page: Page }, use: (s: AuthSteps) => Promise<void>) => {
+        await use(new AuthSteps(page, homePage, loginPage));
     },
     registrationSteps: async ({ page, homePage, loginPage, signupPage, accountCreatedPage }:
-        PageFixtures & { page: Page }, use: any) => {
+        PageFixtures & { page: Page }, use: (s: RegistrationSteps) => Promise<void>) => {
         await use(new RegistrationSteps(page, homePage, loginPage, signupPage, accountCreatedPage));
     },
     cartSteps: async ({ productsPage, productDetailsPage }: PageFixtures, use: (s: CartSteps) => Promise<void>) => {

@@ -21,15 +21,13 @@ test.describe('TC01: User Registration', { tag: '@Abdykarimov' }, () => {
 
         // Step 3: Verify Creation
         await test.step('Verify account creation success', async () => {
-            await expect(accountCreatedPage.successMessage).toBeVisible();
             await expect(accountCreatedPage.successMessage).toHaveText('Account Created!');
         });
 
         // Step 4: Continue & Login Check
         await test.step('Continue and verify logged-in state', async () => {
             await registrationSteps.finishAccountCreation();
-            // Using robust locator from HomePage
-            await expect(homePage.loggedInText).toContainText(user.name);
+            await expect(homePage.loggedInText, 'User should be logged in').toContainText(user.name);
         });
     });
 });

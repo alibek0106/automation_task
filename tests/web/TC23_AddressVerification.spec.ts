@@ -1,3 +1,4 @@
+import { Routes } from '../../src/constants/Routes';
 import { isolatedTest as test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 
@@ -22,7 +23,7 @@ test.describe('TC23: Verify Address Details in Checkout Page', { tag: '@meladze'
       await expect(
         homePage.page,
         'Homepage should be loaded successfully with correct title'
-      ).toHaveTitle(/Automation Exercise/);
+      ).toHaveTitle(Routes.WEB.HOME_TITLE);
     });
 
     await test.step('Click Signup / Login button', async () => {
@@ -72,7 +73,7 @@ test.describe('TC23: Verify Address Details in Checkout Page', { tag: '@meladze'
       await expect(
         cartPage.page,
         'Cart page URL should be displayed'
-      ).toHaveURL(/view_cart/);
+      ).toHaveURL(Routes.WEB.VIEW_CART);
       await expect(
         cartPage.cartTable,
         'Cart table should be visible'

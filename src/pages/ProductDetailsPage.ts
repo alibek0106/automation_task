@@ -32,7 +32,7 @@ export class ProductDetailsPage extends BasePage {
     }
 
     async verifyProductDetailsVisible() {
-        await expect(this.productInfo).toBeVisible();
+        await expect(this.productInfo, 'Product information should be visible').toBeVisible();
     }
 
     async clickViewCartFromModal() {
