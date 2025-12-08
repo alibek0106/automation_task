@@ -29,10 +29,10 @@ export class HomePage extends BasePage {
     }
 
     async verifyLoggedInVisible() {
-        await expect(this.page.getByText('Logged in as')).toBeVisible();
+        await expect(this.loggedInText).toBeVisible();
     }
 
     async verifyLoggedInNotVisible() {
-        await expect(this.page.getByText('Logged in as')).not.toBeVisible();
+        await expect(this.loggedInText).not.toBeVisible();
     }
 }

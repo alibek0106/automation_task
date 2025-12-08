@@ -132,10 +132,6 @@ export class ProductsPage extends BasePage {
         await viewLink.click();
     }
 
-    async clickContinueShopping() {
-        await this.continueShoppingBtn.click();
-    }
-
     async navigateToCart() {
         await this.viewCartLink.click();
     }

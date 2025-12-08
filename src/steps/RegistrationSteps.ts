@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, expect } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { SignupPage } from '../pages/SignupPage';
@@ -26,11 +26,13 @@ export class RegistrationSteps {
     }
 
     async finishAccountCreation() {
+        expect(this.createdPage.successMessage, 'Success message should be visible').toBeVisible();
         await this.createdPage.clickContinue();
     }
 
     async performFullRegistration(user: User) {
         await this.startRegistration(user);
         await this.fillAccountDetails(user);
+        await this.finishAccountCreation();
     }
 }

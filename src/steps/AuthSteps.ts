@@ -1,4 +1,4 @@
-import { Page, BrowserContext } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
 import { HomePage } from '../pages/HomePage';
 import { User } from '../models/UserModels';
@@ -9,7 +9,6 @@ export class AuthSteps {
         private page: Page,
         private homePage: HomePage,
         private loginPage: LoginPage,
-        private context: BrowserContext
     ) { }
 
     /**

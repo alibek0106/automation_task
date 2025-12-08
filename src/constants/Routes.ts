@@ -11,6 +11,5 @@ export const Routes = {
     },
     API: {
         CREATE_ACCOUNT: '/api/createAccount',
-        VERIFY_LOGIN: '/api/verifyLogin',
     },
 } as const;

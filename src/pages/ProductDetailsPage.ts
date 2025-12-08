@@ -19,10 +19,6 @@ export class ProductDetailsPage extends BasePage {
         this.productInfo = page.locator('.product-information').describe('Product Information');
     }
 
-    async getProductNameText(): Promise<string> {
-        return await this.productName.innerText();
-    }
-
     async setQuantity(quantity: number) {
         await this.quantityInput.fill(String(quantity));
     }

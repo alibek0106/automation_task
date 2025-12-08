@@ -11,11 +11,11 @@ export type StepsFixtures = {
 };
 
 export const stepsFixtures = {
-    authSteps: async ({ page, context, homePage, loginPage }: PageFixtures & { page: Page, context: BrowserContext }, use: (s: AuthSteps) => Promise<void>) => {
-        await use(new AuthSteps(page, homePage, loginPage, context));
+    authSteps: async ({ page, homePage, loginPage }: PageFixtures & { page: Page }, use: (s: AuthSteps) => Promise<void>) => {
+        await use(new AuthSteps(page, homePage, loginPage));
     },
     registrationSteps: async ({ page, homePage, loginPage, signupPage, accountCreatedPage }:
-        PageFixtures & { page: Page }, use: any) => {
+        PageFixtures & { page: Page }, use: (r: RegistrationSteps) => Promise<void>) => {
         await use(new RegistrationSteps(page, homePage, loginPage, signupPage, accountCreatedPage));
     },
     cartSteps: async ({ productsPage, productDetailsPage }: PageFixtures, use: (s: CartSteps) => Promise<void>) => {
