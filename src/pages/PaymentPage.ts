@@ -2,7 +2,7 @@ import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class PaymentPage extends BasePage {
-  readonly paymentHeading: Locator;
+  readonly paymentHeading: Locator = this.page.getByRole('heading', { name: 'Payment' }).describe('Payment heading');
   readonly nameOnCardInput: Locator;
   readonly cardNumberInput: Locator;
   readonly cvcInput: Locator;
@@ -17,7 +17,6 @@ export class PaymentPage extends BasePage {
     super(page);
 
     // Payment Form - using name attributes for reliability
-    this.paymentHeading = page.getByRole('heading', { name: 'Payment' }).describe('Payment heading');
     this.nameOnCardInput = page.locator('input[name="name_on_card"]').describe('Name on card input');
     this.cardNumberInput = page.locator('input[name="card_number"]').describe('Card number input');
     this.cvcInput = page.locator('input[name="cvc"]').describe('CVC input');

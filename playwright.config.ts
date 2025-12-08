@@ -42,7 +42,7 @@ export default defineConfig({
             dependencies: ['setup'],
             use: {
                 ...devices['Desktop Chrome'],
-                // Storage state set per-worker via fixture
+                // Worker-specific storage state is loaded via auth.fixture.ts
             },
         },
     ],

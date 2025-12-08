@@ -1,4 +1,4 @@
-import { test, expect } from '../../src/fixtures';
+import { isolatedTest as test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 import { TestData } from '../../src/constants/TestData';
 
