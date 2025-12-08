@@ -20,25 +20,29 @@ export class CartSteps {
 
         // Verify we landed on the right page
         // We expect the heading to match the name we clicked
-        await expect(this.detailsPage.productName).toHaveText(productName);
+        await expect(this.detailsPage.productName, 'Product name does not match').toHaveText(productName);
 
-        await this.detailsPage.setQuantity(quantity);
-        await this.detailsPage.addToCart();
+        await test.step('Add to cart with specified quantity', async () => {
+            await this.detailsPage.setQuantity(quantity);
+            await this.detailsPage.addToCart();
 
-        await expect(this.detailsPage.continueShoppingBtn).toBeVisible();
-        await this.detailsPage.clickContinueShopping();
+            await expect(this.detailsPage.continueShoppingBtn, 'Continue shopping button is not visible').toBeVisible();
+            await this.detailsPage.clickContinueShopping();
+        })
     }
 
     /**
      * Adds a specific product by Name and navigates to cart
      */
     async addProductAndGoToCart(productName: string) {
-        await this.productsPage.goto();
-        await this.productsPage.viewProductByName(productName);
+        await test.step('Add a specific product by name and navigate to cart', async () => {
+            await this.productsPage.goto();
+            await this.productsPage.viewProductByName(productName);
 
-        await this.detailsPage.addToCart();
-        await expect(this.detailsPage.viewCartModalLink).toBeVisible();
-        await this.detailsPage.clickViewCartFromModal();
+            await this.detailsPage.addToCart();
+            await expect(this.detailsPage.viewCartModalLink).toBeVisible();
+            await this.detailsPage.clickViewCartFromModal();
+        })
     }
 
     /**
