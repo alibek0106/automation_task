@@ -5,9 +5,7 @@ import { UserService } from '../src/api/UserService';
 import fs from 'fs';
 import path from 'path';
 
-
-
-setup('authenticate workers', async ({ request, context }) => {
+setup('authenticate workers', async ({ page, request, context, homePage, loginPage }) => {
     // Get worker count from config (defaults to 4 if not numeric)
     const workerCount = typeof config.workers === 'number'
         ? config.workers
@@ -24,6 +22,12 @@ setup('authenticate workers', async ({ request, context }) => {
         // Create user via API
         await userService.createAccount(user);
 
+        // Login via UI to establish session
+        await homePage.goto();
+        await homePage.clickSignupLogin();
+        await loginPage.login(user.email, user.password);
+        await expect(homePage.loggedInText, `Worker ${workerIndex} should be logged in`).toBeVisible();
+
         // Save storage state and user data for this worker
         await context.storageState({ path: storageStatePath });
         fs.writeFileSync(userDataPath, JSON.stringify(user, null, 2));
@@ -36,4 +40,4 @@ setup('authenticate workers', async ({ request, context }) => {
 });
 
 // Increase timeout for setup - creating multiple accounts takes time
-setup.setTimeout(120000); // 2 minutes for creating N accounts
+setup.setTimeout(120000); 

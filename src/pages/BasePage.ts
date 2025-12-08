@@ -19,12 +19,17 @@ export abstract class BasePage {
         this.subscriptionSuccessMsg = page.getByText('You have been successfully subscribed!').describe('Subscription success message');
     }
 
-    /**
-     * Navigate to a specific URL
-     */
-    async goto(url: string): Promise<void> {
-        await this.page.goto(url);
-    }
+  /**
+   * Navigate to a specific URL
+   * Using 'load' with extended timeout to ensure all resources load
+   * before interactions, preventing element-not-found errors
+   */
+  async goto(url: string): Promise<void> {
+    await this.page.goto(url, {
+      waitUntil: 'load',
+      timeout: 60000 // 60 seconds timeout for slow-loading pages
+    });
+  }
 
     /**
      * Get current page URL
@@ -33,12 +38,13 @@ export abstract class BasePage {
         return this.page.url();
     }
 
-    /**
-     * Navigate back in history
-     */
-    async goBack(): Promise<void> {
-        await this.page.goBack();
-    }
+  /**
+   * Navigate back in history
+   * Waits for network to be idle to ensure page state is fully updated
+   */
+  async goBack(): Promise<void> {
+    await this.page.goBack({ waitUntil: 'networkidle' });
+  }
 
     /**
      * Wait for the page to load completely

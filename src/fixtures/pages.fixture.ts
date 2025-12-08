@@ -3,6 +3,7 @@ import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { SignupPage } from '../pages/SignupPage';
 import { AccountCreatedPage } from '../pages/AccountCreatedPage';
+import { AccountDeletedPage } from '../pages/AccountDeletedPage';
 import { ProductsPage } from '../pages/ProductsPage';
 import { ProductDetailsPage } from '../pages/ProductDetailsPage';
 import { CartPage } from '../pages/CartPage';
@@ -16,6 +17,7 @@ export type PageFixtures = {
   loginPage: LoginPage;
   signupPage: SignupPage;
   accountCreatedPage: AccountCreatedPage;
+  accountDeletedPage: AccountDeletedPage;
   productsPage: ProductsPage;
   productDetailsPage: ProductDetailsPage;
   cartPage: CartPage;
@@ -37,6 +39,9 @@ export const pageFixtures = {
   },
   accountCreatedPage: async ({ page }: { page: Page }, use: any) => {
     await use(new AccountCreatedPage(page));
+  },
+  accountDeletedPage: async ({ page }: { page: Page }, use: any) => {
+    await use(new AccountDeletedPage(page));
   },
   productsPage: async ({ page }: { page: Page }, use: (p: ProductsPage) => Promise<void>) => {
     await use(new ProductsPage(page));

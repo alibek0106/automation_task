@@ -3,7 +3,6 @@ import { PRODUCT_NAMES } from '../../src/constants/ProductData';
 import { Routes } from '../../src/constants/Routes';
 
 test.describe('TC03: Add Multiple Products by Name', { tag: '@Abdykarimov' }, () => {
-
     test('should verify quantities, prices, and totals', async ({
         cartSteps,
         cartPage,
