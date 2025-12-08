@@ -41,7 +41,7 @@ test.describe('TC04: Remove Product from Cart', { tag: '@Abdykarimov' }, () => {
         // 4. Act: Empty Cart
         await test.step('Empty the cart', async () => {
             await cartPage.removeProduct(productToKeep);
-            await expect(cartPage.emptyCartMessage).toBeVisible();
+            await expect(cartPage.emptyCartMessage).toHaveText('Cart is empty!');
         });
     });
 });

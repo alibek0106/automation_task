@@ -1,9 +1,11 @@
-import { test as setup, expect } from '../src/fixtures';
+import { test as setup } from '../src/fixtures';
 import config from '../playwright.config';
 import { DataFactory } from '../src/utils/DataFactory';
 import { UserService } from '../src/api/UserService';
 import fs from 'fs';
 import path from 'path';
+
+
 
 setup('authenticate workers', async ({ request, context }) => {
     // Get worker count from config (defaults to 4 if not numeric)
@@ -21,10 +23,10 @@ setup('authenticate workers', async ({ request, context }) => {
 
         // Create user via API
         await userService.createAccount(user);
+
+        // Save storage state and user data for this worker
         await context.storageState({ path: storageStatePath });
         fs.writeFileSync(userDataPath, JSON.stringify(user, null, 2));
-
-        console.log(`✓ Worker ${workerIndex}: ${user.email}`);
 
         // Clear session for next worker (if not last iteration)
         if (workerIndex < workerCount - 1) {
