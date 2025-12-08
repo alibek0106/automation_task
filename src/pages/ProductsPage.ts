@@ -68,6 +68,8 @@ export class ProductsPage extends BasePage {
   async searchProduct(productName: string) {
     await this.searchInput.fill(productName);
     await this.searchButton.click();
+    // Wait for search results to load by ensuring the heading is present
+    await this.searchedProductsHeading.waitFor({ state: 'visible', timeout: 10000 });
   }
 
   async verifySearchedProductsVisible() {
