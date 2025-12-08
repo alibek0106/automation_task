@@ -11,5 +11,6 @@ export const Routes = {
     },
     API: {
         CREATE_ACCOUNT: '/api/createAccount',
+        DELETE_ACCOUNT: '/api/deleteAccount',
     },
 } as const;
