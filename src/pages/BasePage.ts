@@ -32,9 +32,10 @@ export abstract class BasePage {
 
   /**
    * Navigate back in history
+   * Waits for network to be idle to ensure page state is fully updated
    */
   async goBack(): Promise<void> {
-    await this.page.goBack();
+    await this.page.goBack({ waitUntil: 'networkidle' });
   }
 
   /**

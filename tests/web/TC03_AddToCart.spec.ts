@@ -3,7 +3,6 @@ import { isolatedTest as test, expect } from '../../src/fixtures';
 import { PRODUCT_NAMES } from '../../src/constants/ProductData';
 
 test.describe('TC03: Add Multiple Products by Name', { tag: '@Abdykarimov' }, () => {
-
     test('should verify quantities, prices, and totals', async ({
         cartSteps,
         cartPage,

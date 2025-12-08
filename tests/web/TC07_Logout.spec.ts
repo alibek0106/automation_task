@@ -3,23 +3,19 @@ import { test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 
 test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
-
   test('should logout successfully', async ({
     homePage,
     loginPage,
-    signupPage,
+    registrationSteps,
     accountCreatedPage,
   }) => {
     const user = DataFactory.generateUser();
 
     await test.step('Register and login new user', async () => {
-      await homePage.goto();
-      await homePage.clickSignupLogin();
-      await loginPage.signup(user.name, user.email);
-      await signupPage.fillAccountDetails(user);
-      await signupPage.submit();
+      await registrationSteps.startRegistration(user);
+      await registrationSteps.fillAccountDetails(user);
       await expect(accountCreatedPage.successMessage).toBeVisible();
-      await accountCreatedPage.clickContinue();
+      await registrationSteps.finishAccountCreation();
       await expect(homePage.loggedInText).toContainText(user.name);
       await expect(homePage.logoutLink).toBeVisible();
     });
@@ -33,8 +29,7 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
 
   test('should terminate session after logout', async ({
     homePage,
-    loginPage,
-    signupPage,
+    registrationSteps,
     accountCreatedPage,
     productsPage,
     cartPage,
@@ -42,13 +37,10 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
     const user = DataFactory.generateUser();
 
     await test.step('Register and login new user', async () => {
-      await homePage.goto();
-      await homePage.clickSignupLogin();
-      await loginPage.signup(user.name, user.email);
-      await signupPage.fillAccountDetails(user);
-      await signupPage.submit();
+      await registrationSteps.startRegistration(user);
+      await registrationSteps.fillAccountDetails(user);
       await expect(accountCreatedPage.successMessage).toBeVisible();
-      await accountCreatedPage.clickContinue();
+      await registrationSteps.finishAccountCreation();
       await expect(homePage.loggedInText).toContainText(user.name);
     });
 
@@ -69,21 +61,17 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
 
   test('should require login for protected pages after logout', async ({
     homePage,
-    loginPage,
-    signupPage,
+    registrationSteps,
     accountCreatedPage,
     paymentPage,
   }) => {
     const user = DataFactory.generateUser();
 
     await test.step('Register and login new user', async () => {
-      await homePage.goto();
-      await homePage.clickSignupLogin();
-      await loginPage.signup(user.name, user.email);
-      await signupPage.fillAccountDetails(user);
-      await signupPage.submit();
+      await registrationSteps.startRegistration(user);
+      await registrationSteps.fillAccountDetails(user);
       await expect(accountCreatedPage.successMessage).toBeVisible();
-      await accountCreatedPage.clickContinue();
+      await registrationSteps.finishAccountCreation();
       await expect(homePage.loggedInText).toContainText(user.name);
     });
 
@@ -102,21 +90,17 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
 
   test('should not restore session with back button', async ({
     homePage,
-    loginPage,
-    signupPage,
+    registrationSteps,
     accountCreatedPage,
     productsPage,
   }) => {
     const user = DataFactory.generateUser();
 
     await test.step('Register and login new user', async () => {
-      await homePage.goto();
-      await homePage.clickSignupLogin();
-      await loginPage.signup(user.name, user.email);
-      await signupPage.fillAccountDetails(user);
-      await signupPage.submit();
+      await registrationSteps.startRegistration(user);
+      await registrationSteps.fillAccountDetails(user);
       await expect(accountCreatedPage.successMessage).toBeVisible();
-      await accountCreatedPage.clickContinue();
+      await registrationSteps.finishAccountCreation();
       await expect(homePage.loggedInText).toContainText(user.name);
     });
 
@@ -135,6 +119,8 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
 
     await test.step('Verify back button does not restore session', async () => {
       await homePage.goBack();
+      // Reload the page to get fresh content instead of cached version
+      await homePage.page.reload({ waitUntil: 'networkidle' });
       await homePage.verifyLoggedInNotVisible();
       await homePage.goto();
       await homePage.verifyLoggedInNotVisible();

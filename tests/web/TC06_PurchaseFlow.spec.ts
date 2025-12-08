@@ -3,12 +3,10 @@ import { DataFactory } from '../../src/utils/DataFactory';
 import { TestData } from '../../src/constants/TestData';
 
 test.describe('TC06: Complete End-to-End Purchase Flow', { tag: '@meladze' }, () => {
-
   test('should complete end-to-end purchase flow', async ({
     page,
     homePage,
-    loginPage,
-    signupPage,
+    registrationSteps,
     accountCreatedPage,
     productsPage,
     cartPage,
@@ -18,13 +16,10 @@ test.describe('TC06: Complete End-to-End Purchase Flow', { tag: '@meladze' }, ()
     const user = DataFactory.generateUser();
 
     await test.step('Register new user', async () => {
-      await homePage.goto();
-      await homePage.clickSignupLogin();
-      await loginPage.signup(user.name, user.email);
-      await signupPage.fillAccountDetails(user);
-      await signupPage.submit();
+      await registrationSteps.startRegistration(user);
+      await registrationSteps.fillAccountDetails(user);
       await expect(accountCreatedPage.successMessage).toBeVisible();
-      await accountCreatedPage.clickContinue();
+      await registrationSteps.finishAccountCreation();
       await expect(homePage.loggedInText).toContainText(user.name);
     });
 

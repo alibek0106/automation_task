@@ -2,8 +2,6 @@ import { isolatedTest as test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 
 test.describe('TC02: Login with Registered User', { tag: '@Abdykarimov' }, () => {
-    // test.use({ storageState: { cookies: [], origins: [] } });    
-
     const user = DataFactory.generateUser();
 
     test.beforeEach(async ({ userService }) => {

@@ -2,7 +2,6 @@ import { test, expect } from '../../src/fixtures';
 import { TestData } from '../../src/constants/TestData';
 
 test.describe('TC05: Search Product and Verify Results', { tag: '@meladze' }, () => {
-
   test('should search for products and verify results', async ({
     homePage,
     productsPage,

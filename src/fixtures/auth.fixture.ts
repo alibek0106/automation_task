@@ -28,11 +28,9 @@ export const authFixture = {
             }
 
             if (maxAvailableWorker >= 0) {
-                // Use modulo to wrap around to existing workers
                 const workerCount = maxAvailableWorker + 1;
                 actualWorkerIndex = workerInfo.workerIndex % workerCount;
                 userDataPath = getWorkerUserData(actualWorkerIndex);
-                console.log(`Worker ${workerInfo.workerIndex}: Reusing user data from worker ${actualWorkerIndex}`);
             } else {
                 throw new Error(
                     `Worker ${workerInfo.workerIndex} user data not found at ${userDataPath}. ` +
