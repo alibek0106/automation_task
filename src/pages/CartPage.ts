@@ -1,6 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
-import { CartItem } from '../models/ProductModels';
+import { CartItem, CartItemSchema } from '../models/ProductModels';
 
 export class CartPage extends BasePage {
     readonly emptyCartMessage: Locator;
@@ -59,7 +59,8 @@ export class CartPage extends BasePage {
 
     async getProductByName(productName: string): Promise<CartItem> {
         const row = this.getProductRow(productName);
-        return await this.extractRowData(row);
+        const rawData = await this.extractRowData(row);
+        return CartItemSchema.parse(rawData);
     }
 
     /**

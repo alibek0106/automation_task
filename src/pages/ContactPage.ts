@@ -93,14 +93,6 @@ export class ContactPage extends BasePage {
   }
 
   /**
-   * Verify file is attached successfully
-   */
-  async verifyFileAttached() {
-    const fileName = await this.fileUploadInput.inputValue();
-    expect(fileName, 'File should be attached').toBeTruthy();
-  }
-
-  /**
    * Click submit button and handle alert dialog
    */
   async clickSubmit() {
@@ -144,35 +136,5 @@ export class ContactPage extends BasePage {
       this.successMessage,
       `Success message should contain: ${expectedMessage}`
     ).toContainText(expectedMessage);
-  }
-
-  /**
-   * Clear the contact form
-   */
-  async clearForm() {
-    await this.nameInput.clear();
-    await this.emailInput.clear();
-    await this.subjectInput.clear();
-    await this.messageTextarea.clear();
-  }
-
-  /**
-   * Verify form is cleared or redirected after submission
-   */
-  async verifyFormClearedOrRedirected() {
-    // Check if form is cleared OR if we're on a different page
-    const currentUrl = this.getUrl();
-    const isContactPage = currentUrl.includes(Routes.WEB.CONTACT_US);
-
-    if (isContactPage) {
-      // If still on contact page, verify fields are empty
-      const nameValue = await this.nameInput.inputValue();
-      const emailValue = await this.emailInput.inputValue();
-
-      expect(
-        nameValue === '' || emailValue === '',
-        'Form should be cleared after successful submission'
-      ).toBe(true);
-    }
   }
 }
