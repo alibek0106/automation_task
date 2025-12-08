@@ -87,13 +87,6 @@ export const TestData = {
             subject: 'Test Inquiry - Automated',
             message: 'This is an automated test message to verify the contact form functionality. The message contains more than 50 characters as required for testing purposes.',
         },
-        /** Invalid email formats for validation testing */
-        INVALID_EMAILS: [
-            'invalidemail',
-            'test@',
-            '@test.com',
-            'test@.com',
-        ],
         /** Expected success message */
         SUCCESS_MESSAGE: 'Success! Your details have been submitted successfully.',
     },

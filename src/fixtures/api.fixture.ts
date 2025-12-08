@@ -6,7 +6,7 @@ export type ApiFixtures = {
 };
 
 export const apiFixtures = {
-    userService: async ({ request }: { request: APIRequestContext }, use: any) => {
+    userService: async ({ request }: { request: APIRequestContext }, use: (s: UserService) => Promise<void>) => {
         await use(new UserService(request));
     },
 };

@@ -5,7 +5,6 @@ import { BasePage } from './BasePage';
 export class HomePage extends BasePage {
   readonly signupLoginLink: Locator;
   readonly loggedInText: Locator;
-  readonly deleteAccountLink: Locator;
   readonly logoutLink: Locator;
   readonly subscriptionText: Locator;
   readonly fullFledgedText: Locator;
@@ -15,12 +14,12 @@ export class HomePage extends BasePage {
   readonly recommendedProductItems: Locator;
   readonly viewCartModal: Locator;
   readonly viewCartButton: Locator;
+  readonly deleteAccountLink: Locator;
 
   constructor(page: Page) {
     super(page);
     this.signupLoginLink = page.getByRole('link', { name: 'Signup / Login' }).describe('Signup / Login link');
     this.loggedInText = page.locator('li').filter({ hasText: 'Logged in as' }).describe('Logged in text');
-    this.deleteAccountLink = page.getByRole('link', { name: 'Delete Account' }).describe('Delete Account link');
     this.logoutLink = page.getByRole('link', { name: 'Logout' }).describe('Logout link');
     this.subscriptionText = page.getByRole('heading', { name: 'Subscription' }).describe('Subscription heading');
     this.fullFledgedText = page.getByText('Full-Fledged practice website for Automation Engineers').first().describe('Full-Fledged text');
@@ -30,6 +29,7 @@ export class HomePage extends BasePage {
     this.recommendedProductItems = this.recommendedItemsSection.locator('.product-image-wrapper').describe('Recommended product items');
     this.viewCartModal = page.locator('.modal-content').describe('View cart modal');
     this.viewCartButton = this.viewCartModal.getByRole('link', { name: /view cart/i }).describe('View cart button');
+    this.deleteAccountLink = page.getByRole('link', { name: ' Delete Account' }).describe('Delete Account link');
   }
 
   async goto() {
