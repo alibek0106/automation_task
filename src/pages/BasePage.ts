@@ -5,38 +5,33 @@ import { Page, Locator } from '@playwright/test';
  * Provides common page reference and navigation
  */
 export abstract class BasePage {
-    readonly page: Page;
-    readonly subscriptionHeading: Locator;
-    readonly subscriptionEmailInput: Locator;
-    readonly subscriptionSubmitBtn: Locator;
-    readonly subscriptionSuccessMsg: Locator;
+  readonly page: Page;
+  readonly subscriptionHeading: Locator;
+  readonly subscriptionEmailInput: Locator;
+  readonly subscriptionSubmitBtn: Locator;
+  readonly subscriptionSuccessMsg: Locator;
 
-    constructor(page: Page) {
-        this.page = page;
-        this.subscriptionHeading = page.getByRole('heading', { name: 'Subscription', level: 2 }).describe('Subscribtion heading');
-        this.subscriptionEmailInput = page.getByPlaceholder('Your email address').describe('Email Input Field');
-        this.subscriptionSubmitBtn = page.locator('#subscribe').describe('Subscribe button');
-        this.subscriptionSuccessMsg = page.getByText('You have been successfully subscribed!').describe('Subscription success message');
-    }
+  constructor(page: Page) {
+    this.page = page;
+    this.subscriptionHeading = page.getByRole('heading', { name: 'Subscription', level: 2 }).describe('Subscribtion heading');
+    this.subscriptionEmailInput = page.getByPlaceholder('Your email address').describe('Email Input Field');
+    this.subscriptionSubmitBtn = page.locator('#subscribe').describe('Subscribe button');
+    this.subscriptionSuccessMsg = page.getByText('You have been successfully subscribed!').describe('Subscription success message');
+  }
 
   /**
    * Navigate to a specific URL
-   * Using 'load' with extended timeout to ensure all resources load
-   * before interactions, preventing element-not-found errors
    */
   async goto(url: string): Promise<void> {
-    await this.page.goto(url, {
-      waitUntil: 'load',
-      timeout: 60000 // 60 seconds timeout for slow-loading pages
-    });
+    await this.page.goto(url);
   }
 
-    /**
-     * Get current page URL
-     */
-    getUrl(): string {
-        return this.page.url();
-    }
+  /**
+   * Get current page URL
+   */
+  getUrl(): string {
+    return this.page.url();
+  }
 
   /**
    * Navigate back in history
@@ -46,16 +41,16 @@ export abstract class BasePage {
     await this.page.goBack({ waitUntil: 'networkidle' });
   }
 
-    /**
-     * Wait for the page to load completely
-     */
-    async waitForLoadState(state: 'load' | 'domcontentloaded' | 'networkidle' = 'load'): Promise<void> {
-        await this.page.waitForLoadState(state);
-    }
+  /**
+   * Wait for the page to load completely
+   */
+  async waitForLoadState(state: 'load' | 'domcontentloaded' | 'networkidle' = 'load'): Promise<void> {
+    await this.page.waitForLoadState(state);
+  }
 
-    async performSubscription(email: string) {
-        await this.subscriptionHeading.scrollIntoViewIfNeeded();
-        await this.subscriptionEmailInput.fill(email);
-        await this.subscriptionSubmitBtn.click();
-    }
+  async performSubscription(email: string) {
+    await this.subscriptionHeading.scrollIntoViewIfNeeded();
+    await this.subscriptionEmailInput.fill(email);
+    await this.subscriptionSubmitBtn.click();
+  }
 }
