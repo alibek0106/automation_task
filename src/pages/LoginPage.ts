@@ -10,6 +10,7 @@ export class LoginPage extends BasePage {
     readonly loginPasswordInput: Locator;
     readonly loginBtn: Locator;
     readonly loginHeader: Locator;
+    readonly errorMsg: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -21,6 +22,7 @@ export class LoginPage extends BasePage {
         this.loginPasswordInput = page.locator('[data-qa="login-password"]').describe('Login password input');
         this.loginBtn = page.locator('[data-qa="login-button"]').describe('Login button');
         this.loginHeader = page.getByRole('heading', { name: 'Login to your account' }).describe('Login Header');
+        this.errorMsg = page.locator('form[action="/login"] p').describe('Invalid login error message');
     }
 
     async signup(name: string, email: string) {
