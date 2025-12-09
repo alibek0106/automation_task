@@ -1,5 +1,5 @@
 import { Routes } from '../../src/constants/Routes';
-import { test, expect } from '../../src/fixtures';
+import { isolatedTest as test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 
 test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
@@ -120,7 +120,8 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
     await test.step('Verify back button does not restore session', async () => {
       await homePage.goBack();
       // Reload the page to get fresh content instead of cached version
-      await homePage.page.reload({ waitUntil: 'networkidle' });
+      // Using domcontentloaded instead of networkidle for reliability
+      await homePage.page.reload({ waitUntil: 'domcontentloaded' });
       await homePage.verifyLoggedInNotVisible();
       await homePage.goto();
       await homePage.verifyLoggedInNotVisible();

@@ -1,10 +1,9 @@
-import { test, expect } from '../../src/fixtures';
+import { isolatedTest as test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 import { PRODUCT_NAMES } from '../../src/constants/ProductData';
 import { Routes } from '../../src/constants/Routes';
 
 test.describe('TC14: Place Order: Register while Checkout', { tag: '@Abdykarimov' }, () => {
-    test.use({ storageState: { cookies: [], origins: [] } });
 
     test('User registration during checkout and delete account after successfully placing order', async ({
         page,

@@ -35,10 +35,10 @@ export abstract class BasePage {
 
   /**
    * Navigate back in history
-   * Waits for network to be idle to ensure page state is fully updated
+   * Waits for DOM to be ready after navigation
    */
   async goBack(): Promise<void> {
-    await this.page.goBack({ waitUntil: 'networkidle' });
+    await this.page.goBack({ waitUntil: 'domcontentloaded' });
   }
 
   /**
