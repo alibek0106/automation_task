@@ -3,20 +3,17 @@ import { BasePage } from './BasePage';
 import { CartItem, CartItemSchema } from '../models/ProductModels';
 
 export class CartPage extends BasePage {
-    readonly emptyCartMessage: Locator;
-    readonly cartTable: Locator;
-    readonly proceedToCheckoutBtn: Locator;
-    readonly checkoutModalRegisterLoginLink: Locator;
+    readonly emptyCartMessage: Locator = this.page.getByText('Cart is empty!').describe('Empty Cart Message');
+    readonly cartTable: Locator = this.page
+        .getByRole('table')
+        .filter({ hasText: 'Item' })
+        .filter({ hasText: 'Quantity' })
+        .describe('Cart Table');
+    readonly proceedToCheckoutBtn: Locator = this.page.getByText('Proceed To Checkout').describe('Proceed To Checkout Button');
+    readonly checkoutModalRegisterLoginLink: Locator = this.page.getByRole('link', { name: 'Register / Login' }).describe('Checkout Modal Register/Login Link');
 
     constructor(page: Page) {
         super(page);
-        this.emptyCartMessage = page.getByText('Cart is empty!').describe('Empty Cart Message');
-        this.cartTable = page
-            .getByRole('table')
-            .filter({ hasText: 'Item' })
-            .filter({ hasText: 'Quantity' });
-        this.proceedToCheckoutBtn = page.getByText('Proceed To Checkout').describe('Proceed To Checkout Button');
-        this.checkoutModalRegisterLoginLink = page.getByRole('link', { name: 'Register / Login' });
     }
 
     private getAllRows(): Locator {

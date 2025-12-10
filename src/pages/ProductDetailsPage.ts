@@ -2,21 +2,15 @@ import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class ProductDetailsPage extends BasePage {
-    readonly quantityInput: Locator;
-    readonly addToCartBtn: Locator;
-    readonly productName: Locator;
-    readonly viewCartModalLink: Locator;
-    readonly continueShoppingBtn: Locator;
-    readonly productInfo: Locator;
+    readonly quantityInput: Locator = this.page.getByRole('spinbutton').describe('Quantity input');
+    readonly addToCartBtn: Locator = this.page.getByRole('button', { name: 'Add to cart' }).filter({ hasNotText: /Category|Brands|Subscription/ }).describe('Add to cart button');
+    readonly productName: Locator = this.page.getByRole('heading', { level: 2 }).filter({ hasNotText: /Category|Brands|Subscription/ }).describe('Product name');
+    readonly viewCartModalLink: Locator = this.page.getByRole('link', { name: 'View Cart' }).filter({ hasText: 'View Cart' }).describe('View Cart Modal Link');
+    readonly continueShoppingBtn: Locator = this.page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping button');
+    readonly productInfo: Locator = this.page.locator('.product-information').describe('Product Information');
 
     constructor(page: Page) {
         super(page);
-        this.quantityInput = page.getByRole('spinbutton').describe('Quantity input');
-        this.addToCartBtn = page.getByRole('button', { name: 'Add to cart' }).filter({ hasNotText: /Category|Brands|Subscription/ }).describe('Add to cart button');
-        this.productName = page.getByRole('heading', { level: 2 }).filter({ hasNotText: /Category|Brands|Subscription/ }).describe('Product name');
-        this.viewCartModalLink = page.getByRole('link', { name: 'View Cart' }).filter({ hasText: 'View Cart' }).describe('View Cart Modal Link');
-        this.continueShoppingBtn = page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping button');
-        this.productInfo = page.locator('.product-information').describe('Product Information');
     }
 
     async getProductNameText(): Promise<string> {

@@ -3,19 +3,14 @@ import { BasePage } from './BasePage';
 import { User } from '../models/UserModels';
 
 export class CheckoutPage extends BasePage {
-  readonly deliveryAddressSection: Locator;
-  readonly billingAddressSection: Locator;
-  readonly orderReviewTable: Locator;
-  readonly commentTextarea: Locator;
-  readonly placeOrderButton: Locator;
+  readonly deliveryAddressSection: Locator = this.page.locator('#address_delivery').describe('Delivery address section');
+  readonly billingAddressSection: Locator = this.page.locator('#address_invoice').describe('Billing address section');
+  readonly orderReviewTable: Locator = this.page.locator('table.table-condensed').describe('Order review table');
+  readonly commentTextarea: Locator = this.page.locator('textarea[name="message"]').describe('Comment textarea');
+  readonly placeOrderButton: Locator = this.page.getByRole('link', { name: 'Place Order' }).describe('Place order button');
 
   constructor(page: Page) {
     super(page);
-    this.deliveryAddressSection = page.locator('#address_delivery').describe('Delivery address section');
-    this.billingAddressSection = page.locator('#address_invoice').describe('Billing address section');
-    this.orderReviewTable = page.locator('table.table-condensed').describe('Order review table');
-    this.commentTextarea = page.locator('textarea[name="message"]').describe('Comment textarea');
-    this.placeOrderButton = page.getByRole('link', { name: 'Place Order' }).describe('Place order button');
   }
 
   async verifyCheckoutPageVisible() {

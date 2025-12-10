@@ -13,10 +13,10 @@ export abstract class BasePage {
 
     constructor(page: Page) {
         this.page = page;
-        this.subscriptionHeading = page.getByRole('heading', { name: 'Subscription', level: 2 }).describe('Subscribtion heading');
-        this.subscriptionEmailInput = page.getByPlaceholder('Your email address').describe('Email Input Field');
-        this.subscriptionSubmitBtn = page.locator('#subscribe').describe('Subscribe button');
-        this.subscriptionSuccessMsg = page.getByText('You have been successfully subscribed!').describe('Subscription success message');
+        this.subscriptionHeading = this.page.getByRole('heading', { name: 'Subscription', level: 2 }).describe('Subscribtion heading');
+        this.subscriptionEmailInput = this.page.getByPlaceholder('Your email address').describe('Email Input Field');
+        this.subscriptionSubmitBtn = this.page.locator('#subscribe').describe('Subscribe button');
+        this.subscriptionSuccessMsg = this.page.getByText('You have been successfully subscribed!').describe('Subscription success message');
     }
 
   /**
