@@ -7,10 +7,11 @@ export class AccountDeletedPage extends BasePage {
   readonly deletedHeader: Locator;
 
   constructor(page: Page) {
-    super(page);
-    this.deletedHeader = page.getByRole('heading', { name: 'Account Deleted!' }).describe('Deleted page header');
+    const uniqueElement = page.getByRole('heading', { name: 'Account Deleted!' }).describe('Deleted page header');
+    super(page, uniqueElement);
+    this.deletedHeader = uniqueElement;
     this.deletedMessage = page.getByText('Account Deleted!').describe('Account deleted message');
-    this.continueBtn = page.locator('[data-qa="continue-button"]').describe('Continue button');
+    this.continueBtn = page.getByTestId('continue-button').describe('Continue button');
   }
 
   async clickContinue() {

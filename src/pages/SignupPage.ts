@@ -25,27 +25,28 @@ export class SignupPage extends BasePage {
     readonly accountInfoHeading: Locator;
 
     constructor(page: Page) {
-        super(page);
-        this.accountInfoHeading = page.getByText('Enter Account Information').describe('Account Info Heading');
+        const uniqueElement = page.getByText('Enter Account Information').describe('Account Info Heading');
+        super(page, uniqueElement);
+        this.accountInfoHeading = uniqueElement;
         this.titleMr = page.getByLabel('Mr.').describe('Title Mr');
         this.titleMrs = page.getByLabel('Mrs.').describe('Title Mrs');
-        this.password = page.locator('[data-qa="password"]').describe('Password input');
-        this.daySelect = page.locator('[data-qa="days"]').describe('Day select');
-        this.monthSelect = page.locator('[data-qa="months"]').describe('Month select');
-        this.yearSelect = page.locator('[data-qa="years"]').describe('Year select');
+        this.password = page.getByTestId('password').describe('Password input');
+        this.daySelect = page.getByTestId('days').describe('Day select');
+        this.monthSelect = page.getByTestId('months').describe('Month select');
+        this.yearSelect = page.getByTestId('years').describe('Year select');
         this.newsletterCheck = page.getByLabel('Sign up for our newsletter!').describe('Newsletter check');
         this.offersCheck = page.getByLabel('Receive special offers from our partners!').describe('Offers check');
-        this.firstName = page.locator('[data-qa="first_name"]').describe('First name input');
-        this.lastName = page.locator('[data-qa="last_name"]').describe('Last name input');
-        this.company = page.locator('[data-qa="company"]').describe('Company input');
-        this.address1 = page.locator('[data-qa="address"]').describe('Address input');
-        this.address2 = page.locator('[data-qa="address2"]').describe('Secondary Address input');
-        this.country = page.locator('[data-qa="country"]').describe('Country select');
-        this.state = page.locator('[data-qa="state"]').describe('State input');
-        this.city = page.locator('[data-qa="city"]').describe('City input');
-        this.zipcode = page.locator('[data-qa="zipcode"]').describe('Zipcode input');
-        this.mobile = page.locator('[data-qa="mobile_number"]').describe('Mobile input');
-        this.createAccountBtn = page.locator('[data-qa="create-account"]').describe('Create account button');
+        this.firstName = page.getByTestId('first_name').describe('First name input');
+        this.lastName = page.getByTestId('last_name').describe('Last name input');
+        this.company = page.getByTestId('company').describe('Company input');
+        this.address1 = page.getByTestId('address').describe('Address input');
+        this.address2 = page.getByTestId('address2').describe('Secondary Address input');
+        this.country = page.getByTestId('country').describe('Country select');
+        this.state = page.getByTestId('state').describe('State input');
+        this.city = page.getByTestId('city').describe('City input');
+        this.zipcode = page.getByTestId('zipcode').describe('Zipcode input');
+        this.mobile = page.getByTestId('mobile_number').describe('Mobile input');
+        this.createAccountBtn = page.getByTestId('create-account').describe('Create account button');
     }
 
     async fillAccountDetails(user: User) {

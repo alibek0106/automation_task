@@ -28,7 +28,8 @@ test.describe('TC04: Remove Product from Cart', { tag: '@Abdykarimov' }, () => {
 
         // 3. Assert: Verify remaining state
         await test.step('Verify remaining product state', async () => {
-            expect(await cartPage.getCartCount(), 'Count should be 1').toBe(1);
+            const cartCount = await cartPage.getCartCount();
+            expect(cartCount, 'Count should be 1').toBe(1);
 
             const remainingItem = await cartPage.getProductByName(productToKeep);
             expect(remainingItem.name, 'Remaining item name should match').toBe(productToKeep);

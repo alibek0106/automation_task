@@ -27,7 +27,7 @@ test.describe('TC22: Add to cart from Recommended items', { tag: '@meladze' }, (
     await test.step('Click on Add To Cart on Recommended product', async () => {
       // Get the product name before adding to cart for verification
       productName = await homePage.getRecommendedProductName(0);
-      await expect(
+      expect(
         productName,
         'Product name should not be empty'
       ).toBeTruthy();

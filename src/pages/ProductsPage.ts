@@ -23,26 +23,17 @@ export class ProductsPage extends BasePage {
   readonly brandsSidebar: Locator;
 
   constructor(page: Page) {
-    super(page);
-
-    // Navigation
+    const uniqueElement = page.getByRole('heading', { name: 'All Products' }).describe('All Products Heading');
+    super(page, uniqueElement);
+    this.allProductsHeading = uniqueElement;
     this.productsNavLink = page.getByRole('link', { name: 'Products' }).describe('Products Navigation Link');
     this.continueShoppingBtn = page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping Button');
     this.viewCartLink = page.getByText(' Cart', { exact: true }).describe('View Cart Link');
-
-    // Headings - using role for better semantics
-    this.allProductsHeading = page.getByRole('heading', { name: 'All Products' }).describe('All Products Heading');
-    this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' }).describe('Searched Products Heading');
-
-    // Search
     this.searchInput = page.locator('input#search_product').describe('Search Input');
     this.searchButton = page.locator('button#submit_search').describe('Search Button');
-
-    // Products
+    this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' }).describe('Searched Products Heading');
     this.productCards = page.locator('.product-image-wrapper').describe('Product Cards');
     this.productItems = page.locator('.features_items .col-sm-4').describe('Product Items');
-
-    // Sidebar
     this.categorySidebar = page.locator('#accordian').describe('Category Sidebar');
     this.brandsSidebar = page.locator('.brands_products').describe('Brands Sidebar');
   }
@@ -110,7 +101,7 @@ export class ProductsPage extends BasePage {
 
   async verifyCategoryTitle(title: string) {
     const heading = this.page.locator('h2.title');
-    await expect(heading, 'Category title should contain expected text').toContainText(title, { ignoreCase: true });
+    expect(heading, 'Category title should contain expected text').toContainText(title, { ignoreCase: true });
   }
 
   async selectBrand(brandName: string) {
@@ -149,7 +140,7 @@ export class ProductsPage extends BasePage {
   }
 
   async getProductCount(): Promise<number> {
-    return await this.productItems.count();
+    return this.productItems.count();
   }
 
   async verifyProductCountGreaterThan(min: number) {

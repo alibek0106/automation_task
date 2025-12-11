@@ -42,7 +42,11 @@ export class CheckoutSteps {
 
     async enterPaymentAndConfirm(payment: PaymentDetails) {
         await test.step('Enter payment details and confirm', async () => {
-            await this.paymentPage.fillPaymentDetails(payment.nameOnCard, payment.cardNumber, payment.cvc, payment.expiryMonth, payment.expiryYear);
+            await this.paymentPage.fillNameOnCard(payment.nameOnCard);
+            await this.paymentPage.fillCardNumber(payment.cardNumber);
+            await this.paymentPage.fillCvc(payment.cvc);
+            await this.paymentPage.fillExpiryMonth(payment.expiryMonth);
+            await this.paymentPage.fillExpiryYear(payment.expiryYear);
             await this.paymentPage.clickPayAndConfirm();
             await expect(this.paymentPage.successMessage, 'Success message is not visible').toBeVisible();
         })

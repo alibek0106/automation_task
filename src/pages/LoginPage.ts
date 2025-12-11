@@ -12,14 +12,15 @@ export class LoginPage extends BasePage {
     readonly loginHeader: Locator;
 
     constructor(page: Page) {
-        super(page);
-        this.signupNameInput = page.locator('[data-qa="signup-name"]').describe('Signup name input');
-        this.signupEmailInput = page.locator('[data-qa="signup-email"]').describe('Signup email input');
-        this.signupBtn = page.locator('[data-qa="signup-button"]').describe('Signup button');
+        const uniqueElement = page.getByTestId('login-email').describe('Login email input');
+        super(page, uniqueElement);
+        this.loginEmailInput = uniqueElement;
+        this.signupNameInput = page.getByTestId('signup-name').describe('Signup name input');
+        this.signupEmailInput = page.getByTestId('signup-email').describe('Signup email input');
+        this.signupBtn = page.getByTestId('signup-button').describe('Signup button');
         this.newUserHeader = page.getByRole('heading', { name: 'New User Signup!' }).describe('New User Header');
-        this.loginEmailInput = page.locator('[data-qa="login-email"]').describe('Login email input');
-        this.loginPasswordInput = page.locator('[data-qa="login-password"]').describe('Login password input');
-        this.loginBtn = page.locator('[data-qa="login-button"]').describe('Login button');
+        this.loginPasswordInput = page.getByTestId('login-password').describe('Login password input');
+        this.loginBtn = page.getByTestId('login-button').describe('Login button');
         this.loginHeader = page.getByRole('heading', { name: 'Login to your account' }).describe('Login Header');
     }
 
@@ -33,10 +34,5 @@ export class LoginPage extends BasePage {
         await this.loginEmailInput.fill(email);
         await this.loginPasswordInput.fill(pass);
         await this.loginBtn.click();
-    }
-
-    async verifyLoginFormVisible() {
-        await expect(this.loginEmailInput, 'Login email input should be visible').toBeVisible();
-        await expect(this.loginPasswordInput, 'Login password input should be visible').toBeVisible();
     }
 }

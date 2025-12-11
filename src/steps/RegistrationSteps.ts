@@ -1,4 +1,4 @@
-import { Page, test } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { SignupPage } from '../pages/SignupPage';
@@ -7,7 +7,6 @@ import { User } from '../models/UserModels';
 
 export class RegistrationSteps {
     constructor(
-        private page: Page,
         private homePage: HomePage,
         private loginPage: LoginPage,
         private signupPage: SignupPage,
@@ -40,6 +39,26 @@ export class RegistrationSteps {
         await test.step(`Perform full registration flow for: ${user.name}`, async () => {
             await this.startRegistration(user);
             await this.fillAccountDetails(user);
+        });
+    }
+
+    async registerNewAccount(user: User) {
+        await test.step(`Register new account for ${user.name}`, async () => {
+            // 1. Fill details (using your existing method)
+            await this.performFullRegistration(user);
+
+            // 2. Verify Account Created (Moved from Test to Here)
+            await expect(this.createdPage.successMessage, 'Successfull account creation message should be visible')
+                .toBeVisible();
+            await expect(this.createdPage.successMessage, 'Successfull account creation message should have expected text')
+                .toHaveText('Account Created!');
+
+            // 3. Click Continue
+            await this.finishAccountCreation(); // Assuming this clicks the button
+
+            // 4. Verify Logged In (Moved from Test to Here)
+            await expect(this.homePage.loggedInText, 'User should be logged in')
+                .toContainText(user.name);
         });
     }
 }

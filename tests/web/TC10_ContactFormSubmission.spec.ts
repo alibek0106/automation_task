@@ -7,7 +7,8 @@ test.describe('TC10: Contact Form Submission with File Upload', { tag: '@meladze
   test('should submit contact form with all details including file upload', async ({
     homePage,
     contactPage,
-    authedUser
+    authedUser,
+    contactSteps
   }) => {
     const testFilePath = path.join(process.cwd(), 'tests/fixtures/test-upload.txt');
 
@@ -19,13 +20,11 @@ test.describe('TC10: Contact Form Submission with File Upload', { tag: '@meladze
       await contactPage.clickContactUsLink();
     });
 
-    await test.step('Verify GET IN TOUCH form is displayed', async () => {
-      await contactPage.verifyGetInTouchFormVisible();
-    });
+    // Verify GET IN TOUCH form is displayed
+    await contactSteps.verifyGetInTouchFormVisible();
 
-    await test.step('Verify all form fields are visible', async () => {
-      await contactPage.verifyAllFormFieldsVisible();
-    });
+    // Verify all form fields are visible
+    await contactSteps.verifyContactFormIsDisplayed();
 
     await test.step('Fill contact form with valid data and upload file', async () => {
       await contactPage.submitContactForm({

@@ -7,17 +7,22 @@ export class CartPage extends BasePage {
     readonly cartTable: Locator;
     readonly proceedToCheckoutBtn: Locator;
     readonly checkoutModalRegisterLoginLink: Locator;
+    readonly registerLoginModal: Locator;
 
     constructor(page: Page) {
-        super(page);
-        this.emptyCartMessage = page.getByText('Cart is empty!').describe('Empty Cart Message');
-        this.cartTable = page
+        const uniqueElement = page
             .getByRole('table')
             .filter({ hasText: 'Item' })
-            .filter({ hasText: 'Quantity' });
+            .filter({ hasText: 'Quantity' }).describe('Table of products in cart');
+        super(page, uniqueElement);
+        this.cartTable = uniqueElement;
+        this.emptyCartMessage = page.getByText('Cart is empty!').describe('Empty Cart Message');
         this.proceedToCheckoutBtn = page.getByText('Proceed To Checkout').describe('Proceed To Checkout Button');
-        this.checkoutModalRegisterLoginLink = page.getByRole('link', { name: 'Register / Login' });
+        this.checkoutModalRegisterLoginLink = page.getByRole('link', { name: 'Register / Login' }).describe('Checkout Modal Register Login Link');
+        this.registerLoginModal = page.locator('.modal-content').describe('Register Login Modal');
     }
+
+    private getDeleteButton = (row: Locator) => row.getByRole('cell').nth(5).locator('a');
 
     private getAllRows(): Locator {
         return this.cartTable
@@ -68,7 +73,7 @@ export class CartPage extends BasePage {
      */
     async getProductByIndex(index: number): Promise<CartItem> {
         const row = this.getRowByIndex(index);
-        return await this.extractRowData(row);
+        return this.extractRowData(row);
     }
 
     /**
@@ -76,14 +81,14 @@ export class CartPage extends BasePage {
      */
     async removeProduct(productName: string): Promise<void> {
         const row = this.getProductRow(productName);
-        // Find 'a' tag in the 6th cell (Index 5)
-        const deleteBtn = row.getByRole('cell').nth(5).locator('a');
-        await deleteBtn.click();
+        await this.getDeleteButton(row).click();
     }
 
     async getCartCount(): Promise<number> {
-        if (await this.emptyCartMessage.isVisible()) return 0;
-        return await this.getAllRows().count();
+        if (await this.emptyCartMessage.isVisible()) {
+            return 0;
+        }
+        return this.getAllRows().count();
     }
 
     /**
@@ -108,9 +113,8 @@ export class CartPage extends BasePage {
     }
 
     async verifyRegisterLoginModal() {
-        const registerLoginModal = this.page.locator('.modal-content');
-        await expect(registerLoginModal).toBeVisible({ timeout: 5000 });
-        const registerLink = registerLoginModal.getByRole('link', { name: /Register.*Login/i });
+        await expect(this.registerLoginModal).toBeVisible();
+        const registerLink = this.registerLoginModal.getByRole('link', { name: /Register.*Login/i });
         await expect(registerLink).toBeVisible();
     }
 

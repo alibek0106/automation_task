@@ -10,12 +10,13 @@ export class CheckoutPage extends BasePage {
   readonly placeOrderButton: Locator;
 
   constructor(page: Page) {
-    super(page);
+    const uniqueElement = page.getByRole('link', { name: 'Place Order' }).describe('Place order button');
+    super(page, uniqueElement);
+    this.placeOrderButton = uniqueElement;
     this.deliveryAddressSection = page.locator('#address_delivery').describe('Delivery address section');
     this.billingAddressSection = page.locator('#address_invoice').describe('Billing address section');
     this.orderReviewTable = page.locator('table.table-condensed').describe('Order review table');
     this.commentTextarea = page.locator('textarea[name="message"]').describe('Comment textarea');
-    this.placeOrderButton = page.getByRole('link', { name: 'Place Order' }).describe('Place order button');
   }
 
   async verifyCheckoutPageVisible() {
@@ -31,14 +32,14 @@ export class CheckoutPage extends BasePage {
     if (!text) throw new Error(`${type} address section is empty`);
 
     // Verify key fields from flattened User model
-    expect(text, 'Address section should contain user first name').toContain(user.firstName);
-    expect(text, 'Address section should contain user last name').toContain(user.lastName);
-    expect(text, 'Address section should contain user address1').toContain(user.address1);
-    expect(text, 'Address section should contain user city').toContain(user.city);
-    expect(text, 'Address section should contain user state').toContain(user.state);
-    expect(text, 'Address section should contain user zipcode').toContain(user.zipcode);
-    expect(text, 'Address section should contain user country').toContain(user.country);
-    expect(text, 'Address section should contain user mobile number').toContain(user.mobileNumber);
+    expect.soft(text, 'Address section should contain user first name').toContain(user.firstName);
+    expect.soft(text, 'Address section should contain user last name').toContain(user.lastName);
+    expect.soft(text, 'Address section should contain user address1').toContain(user.address1);
+    expect.soft(text, 'Address section should contain user city').toContain(user.city);
+    expect.soft(text, 'Address section should contain user state').toContain(user.state);
+    expect.soft(text, 'Address section should contain user zipcode').toContain(user.zipcode);
+    expect.soft(text, 'Address section should contain user country').toContain(user.country);
+    expect.soft(text, 'Address section should contain user mobile number').toContain(user.mobileNumber);
   }
 
   async enterComment(comment: string) {

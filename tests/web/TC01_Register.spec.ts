@@ -10,18 +10,14 @@ test.describe('TC01: User Registration', { tag: '@Abdykarimov' }, () => {
         const user = DataFactory.generateUser();
 
         // Step 1: Start
-        await test.step('Navigate to Signup and enter basic details', async () => {
-            await registrationSteps.startRegistration(user);
-        });
+        await registrationSteps.startRegistration(user);
 
         // Step 2: Form
-        await test.step('Fill detailed account information', async () => {
-            await registrationSteps.fillAccountDetails(user);
-        });
+        await registrationSteps.fillAccountDetails(user);
 
         // Step 3: Verify Creation
         await test.step('Verify account creation success', async () => {
-            await expect(accountCreatedPage.successMessage).toHaveText('Account Created!');
+            await expect(accountCreatedPage.successMessage, 'Success message should be visible and contain expected text').toHaveText('Account Created!');
         });
 
         // Step 4: Continue & Login Check

@@ -6,9 +6,10 @@ export class AccountCreatedPage extends BasePage {
     readonly continueBtn: Locator;
 
     constructor(page: Page) {
-        super(page);
+        const uniqueElement = page.getByTestId('continue-button').describe('Continue button');
+        super(page, uniqueElement);
+        this.continueBtn = uniqueElement;
         this.successMessage = page.getByText('Account Created!').describe('Success message');
-        this.continueBtn = page.locator('[data-qa="continue-button"]').describe('Continue button');
     }
 
     async clickContinue() {
