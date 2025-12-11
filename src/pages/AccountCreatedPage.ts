@@ -2,13 +2,15 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class AccountCreatedPage extends BasePage {
-    readonly successMessage: Locator;
-    readonly continueBtn: Locator;
+    // Helper arrow function to reduce duplication for test ID locators
+    private getByDataQa = (name: string, description: string): Locator =>
+        this.page.getByTestId(name).describe(description);
+
+    readonly successMessage: Locator = this.page.getByText('Account Created!').describe('Success message');
+    readonly continueBtn: Locator = this.getByDataQa('continue-button', 'Continue button');
 
     constructor(page: Page) {
         super(page);
-        this.successMessage = page.getByText('Account Created!').describe('Success message');
-        this.continueBtn = page.locator('[data-qa="continue-button"]').describe('Continue button');
     }
 
     async clickContinue() {

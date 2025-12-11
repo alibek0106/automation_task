@@ -21,7 +21,7 @@ export const UserSchema = z.object({
     birthDay: z.string(),
     birthMonth: z.string(),
     birthYear: z.string(),
-}).merge(AddressSchema).strict();
+}).extend(AddressSchema.shape).strict();
 
 export type User = z.infer<typeof UserSchema>;
 

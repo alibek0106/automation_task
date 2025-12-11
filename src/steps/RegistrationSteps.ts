@@ -1,45 +1,70 @@
-import { Page, test } from '@playwright/test';
-import { HomePage } from '../pages/HomePage';
-import { LoginPage } from '../pages/LoginPage';
-import { SignupPage } from '../pages/SignupPage';
-import { AccountCreatedPage } from '../pages/AccountCreatedPage';
-import { User } from '../models/UserModels';
+import { Page, expect } from "@playwright/test";
+import { HomePage } from "../pages/HomePage";
+import { LoginPage } from "../pages/LoginPage";
+import { SignupPage } from "../pages/SignupPage";
+import { AccountCreatedPage } from "../pages/AccountCreatedPage";
+import { User } from "../models/UserModels";
 
 export class RegistrationSteps {
-    constructor(
-        private page: Page,
-        private homePage: HomePage,
-        private loginPage: LoginPage,
-        private signupPage: SignupPage,
-        private createdPage: AccountCreatedPage,
-    ) { }
+  constructor(
+    private page: Page,
+    private homePage: HomePage,
+    private loginPage: LoginPage,
+    private signupPage: SignupPage,
+    private createdPage: AccountCreatedPage,
+  ) { }
 
-    async startRegistration(user: User) {
-        await test.step(`Start registration process for user: ${user.email}`, async () => {
-            // Ensure this matches your HomePage method (goto or navigateToHome)
-            await this.homePage.goto();
-            await this.homePage.clickSignupLogin();
-            await this.loginPage.signup(user.name, user.email);
-        });
-    }
+  /**
+   * Navigates to home page, opens signup/login page, and starts registration.
+   * Use this when you need to open the signup page and start registration in one step.
+   * If already on signup/login page, call loginPage.signup() directly instead.
+   */
+  async openAndStartRegistration(user: User) {
+    await this.homePage.goto();
+    await this.homePage.clickSignupLogin();
+    await this.loginPage.signup(user.name, user.email);
+  }
 
-    async fillAccountDetails(user: User) {
-        await test.step('Fill detailed account information', async () => {
-            await this.signupPage.fillAccountDetails(user);
-            await this.signupPage.submit();
-        });
-    }
+  async fillAccountDetails(user: User) {
+    await this.signupPage.fillAccountDetails(user);
+    await this.signupPage.clickCreateAccount();
+  }
 
-    async finishAccountCreation() {
-        await test.step('Finish account creation and continue', async () => {
-            await this.createdPage.clickContinue();
-        });
-    }
+  async finishAccountCreation() {
+    await this.createdPage.clickContinue();
+  }
 
-    async performFullRegistration(user: User) {
-        await test.step(`Perform full registration flow for: ${user.name}`, async () => {
-            await this.startRegistration(user);
-            await this.fillAccountDetails(user);
-        });
-    }
+  async performFullRegistration(user: User) {
+    await this.openAndStartRegistration(user);
+    await this.fillAccountDetails(user);
+  }
+
+  /**
+   * Complete account registration with all assertions
+   * This includes: registration flow, account creation verification, and login verification
+   * Use this to reduce duplication in tests that need full registration with assertions
+   */
+  async registerNewAccount(user: User) {
+    // Perform registration
+    await this.performFullRegistration(user);
+
+    // Verify Account Created
+    await expect(
+      this.createdPage.successMessage,
+      "Account creation message should be visible",
+    ).toBeVisible();
+    await expect(
+      this.createdPage.successMessage,
+      "Account creation message should have expected text",
+    ).toHaveText("Account Created!");
+
+    // Click Continue
+    await this.finishAccountCreation();
+
+    // Verify user is logged in
+    await expect(
+      this.homePage.loggedInText,
+      "User should be logged in",
+    ).toContainText(user.name);
+  }
 }

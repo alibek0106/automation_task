@@ -1,37 +1,55 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { Page, Locator, expect } from "@playwright/test";
+import { BasePage } from "./BasePage";
 
 export class PaymentPage extends BasePage {
-  readonly paymentHeading: Locator = this.page.getByRole('heading', { name: 'Payment' }).describe('Payment heading');
-  readonly nameOnCardInput: Locator;
-  readonly cardNumberInput: Locator;
-  readonly cvcInput: Locator;
-  readonly expiryMonthInput: Locator;
-  readonly expiryYearInput: Locator;
-  readonly payButton: Locator;
-  readonly orderPlacedHeading: Locator;
-  readonly successMessage: Locator;
-  readonly deleteAccountBtn: Locator;
+  readonly paymentHeading: Locator = this.page
+    .getByRole("heading", { name: "Payment" })
+    .describe("Payment heading");
+
+  // Payment Form - using name attributes for reliability
+  readonly nameOnCardInput: Locator = this.page
+    .locator('input[name="name_on_card"]')
+    .describe("Name on card input");
+  readonly cardNumberInput: Locator = this.page
+    .locator('input[name="card_number"]')
+    .describe("Card number input");
+  readonly cvcInput: Locator = this.page
+    .locator('input[name="cvc"]')
+    .describe("CVC input");
+  readonly expiryMonthInput: Locator = this.page
+    .locator('input[name="expiry_month"]')
+    .describe("Expiry month input");
+  readonly expiryYearInput: Locator = this.page
+    .locator('input[name="expiry_year"]')
+    .describe("Expiry year input");
+  readonly payButton: Locator = this.page
+    .locator('button[data-qa="pay-button"]')
+    .describe("Pay button");
+
+  // Order Success
+  readonly orderPlacedHeading: Locator = this.page
+    .locator('h2[data-qa="order-placed"]')
+    .describe("Order placed heading");
+  readonly successMessage: Locator = this.page
+    .getByText("Congratulations! Your order has been confirmed!")
+    .describe("Success message");
+
+  // Expose navigation link for backward compatibility
+  get deleteAccountBtn() {
+    return this.navigation.deleteAccountLink;
+  }
 
   constructor(page: Page) {
-    super(page);
-
-    // Payment Form - using name attributes for reliability
-    this.nameOnCardInput = page.locator('input[name="name_on_card"]').describe('Name on card input');
-    this.cardNumberInput = page.locator('input[name="card_number"]').describe('Card number input');
-    this.cvcInput = page.locator('input[name="cvc"]').describe('CVC input');
-    this.expiryMonthInput = page.locator('input[name="expiry_month"]').describe('Expiry month input');
-    this.expiryYearInput = page.locator('input[name="expiry_year"]').describe('Expiry year input');
-    this.payButton = page.locator('button[data-qa="pay-button"]').describe('Pay button');
-
-    // Order Success
-    this.orderPlacedHeading = page.locator('h2[data-qa="order-placed"]').describe('Order placed heading');
-    this.successMessage = page.getByText('Congratulations! Your order has been confirmed!').describe('Success message');
-    this.deleteAccountBtn = page.getByRole('link', { name: ' Delete Account' }).describe('Delete Account button');
+    super(
+      page,
+      page
+        .getByRole("heading", { name: "Payment" })
+        .describe("Payment heading"),
+    );
   }
 
   async verifyPaymentPageVisible() {
-    await expect(this.paymentHeading).toBeVisible();
+    await this.verifyPageOpened("Payment heading should be visible");
   }
 
   async fillPaymentDetails(
@@ -39,7 +57,7 @@ export class PaymentPage extends BasePage {
     cardNumber: string,
     cvc: string,
     expiryMonth: string,
-    expiryYear: string
+    expiryYear: string,
   ) {
     await this.nameOnCardInput.fill(name);
     await this.cardNumberInput.fill(cardNumber);
@@ -53,12 +71,18 @@ export class PaymentPage extends BasePage {
   }
 
   async verifyOrderPlaced() {
-    await this.orderPlacedHeading.waitFor({ state: 'visible', timeout: 10000 });
-    await expect(this.orderPlacedHeading, 'Order placed heading should contain text "Order Placed!"').toContainText('Order Placed!');
-    await expect(this.successMessage, 'Success message should be visible').toBeVisible();
+    await this.orderPlacedHeading.waitFor({ state: "visible", timeout: 10000 });
+    await expect(
+      this.orderPlacedHeading,
+      'Order placed heading should contain text "Order Placed!"',
+    ).toContainText("Order Placed!");
+    await expect(
+      this.successMessage,
+      "Success message should be visible",
+    ).toBeVisible();
   }
 
-  async deleteAccount() {
-    await this.deleteAccountBtn.click();
+  async clickDeleteAccount() {
+    await this.navigation.clickDeleteAccount();
   }
 }

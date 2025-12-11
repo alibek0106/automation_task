@@ -1,39 +1,48 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { BasePage } from './BasePage';
-import { Routes } from '../constants/Routes';
+import { Page, Locator, expect } from "@playwright/test";
+import { BasePage } from "./BasePage";
+import { Routes } from "../constants/Routes";
 
 export class ContactPage extends BasePage {
+  // Helper arrow function to reduce duplication for test ID locators
+  private getByDataQa = (name: string, description: string): Locator =>
+    this.page.getByTestId(name).describe(description);
+
   // Header
-  readonly getInTouchHeading: Locator;
+  readonly getInTouchHeading: Locator = this.page
+    .getByRole("heading", { name: "Get In Touch" })
+    .describe("Get In Touch Heading");
 
   // Form fields
-  readonly nameInput: Locator;
-  readonly emailInput: Locator;
-  readonly subjectInput: Locator;
-  readonly messageTextarea: Locator;
-  readonly fileUploadInput: Locator;
-  readonly submitButton: Locator;
+  readonly nameInput: Locator = this.getByDataQa("name", "Name input");
+  readonly emailInput: Locator = this.getByDataQa("email", "Email input");
+  readonly subjectInput: Locator = this.getByDataQa("subject", "Subject input");
+  readonly messageTextarea: Locator = this.getByDataQa(
+    "message",
+    "Message textarea",
+  );
+  readonly fileUploadInput: Locator = this.page
+    .locator('input[name="upload_file"]')
+    .describe("File upload input");
+  readonly submitButton: Locator = this.getByDataQa(
+    "submit-button",
+    "Submit button",
+  );
 
   // Success/Error messages
-  readonly successMessage: Locator;
-  readonly alertSuccess: Locator;
+  readonly successMessage: Locator = this.page
+    .locator(".status.alert.alert-success")
+    .describe("Success message");
+  readonly alertSuccess: Locator = this.page
+    .locator(".alert-success")
+    .describe("Alert success");
 
   constructor(page: Page) {
-    super(page);
-
-    // Header
-    this.getInTouchHeading = page.getByRole('heading', { name: 'Get In Touch' }).describe('Get In Touch Heading');
-
-    this.nameInput = page.locator('[data-qa="name"]').describe('Name input');
-    this.emailInput = page.locator('[data-qa="email"]').describe('Email input');
-    this.subjectInput = page.locator('[data-qa="subject"]').describe('Subject input');
-    this.messageTextarea = page.locator('[data-qa="message"]').describe('Message textarea');
-    this.fileUploadInput = page.locator('input[name="upload_file"]').describe('File upload input');
-    this.submitButton = page.locator('[data-qa="submit-button"]').describe('Submit button');
-
-    // Messages
-    this.successMessage = page.locator('.status.alert.alert-success').describe('Success message');
-    this.alertSuccess = page.locator('.alert-success').describe('Alert success');
+    super(
+      page,
+      page
+        .getByRole("heading", { name: "Get In Touch" })
+        .describe("Get In Touch Heading"),
+    );
   }
 
   /**
@@ -47,26 +56,43 @@ export class ContactPage extends BasePage {
    * Navigate via contact link in header
    */
   async clickContactUsLink() {
-    await this.page.getByRole('link', { name: 'Contact us' }).click();
+    await this.navigation.clickContactUs();
   }
 
   /**
    * Verify "GET IN TOUCH" form is displayed
    */
   async verifyGetInTouchFormVisible() {
-    await expect(this.getInTouchHeading, 'Get In Touch Heading should be visible').toBeVisible();
+    await this.verifyPageOpened("Get In Touch Heading should be visible");
   }
 
   /**
    * Verify all form fields are visible
+   * Using soft assertions to see all missing fields at once
    */
   async verifyAllFormFieldsVisible() {
-    await expect(this.nameInput, 'Name input should be visible').toBeVisible();
-    await expect(this.emailInput, 'Email input should be visible').toBeVisible();
-    await expect(this.subjectInput, 'Subject input should be visible').toBeVisible();
-    await expect(this.messageTextarea, 'Message textarea should be visible').toBeVisible();
-    await expect(this.fileUploadInput, 'File upload input should be visible').toBeVisible();
-    await expect(this.submitButton, 'Submit button should be visible').toBeVisible();
+    // Soft assertions: Check all fields to see all failures at once (data verification)
+    await expect.soft(this.nameInput, "Name input should be visible").toBeVisible();
+    await expect.soft(
+      this.emailInput,
+      "Email input should be visible",
+    ).toBeVisible();
+    await expect.soft(
+      this.subjectInput,
+      "Subject input should be visible",
+    ).toBeVisible();
+    await expect.soft(
+      this.messageTextarea,
+      "Message textarea should be visible",
+    ).toBeVisible();
+    await expect.soft(
+      this.fileUploadInput,
+      "File upload input should be visible",
+    ).toBeVisible();
+    await expect.soft(
+      this.submitButton,
+      "Submit button should be visible",
+    ).toBeVisible();
   }
 
   /**
@@ -97,7 +123,7 @@ export class ContactPage extends BasePage {
    */
   async clickSubmit() {
     // Set up dialog handler BEFORE clicking submit
-    const dialogPromise = this.page.waitForEvent('dialog');
+    const dialogPromise = this.page.waitForEvent("dialog");
 
     await this.submitButton.click();
 
@@ -106,7 +132,7 @@ export class ContactPage extends BasePage {
     await dialog.accept();
 
     // Wait for page to process the submission
-    await this.waitForLoadState('networkidle');
+    await this.waitForLoadState("networkidle");
   }
 
   /**
@@ -129,12 +155,12 @@ export class ContactPage extends BasePage {
     // Success message should appear after alert is handled
     await expect(
       this.successMessage,
-      'Success message should be visible'
+      "Success message should be visible",
     ).toBeVisible({ timeout: 10000 });
 
     await expect(
       this.successMessage,
-      `Success message should contain: ${expectedMessage}`
+      `Success message should contain: ${expectedMessage}`,
     ).toContainText(expectedMessage);
   }
 }
