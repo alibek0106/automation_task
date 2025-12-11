@@ -3,41 +3,26 @@ import { Routes } from '../constants/Routes';
 import { BasePage } from './BasePage';
 
 export class HomePage extends BasePage {
-  readonly signupLoginLink: Locator;
-  readonly loggedInText: Locator;
-  readonly logoutLink: Locator;
-  readonly subscriptionText: Locator;
+  readonly loggedInText: Locator = this.page.locator('li').filter({ hasText: 'Logged in as' }).describe('Logged in text');
+  readonly logoutLink: Locator = this.page.getByRole('link', { name: 'Logout' }).describe('Logout link');
+  readonly subscriptionText: Locator = this.page.getByRole('heading', { name: 'Subscription' }).describe('Subscription heading');
   readonly fullFledgedText: Locator;
-  readonly scrollUpArrowButton: Locator;
-  readonly recommendedItemsHeading: Locator;
-  readonly recommendedItemsSection: Locator;
-  readonly recommendedProductItems: Locator;
-  readonly viewCartModal: Locator;
-  readonly viewCartButton: Locator;
-  readonly deleteAccountLink: Locator;
+  readonly scrollUpArrowButton: Locator = this.page.locator('#scrollUp').describe('Scroll up arrow button');
+  readonly recommendedItemsHeading: Locator = this.page.getByRole('heading', { name: 'recommended items' }).describe('Recommended items heading');
+  readonly recommendedItemsSection: Locator = this.page.locator('.recommended_items').describe('Recommended items section');
+  readonly recommendedProductItems: Locator = this.recommendedItemsSection.locator('.product-image-wrapper').describe('Recommended product items');
+  readonly viewCartModal: Locator = this.page.locator('.modal-content').describe('View cart modal');
+  readonly viewCartButton: Locator = this.viewCartModal.getByRole('link', { name: /view cart/i }).describe('View cart button');
+  readonly deleteAccountLink: Locator = this.page.getByRole('link', { name: ' Delete Account' }).describe('Delete Account link');
 
   constructor(page: Page) {
-    super(page);
-    this.signupLoginLink = page.getByRole('link', { name: 'Signup / Login' }).describe('Signup / Login link');
-    this.loggedInText = page.locator('li').filter({ hasText: 'Logged in as' }).describe('Logged in text');
-    this.logoutLink = page.getByRole('link', { name: 'Logout' }).describe('Logout link');
-    this.subscriptionText = page.getByRole('heading', { name: 'Subscription' }).describe('Subscription heading');
-    this.fullFledgedText = page.getByText('Full-Fledged practice website for Automation Engineers').first().describe('Full-Fledged text');
-    this.scrollUpArrowButton = page.locator('#scrollUp').describe('Scroll up arrow button');
-    this.recommendedItemsHeading = page.getByRole('heading', { name: 'recommended items' }).describe('Recommended items heading');
-    this.recommendedItemsSection = page.locator('.recommended_items').describe('Recommended items section');
-    this.recommendedProductItems = this.recommendedItemsSection.locator('.product-image-wrapper').describe('Recommended product items');
-    this.viewCartModal = page.locator('.modal-content').describe('View cart modal');
-    this.viewCartButton = this.viewCartModal.getByRole('link', { name: /view cart/i }).describe('View cart button');
-    this.deleteAccountLink = page.getByRole('link', { name: ' Delete Account' }).describe('Delete Account link');
+    const uniqueElement = page.getByText('Full-Fledged practice website for Automation Engineers').first().describe('Full-Fledged text');
+    super(page, uniqueElement);
+    this.fullFledgedText = uniqueElement;
   }
 
   async goto() {
     await super.goto(Routes.WEB.HOME);
-  }
-
-  async clickSignupLogin() {
-    await this.signupLoginLink.click();
   }
 
   async clickLogout() {

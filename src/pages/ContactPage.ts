@@ -7,33 +7,21 @@ export class ContactPage extends BasePage {
   readonly getInTouchHeading: Locator;
 
   // Form fields
-  readonly nameInput: Locator;
-  readonly emailInput: Locator;
-  readonly subjectInput: Locator;
-  readonly messageTextarea: Locator;
-  readonly fileUploadInput: Locator;
-  readonly submitButton: Locator;
+  readonly nameInput: Locator = this.page.getByTestId('name').describe('Name input');
+  readonly emailInput: Locator = this.page.getByTestId('email').describe('Email input');
+  readonly subjectInput: Locator = this.page.getByTestId('subject').describe('Subject input');
+  readonly messageTextarea: Locator = this.page.getByTestId('message').describe('Message textarea');
+  readonly fileUploadInput: Locator = this.page.locator('input[name="upload_file"]').describe('File upload input');
+  readonly submitButton: Locator = this.page.getByTestId('submit-button').describe('Submit button');
 
   // Success/Error messages
-  readonly successMessage: Locator;
-  readonly alertSuccess: Locator;
+  readonly successMessage: Locator = this.page.locator('.status.alert.alert-success').describe('Success message');
+  readonly alertSuccess: Locator = this.page.locator('.alert-success').describe('Alert success');
 
   constructor(page: Page) {
-    super(page);
-
-    // Header
-    this.getInTouchHeading = page.getByRole('heading', { name: 'Get In Touch' }).describe('Get In Touch Heading');
-
-    this.nameInput = page.locator('[data-qa="name"]').describe('Name input');
-    this.emailInput = page.locator('[data-qa="email"]').describe('Email input');
-    this.subjectInput = page.locator('[data-qa="subject"]').describe('Subject input');
-    this.messageTextarea = page.locator('[data-qa="message"]').describe('Message textarea');
-    this.fileUploadInput = page.locator('input[name="upload_file"]').describe('File upload input');
-    this.submitButton = page.locator('[data-qa="submit-button"]').describe('Submit button');
-
-    // Messages
-    this.successMessage = page.locator('.status.alert.alert-success').describe('Success message');
-    this.alertSuccess = page.locator('.alert-success').describe('Alert success');
+    const uniqueElement = page.getByRole('heading', { name: 'Get In Touch' }).describe('Get In Touch Heading');
+    super(page, uniqueElement);
+    this.getInTouchHeading = uniqueElement;
   }
 
   /**
@@ -41,32 +29,6 @@ export class ContactPage extends BasePage {
    */
   async goto() {
     await super.goto(Routes.WEB.CONTACT_US);
-  }
-
-  /**
-   * Navigate via contact link in header
-   */
-  async clickContactUsLink() {
-    await this.page.getByRole('link', { name: 'Contact us' }).click();
-  }
-
-  /**
-   * Verify "GET IN TOUCH" form is displayed
-   */
-  async verifyGetInTouchFormVisible() {
-    await expect(this.getInTouchHeading, 'Get In Touch Heading should be visible').toBeVisible();
-  }
-
-  /**
-   * Verify all form fields are visible
-   */
-  async verifyAllFormFieldsVisible() {
-    await expect(this.nameInput, 'Name input should be visible').toBeVisible();
-    await expect(this.emailInput, 'Email input should be visible').toBeVisible();
-    await expect(this.subjectInput, 'Subject input should be visible').toBeVisible();
-    await expect(this.messageTextarea, 'Message textarea should be visible').toBeVisible();
-    await expect(this.fileUploadInput, 'File upload input should be visible').toBeVisible();
-    await expect(this.submitButton, 'Submit button should be visible').toBeVisible();
   }
 
   /**
@@ -120,21 +82,5 @@ export class ContactPage extends BasePage {
     filePath?: string;
   }) {
     await this.fillContactForm(data);
-  }
-
-  /**
-   * Verify success message is displayed
-   */
-  async verifySuccessMessage(expectedMessage: string) {
-    // Success message should appear after alert is handled
-    await expect(
-      this.successMessage,
-      'Success message should be visible'
-    ).toBeVisible({ timeout: 10000 });
-
-    await expect(
-      this.successMessage,
-      `Success message should contain: ${expectedMessage}`
-    ).toContainText(expectedMessage);
   }
 }

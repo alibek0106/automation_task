@@ -2,15 +2,14 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class AccountDeletedPage extends BasePage {
-  readonly deletedMessage: Locator;
-  readonly continueBtn: Locator;
+  readonly deletedMessage: Locator = this.page.getByText('Account Deleted!').describe('Account deleted message');
+  readonly continueBtn: Locator = this.page.getByTestId('continue-button').describe('Continue button');
   readonly deletedHeader: Locator;
 
   constructor(page: Page) {
-    super(page);
-    this.deletedHeader = page.getByRole('heading', { name: 'Account Deleted!' }).describe('Deleted page header');
-    this.deletedMessage = page.getByText('Account Deleted!').describe('Account deleted message');
-    this.continueBtn = page.locator('[data-qa="continue-button"]').describe('Continue button');
+    const uniqueElement = page.getByRole('heading', { name: 'Account Deleted!' }).describe('Deleted page header');
+    super(page, uniqueElement);
+    this.deletedHeader = uniqueElement;
   }
 
   async clickContinue() {

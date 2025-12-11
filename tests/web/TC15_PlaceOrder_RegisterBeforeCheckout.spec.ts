@@ -2,71 +2,60 @@ import { isolatedTest as test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 import { PRODUCT_NAMES } from '../../src/constants/ProductData';
 import { Routes } from '../../src/constants/Routes';
+import { RandomDataGenerator } from '../../src/utils/RandomDataGenerator';
+import { User } from '../../src/models/UserModels';
+import { PaymentDetails } from '../../src/models/PaymentModels';
 
 test.describe('TC15: Place Order: Register before Checkout', { tag: '@Abdykarimov' }, () => {
+    // 1. Define shared variables
+    let user: User;
+    let payment: PaymentDetails;
+    const productToAdd = PRODUCT_NAMES[0];
 
-    test('User registration before checkout and place order', async ({
-        page,
-        homePage,
-        cartSteps,
-        registrationSteps,
-        checkoutSteps,
-        paymentPage,
-        accountCreatedPage,
-        accountDeletedPage
-    }) => {
-        // 1. Data Setup
-        const user = DataFactory.generateUser();
-        const payment = DataFactory.generatePaymentDetails();
-        const productToAdd = PRODUCT_NAMES[0];
+    // 2. Setup: Run before the test
+    test.beforeEach(async ({ homePage, registrationSteps, page }) => {
+        // Generate Data
+        user = DataFactory.generateUser();
+        payment = DataFactory.generatePaymentDetails();
 
-        // 2. Steps 1-3: Launch & Verify Home
-        await test.step('Navigate to Home', async () => {
+        // Navigate and Register
+        await test.step('Pre-condition: Register New Account', async () => {
             await homePage.goto();
             await expect(page, 'Page should have expected title').toHaveTitle(Routes.WEB.HOME_TITLE);
+            await registrationSteps.registerNewAccount(user);
         });
+    });
 
-        // 3. Steps 4-7: Register User (Before Shopping)
-        await test.step('Register New Account', async () => {
-            // Steps 4-5: Click Signup/Login & Fill details
-            await registrationSteps.performFullRegistration(user);
-
-            // Step 6: Verify Account Created
-            await expect(accountCreatedPage.successMessage, 'Successfull account creation message should be visible').toBeVisible();
-            await expect(accountCreatedPage.successMessage, 'Successfull account creation message should have expected text').toHaveText('Account Created!');
-            await registrationSteps.finishAccountCreation(); // Clicks "Continue"
-
-            // Step 7: Verify Logged in
-            await expect(homePage.loggedInText, 'User should be logged in').toContainText(user.name);
-        });
-
-        // 4. Steps 8-10: Add Product & View Cart
-        await test.step('Add products to cart', async () => {
-            await cartSteps.addProductAndGoToCart(productToAdd);
-
-            await expect(page, 'Page should have expected URL').toHaveURL(Routes.WEB.VIEW_CART);
-        });
-
-        // 5. Steps 11-12: Checkout & Review
-        await test.step('Proceed to Checkout', async () => {
-            await checkoutSteps.proceedToCheckoutSuccess();
-        });
-
-        // 6. Step 13: Comment & Place Order
-        await test.step('Enter comment and Place Order', async () => {
-            await checkoutSteps.placeOrder('TC15 Order Description: ' + payment.nameOnCard);
-        });
-
-        // 7. Steps 14-16: Payment
-        await test.step('Enter Payment and Confirm', async () => {
-            await checkoutSteps.enterPaymentAndConfirm(payment);
-        });
-
-        // 8. Steps 17-18: Delete Account
-        await test.step('Delete Account', async () => {
-            await paymentPage.deleteAccount();
+    // 3. Teardown: Run after the test (even if it fails)
+    test.afterEach(async ({ paymentPage, accountDeletedPage }) => {
+        await test.step('Post-condition: Delete Account', async () => {
+            await paymentPage.clickDeleteAccount();
             await expect(accountDeletedPage.deletedHeader, 'Account should be successfully deleted').toBeVisible();
             await accountDeletedPage.clickContinue();
         });
+    });
+
+    // 4. The Main Test Logic
+    test('User registration before checkout and place order', async ({
+        page,
+        cartSteps,
+        checkoutSteps,
+    }) => {
+        // Steps 8-10: Add Product & View Cart
+        await cartSteps.addProductAndGoToCart(productToAdd);
+        await expect(page, 'Page should have expected URL').toHaveURL(Routes.WEB.VIEW_CART);
+
+        // Steps 11-12: Checkout & Review
+        await checkoutSteps.proceedToCheckoutSuccess();
+
+        // Step 13: Comment & Place Order
+        await test.step('Enter comment and Place Order', async () => {
+            const orderRef = RandomDataGenerator.getRandomString(8);
+            const comment = `Order Description: ${orderRef} - Placed by ${payment.nameOnCard}`;
+            await checkoutSteps.placeOrder(comment);
+        });
+
+        // Steps 14-16: Payment
+        await checkoutSteps.enterPaymentAndConfirm(payment);
     });
 });

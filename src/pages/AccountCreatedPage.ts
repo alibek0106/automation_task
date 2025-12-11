@@ -2,13 +2,13 @@ import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class AccountCreatedPage extends BasePage {
-    readonly successMessage: Locator;
+    readonly successMessage: Locator = this.page.getByText('Account Created!').describe('Success message');
     readonly continueBtn: Locator;
 
     constructor(page: Page) {
-        super(page);
-        this.successMessage = page.getByText('Account Created!').describe('Success message');
-        this.continueBtn = page.locator('[data-qa="continue-button"]').describe('Continue button');
+        const uniqueElement = page.getByTestId('continue-button').describe('Continue button');
+        super(page, uniqueElement);
+        this.continueBtn = uniqueElement;
     }
 
     async clickContinue() {

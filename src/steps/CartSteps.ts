@@ -2,11 +2,13 @@ import { test, expect } from '@playwright/test';
 import { ProductsPage } from '../pages/ProductsPage';
 import { ProductDetailsPage } from '../pages/ProductDetailsPage';
 import { PRODUCT_NAMES } from '../constants/ProductData';
+import { CartPage } from '../pages/CartPage';
 
 export class CartSteps {
     constructor(
         private productsPage: ProductsPage,
-        private detailsPage: ProductDetailsPage
+        private detailsPage: ProductDetailsPage,
+        private cartPage: CartPage
     ) { }
 
     /**
@@ -49,12 +51,43 @@ export class CartSteps {
      * Adds the first N products defined in our Data File
      */
     async populateCart(count: number): Promise<string[]> {
-        const productsToAdd = PRODUCT_NAMES.slice(0, count); // Get top N names
+        return await test.step(`Populate cart with ${count} products`, async () => {
+            const productsToAdd = PRODUCT_NAMES.slice(0, count);
 
-        for (const name of productsToAdd) {
-            await this.addProductWithQuantity(name, 1);
-        }
+            for (const name of productsToAdd) {
+                await this.addProductWithQuantity(name, 1);
+            }
 
-        return productsToAdd; // Return names so test knows what to expect
+            return productsToAdd;
+        });
+    }
+
+    /**
+     * Verifies that a product exists in the cart with the specific quantity
+     * and that the total price is calculated correctly
+     */
+    async verifyProductDetails(productName: string, expectedQuantity: number) {
+        await test.step(`Verify '${productName}' in cart has quantity ${expectedQuantity}`, async () => {
+            const product = await this.cartPage.getProductByName(productName);
+            expect(product.name, 'Product name should match').toBe(productName);
+            expect(product.quantity, 'Product quantity should match').toBe(expectedQuantity);
+
+            const expectedTotal = product.price * expectedQuantity;
+            expect(product.total, `Total price should be ${expectedTotal}`).toBe(expectedTotal);
+        });
+    }
+
+    /**
+     * Add the first N products to the cart using a loop
+     */
+    async addProductsToCart(count: number) {
+        await test.step(`Add first ${count} products to cart`, async () => {
+            await this.productsPage.navigateToProducts();
+            await this.productsPage.verifyAllProductsVisible();
+
+            for (let i = 0; i < count; i++) {
+                await this.productsPage.addProductToCart(i);
+            }
+        });
     }
 }

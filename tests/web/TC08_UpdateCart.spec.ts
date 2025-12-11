@@ -12,9 +12,7 @@ test.describe('TC08: Update Product Quantity in Cart', { tag: '@Abdykarimov' }, 
         const productName = PRODUCT_NAMES[0]; // e.g., "Blue Top"
         const pricePerUnit = PRODUCT_PRICES[0]; // Known price for Blue Top
 
-        await test.step(`Add ${productName} with Quantity 1`, async () => {
-            await cartSteps.addProductWithQuantity(productName, 1);
-        });
+        await cartSteps.addProductWithQuantity(productName, 1);
 
         await test.step('Verify initial state in Cart', async () => {
             await productsPage.navigateToCart();
@@ -27,9 +25,7 @@ test.describe('TC08: Update Product Quantity in Cart', { tag: '@Abdykarimov' }, 
         });
 
         // 2. Act: Increase Quantity to 5
-        await test.step('Increase Quantity to 5', async () => {
-            await cartSteps.addProductWithQuantity(productName, 4);
-        });
+        await cartSteps.addProductWithQuantity(productName, 4);
 
         // 3. Assert: Verify Increase Calculation
         await test.step('Verify calculations for Quantity 5', async () => {
@@ -49,10 +45,10 @@ test.describe('TC08: Update Product Quantity in Cart', { tag: '@Abdykarimov' }, 
         // Since we can't edit, we must Remove then Add 2
         await test.step('Decrease Quantity to 2 (Re-add workflow)', async () => {
             await cartPage.removeProduct(productName);
-            await expect(cartPage.getProductRow(productName), 'Product row should be removed').toHaveCount(0);
-
-            await cartSteps.addProductWithQuantity(productName, 2);
+            expect(cartPage.getProductRow(productName), 'Product row should be removed').toHaveCount(0);
         });
+
+        await cartSteps.addProductWithQuantity(productName, 2);
 
         // 5. Assert: Verify Decrease Calculation
         await test.step('Verify calculations for Quantity 2', async () => {
@@ -74,12 +70,10 @@ test.describe('TC08: Update Product Quantity in Cart', { tag: '@Abdykarimov' }, 
             await productsPage.navigateToCart();
 
             // Verify Product 1 (Still 2)
-            const qty1 = await cartPage.getProductQuantity(productName);
-            expect(qty1, 'Product 1 quantity should be 2').toBe(2);
+            await cartSteps.verifyProductDetails(productName, 2);
 
             // Verify Product 2 (New 3)
-            const qty2 = await cartPage.getProductQuantity(product2);
-            expect(qty2, 'Product 2 quantity should be 3').toBe(3);
+            await cartSteps.verifyProductDetails(product2, 3);
 
             // Verify Cart Total
             const expectedTotal = (pricePerUnit * 2) + (price2 * 3);

@@ -23,7 +23,7 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
     await test.step('Logout and verify logged out state', async () => {
       await homePage.clickLogout();
       await homePage.verifyLoggedInNotVisible();
-      await loginPage.verifyLoginFormVisible();
+      await loginPage.verifyPageOpened();
     });
   });
 

@@ -4,47 +4,28 @@ import { BasePage } from './BasePage';
 
 export class ProductsPage extends BasePage {
   // Navigation & Actions
-  readonly productsNavLink: Locator;
-  readonly continueShoppingBtn: Locator;
-  readonly viewCartLink: Locator;
+  readonly productsNavLink: Locator = this.page.getByRole('link', { name: 'Products' }).describe('Products Navigation Link');
+  readonly continueShoppingBtn: Locator = this.page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping Button');
+  readonly viewCartLink: Locator = this.page.getByText(' Cart', { exact: true }).describe('View Cart Link');
 
   // Search
-  readonly searchInput: Locator;
-  readonly searchButton: Locator;
+  readonly searchInput: Locator = this.page.locator('input#search_product').describe('Search Input');
+  readonly searchButton: Locator = this.page.locator('button#submit_search').describe('Search Button');
   readonly allProductsHeading: Locator;
-  readonly searchedProductsHeading: Locator;
+  readonly searchedProductsHeading: Locator = this.page.getByRole('heading', { name: 'Searched Products' }).describe('Searched Products Heading');
 
   // Product Cards
-  readonly productCards: Locator;
-  readonly productItems: Locator;
+  readonly productCards: Locator = this.page.locator('.product-image-wrapper').describe('Product Cards');
+  readonly productItems: Locator = this.page.locator('.features_items .col-sm-4').describe('Product Items');
 
   // Sidebar - Categories & Brands
-  readonly categorySidebar: Locator;
-  readonly brandsSidebar: Locator;
+  readonly categorySidebar: Locator = this.page.locator('#accordian').describe('Category Sidebar');
+  readonly brandsSidebar: Locator = this.page.locator('.brands_products').describe('Brands Sidebar');
 
   constructor(page: Page) {
-    super(page);
-
-    // Navigation
-    this.productsNavLink = page.getByRole('link', { name: 'Products' }).describe('Products Navigation Link');
-    this.continueShoppingBtn = page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping Button');
-    this.viewCartLink = page.getByText(' Cart', { exact: true }).describe('View Cart Link');
-
-    // Headings - using role for better semantics
-    this.allProductsHeading = page.getByRole('heading', { name: 'All Products' }).describe('All Products Heading');
-    this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' }).describe('Searched Products Heading');
-
-    // Search
-    this.searchInput = page.locator('input#search_product').describe('Search Input');
-    this.searchButton = page.locator('button#submit_search').describe('Search Button');
-
-    // Products
-    this.productCards = page.locator('.product-image-wrapper').describe('Product Cards');
-    this.productItems = page.locator('.features_items .col-sm-4').describe('Product Items');
-
-    // Sidebar
-    this.categorySidebar = page.locator('#accordian').describe('Category Sidebar');
-    this.brandsSidebar = page.locator('.brands_products').describe('Brands Sidebar');
+    const uniqueElement = page.getByRole('heading', { name: 'All Products' }).describe('All Products Heading');
+    super(page, uniqueElement);
+    this.allProductsHeading = uniqueElement
   }
 
   async goto() {
@@ -110,7 +91,7 @@ export class ProductsPage extends BasePage {
 
   async verifyCategoryTitle(title: string) {
     const heading = this.page.locator('h2.title');
-    await expect(heading, 'Category title should contain expected text').toContainText(title, { ignoreCase: true });
+    expect(heading, 'Category title should contain expected text').toContainText(title, { ignoreCase: true });
   }
 
   async selectBrand(brandName: string) {
@@ -149,7 +130,7 @@ export class ProductsPage extends BasePage {
   }
 
   async getProductCount(): Promise<number> {
-    return await this.productItems.count();
+    return this.productItems.count();
   }
 
   async verifyProductCountGreaterThan(min: number) {

@@ -13,7 +13,7 @@ const AddressSchema = z.object({
     mobileNumber: z.string(),
 }).strict();
 
-export const UserSchema = z.object({
+export const UserSchema = AddressSchema.extend({
     name: z.string().describe('Full display name'),
     email: z.email(),
     password: z.string().min(5, 'Password must be at least 5 characters long'),
@@ -21,7 +21,7 @@ export const UserSchema = z.object({
     birthDay: z.string(),
     birthMonth: z.string(),
     birthYear: z.string(),
-}).merge(AddressSchema).strict();
+}).strict();
 
 export type User = z.infer<typeof UserSchema>;
 
