@@ -3,31 +3,50 @@ import { User } from '../models/UserModels';
 import { BasePage } from './BasePage';
 
 export class SignupPage extends BasePage {
-    readonly titleMr: Locator = this.page.getByLabel('Mr.').describe('Title Mr');
-    readonly titleMrs: Locator = this.page.getByLabel('Mrs.').describe('Title Mrs');
-    readonly password: Locator = this.page.getByTestId('password').describe('Password input');
-    readonly daySelect: Locator = this.page.getByTestId('days').describe('Day select');
-    readonly monthSelect: Locator = this.page.getByTestId('months').describe('Month select');
-    readonly yearSelect: Locator = this.page.getByTestId('years').describe('Year select');
-    readonly newsletterCheck: Locator = this.page.getByLabel('Sign up for our newsletter!').describe('Newsletter check');
-    readonly offersCheck: Locator = this.page.getByLabel('Receive special offers from our partners!').describe('Offers check');
-    readonly firstName: Locator = this.page.getByTestId('first_name').describe('First name input');
-    readonly lastName: Locator = this.page.getByTestId('last_name').describe('Last name input');
-    readonly company: Locator = this.page.getByTestId('company').describe('Company input');
-    readonly address1: Locator = this.page.getByTestId('address').describe('Address input');
-    readonly address2: Locator = this.page.getByTestId('address2').describe('Secondary Address input');
-    readonly country: Locator = this.page.getByTestId('country').describe('Country select');
-    readonly state: Locator = this.page.getByTestId('state').describe('State input');
-    readonly city: Locator = this.page.getByTestId('city').describe('City input');
-    readonly zipcode: Locator = this.page.getByTestId('zipcode').describe('Zipcode input');
-    readonly mobile: Locator = this.page.getByTestId('mobile_number').describe('Mobile input');
-    readonly createAccountBtn: Locator = this.page.getByTestId('create-account').describe('Create account button');
+    readonly titleMr: Locator;
+    readonly titleMrs: Locator;
+    readonly password: Locator;
+    readonly daySelect: Locator;
+    readonly monthSelect: Locator;
+    readonly yearSelect: Locator;
+    readonly newsletterCheck: Locator;
+    readonly offersCheck: Locator;
+    readonly firstName: Locator;
+    readonly lastName: Locator;
+    readonly company: Locator;
+    readonly address1: Locator;
+    readonly address2: Locator;
+    readonly country: Locator;
+    readonly state: Locator;
+    readonly city: Locator;
+    readonly zipcode: Locator;
+    readonly mobile: Locator;
+    readonly createAccountBtn: Locator;
     readonly accountInfoHeading: Locator;
 
     constructor(page: Page) {
         const uniqueElement = page.getByText('Enter Account Information').describe('Account Info Heading');
         super(page, uniqueElement);
         this.accountInfoHeading = uniqueElement;
+        this.titleMr = page.getByLabel('Mr.').describe('Title Mr');
+        this.titleMrs = page.getByLabel('Mrs.').describe('Title Mrs');
+        this.password = page.getByTestId('password').describe('Password input');
+        this.daySelect = page.getByTestId('days').describe('Day select');
+        this.monthSelect = page.getByTestId('months').describe('Month select');
+        this.yearSelect = page.getByTestId('years').describe('Year select');
+        this.newsletterCheck = page.getByLabel('Sign up for our newsletter!').describe('Newsletter check');
+        this.offersCheck = page.getByLabel('Receive special offers from our partners!').describe('Offers check');
+        this.firstName = page.getByTestId('first_name').describe('First name input');
+        this.lastName = page.getByTestId('last_name').describe('Last name input');
+        this.company = page.getByTestId('company').describe('Company input');
+        this.address1 = page.getByTestId('address').describe('Address input');
+        this.address2 = page.getByTestId('address2').describe('Secondary Address input');
+        this.country = page.getByTestId('country').describe('Country select');
+        this.state = page.getByTestId('state').describe('State input');
+        this.city = page.getByTestId('city').describe('City input');
+        this.zipcode = page.getByTestId('zipcode').describe('Zipcode input');
+        this.mobile = page.getByTestId('mobile_number').describe('Mobile input');
+        this.createAccountBtn = page.getByTestId('create-account').describe('Create account button');
     }
 
     async fillAccountDetails(user: User) {

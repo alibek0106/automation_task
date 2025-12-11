@@ -7,18 +7,9 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
     homePage,
     loginPage,
     registrationSteps,
-    accountCreatedPage,
   }) => {
     const user = DataFactory.generateUser();
-
-    await test.step('Register and login new user', async () => {
-      await registrationSteps.startRegistration(user);
-      await registrationSteps.fillAccountDetails(user);
-      await expect(accountCreatedPage.successMessage, 'Account Created message should be visible').toBeVisible();
-      await registrationSteps.finishAccountCreation();
-      await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
-      await expect(homePage.logoutLink, 'Logout link should be visible').toBeVisible();
-    });
+    await registrationSteps.registerNewAccount(user);
 
     await test.step('Logout and verify logged out state', async () => {
       await homePage.clickLogout();
@@ -30,19 +21,11 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
   test('should terminate session after logout', async ({
     homePage,
     registrationSteps,
-    accountCreatedPage,
     productsPage,
     cartPage,
   }) => {
     const user = DataFactory.generateUser();
-
-    await test.step('Register and login new user', async () => {
-      await registrationSteps.startRegistration(user);
-      await registrationSteps.fillAccountDetails(user);
-      await expect(accountCreatedPage.successMessage, 'Account Created message should be visible').toBeVisible();
-      await registrationSteps.finishAccountCreation();
-      await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
-    });
+    await registrationSteps.registerNewAccount(user);
 
     await test.step('Logout', async () => {
       await homePage.clickLogout();
@@ -62,18 +45,10 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
   test('should require login for protected pages after logout', async ({
     homePage,
     registrationSteps,
-    accountCreatedPage,
     paymentPage,
   }) => {
     const user = DataFactory.generateUser();
-
-    await test.step('Register and login new user', async () => {
-      await registrationSteps.startRegistration(user);
-      await registrationSteps.fillAccountDetails(user);
-      await expect(accountCreatedPage.successMessage, 'Account Created message should be visible').toBeVisible();
-      await registrationSteps.finishAccountCreation();
-      await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
-    });
+    await registrationSteps.registerNewAccount(user);
 
     await test.step('Logout', async () => {
       await homePage.clickLogout();
@@ -91,18 +66,10 @@ test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
   test('should not restore session with back button', async ({
     homePage,
     registrationSteps,
-    accountCreatedPage,
     productsPage,
   }) => {
     const user = DataFactory.generateUser();
-
-    await test.step('Register and login new user', async () => {
-      await registrationSteps.startRegistration(user);
-      await registrationSteps.fillAccountDetails(user);
-      await expect(accountCreatedPage.successMessage, 'Account Created message should be visible').toBeVisible();
-      await registrationSteps.finishAccountCreation();
-      await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
-    });
+    await registrationSteps.registerNewAccount(user);
 
     await test.step('Verify logged in state across different pages', async () => {
       await productsPage.navigateToProducts();

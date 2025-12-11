@@ -7,21 +7,29 @@ export class ContactPage extends BasePage {
   readonly getInTouchHeading: Locator;
 
   // Form fields
-  readonly nameInput: Locator = this.page.getByTestId('name').describe('Name input');
-  readonly emailInput: Locator = this.page.getByTestId('email').describe('Email input');
-  readonly subjectInput: Locator = this.page.getByTestId('subject').describe('Subject input');
-  readonly messageTextarea: Locator = this.page.getByTestId('message').describe('Message textarea');
-  readonly fileUploadInput: Locator = this.page.locator('input[name="upload_file"]').describe('File upload input');
-  readonly submitButton: Locator = this.page.getByTestId('submit-button').describe('Submit button');
+  readonly nameInput: Locator;
+  readonly emailInput: Locator;
+  readonly subjectInput: Locator;
+  readonly messageTextarea: Locator;
+  readonly fileUploadInput: Locator;
+  readonly submitButton: Locator;
 
   // Success/Error messages
-  readonly successMessage: Locator = this.page.locator('.status.alert.alert-success').describe('Success message');
-  readonly alertSuccess: Locator = this.page.locator('.alert-success').describe('Alert success');
+  readonly successMessage: Locator;
+  readonly alertSuccess: Locator;
 
   constructor(page: Page) {
     const uniqueElement = page.getByRole('heading', { name: 'Get In Touch' }).describe('Get In Touch Heading');
     super(page, uniqueElement);
     this.getInTouchHeading = uniqueElement;
+    this.nameInput = page.getByTestId('name').describe('Name input');
+    this.emailInput = page.getByTestId('email').describe('Email input');
+    this.subjectInput = page.getByTestId('subject').describe('Subject input');
+    this.messageTextarea = page.getByTestId('message').describe('Message textarea');
+    this.fileUploadInput = page.locator('input[name="upload_file"]').describe('File upload input');
+    this.submitButton = page.getByTestId('submit-button').describe('Submit button');
+    this.successMessage = page.locator('.status.alert.alert-success').describe('Success message');
+    this.alertSuccess = page.locator('.alert-success').describe('Alert success');
   }
 
   /**

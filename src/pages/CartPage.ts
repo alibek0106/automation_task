@@ -3,11 +3,11 @@ import { BasePage } from './BasePage';
 import { CartItem, CartItemSchema } from '../models/ProductModels';
 
 export class CartPage extends BasePage {
-    readonly emptyCartMessage: Locator = this.page.getByText('Cart is empty!').describe('Empty Cart Message');
+    readonly emptyCartMessage: Locator;
     readonly cartTable: Locator;
-    readonly proceedToCheckoutBtn: Locator = this.page.getByText('Proceed To Checkout').describe('Proceed To Checkout Button');
-    readonly checkoutModalRegisterLoginLink: Locator = this.page.getByRole('link', { name: 'Register / Login' }).describe('Checkout Modal Register Login Link');
-    readonly registerLoginModal: Locator = this.page.locator('.modal-content').describe('Register Login Modal');
+    readonly proceedToCheckoutBtn: Locator;
+    readonly checkoutModalRegisterLoginLink: Locator;
+    readonly registerLoginModal: Locator;
 
     constructor(page: Page) {
         const uniqueElement = page
@@ -16,6 +16,10 @@ export class CartPage extends BasePage {
             .filter({ hasText: 'Quantity' }).describe('Table of products in cart');
         super(page, uniqueElement);
         this.cartTable = uniqueElement;
+        this.emptyCartMessage = page.getByText('Cart is empty!').describe('Empty Cart Message');
+        this.proceedToCheckoutBtn = page.getByText('Proceed To Checkout').describe('Proceed To Checkout Button');
+        this.checkoutModalRegisterLoginLink = page.getByRole('link', { name: 'Register / Login' }).describe('Checkout Modal Register Login Link');
+        this.registerLoginModal = page.locator('.modal-content').describe('Register Login Modal');
     }
 
     private getDeleteButton = (row: Locator) => row.getByRole('cell').nth(5).locator('a');

@@ -4,28 +4,38 @@ import { BasePage } from './BasePage';
 
 export class ProductsPage extends BasePage {
   // Navigation & Actions
-  readonly productsNavLink: Locator = this.page.getByRole('link', { name: 'Products' }).describe('Products Navigation Link');
-  readonly continueShoppingBtn: Locator = this.page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping Button');
-  readonly viewCartLink: Locator = this.page.getByText(' Cart', { exact: true }).describe('View Cart Link');
+  readonly productsNavLink: Locator;
+  readonly continueShoppingBtn: Locator;
+  readonly viewCartLink: Locator;
 
   // Search
-  readonly searchInput: Locator = this.page.locator('input#search_product').describe('Search Input');
-  readonly searchButton: Locator = this.page.locator('button#submit_search').describe('Search Button');
+  readonly searchInput: Locator;
+  readonly searchButton: Locator;
   readonly allProductsHeading: Locator;
-  readonly searchedProductsHeading: Locator = this.page.getByRole('heading', { name: 'Searched Products' }).describe('Searched Products Heading');
+  readonly searchedProductsHeading: Locator;
 
   // Product Cards
-  readonly productCards: Locator = this.page.locator('.product-image-wrapper').describe('Product Cards');
-  readonly productItems: Locator = this.page.locator('.features_items .col-sm-4').describe('Product Items');
+  readonly productCards: Locator;
+  readonly productItems: Locator;
 
   // Sidebar - Categories & Brands
-  readonly categorySidebar: Locator = this.page.locator('#accordian').describe('Category Sidebar');
-  readonly brandsSidebar: Locator = this.page.locator('.brands_products').describe('Brands Sidebar');
+  readonly categorySidebar: Locator;
+  readonly brandsSidebar: Locator;
 
   constructor(page: Page) {
     const uniqueElement = page.getByRole('heading', { name: 'All Products' }).describe('All Products Heading');
     super(page, uniqueElement);
-    this.allProductsHeading = uniqueElement
+    this.allProductsHeading = uniqueElement;
+    this.productsNavLink = page.getByRole('link', { name: 'Products' }).describe('Products Navigation Link');
+    this.continueShoppingBtn = page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping Button');
+    this.viewCartLink = page.getByText(' Cart', { exact: true }).describe('View Cart Link');
+    this.searchInput = page.locator('input#search_product').describe('Search Input');
+    this.searchButton = page.locator('button#submit_search').describe('Search Button');
+    this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' }).describe('Searched Products Heading');
+    this.productCards = page.locator('.product-image-wrapper').describe('Product Cards');
+    this.productItems = page.locator('.features_items .col-sm-4').describe('Product Items');
+    this.categorySidebar = page.locator('#accordian').describe('Category Sidebar');
+    this.brandsSidebar = page.locator('.brands_products').describe('Brands Sidebar');
   }
 
   async goto() {
