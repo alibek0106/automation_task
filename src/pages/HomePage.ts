@@ -1,35 +1,59 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { Routes } from '../constants/Routes';
-import { BasePage } from './BasePage';
+import { Page, Locator, expect } from "@playwright/test";
+import { Routes } from "../constants/Routes";
+import { BasePage } from "./BasePage";
+import { SubscriptionSteps } from "../steps/SubscriptionSteps";
 
 export class HomePage extends BasePage {
-  readonly signupLoginLink: Locator;
-  readonly loggedInText: Locator;
-  readonly logoutLink: Locator;
-  readonly subscriptionText: Locator;
-  readonly fullFledgedText: Locator;
-  readonly scrollUpArrowButton: Locator;
-  readonly recommendedItemsHeading: Locator;
-  readonly recommendedItemsSection: Locator;
-  readonly recommendedProductItems: Locator;
-  readonly viewCartModal: Locator;
-  readonly viewCartButton: Locator;
-  readonly deleteAccountLink: Locator;
+  readonly subscriptionText: Locator = this.page
+    .getByRole("heading", { name: "Subscription" })
+    .describe("Subscription heading");
+  readonly fullFledgedText: Locator = this.page
+    .getByText("Full-Fledged practice website for Automation Engineers")
+    .first()
+    .describe("Full-Fledged text");
+  readonly scrollUpArrowButton: Locator = this.page
+    .locator("#scrollUp")
+    .describe("Scroll up arrow button");
+  readonly recommendedItemsHeading: Locator = this.page
+    .getByRole("heading", { name: "recommended items" })
+    .describe("Recommended items heading");
+  readonly recommendedItemsSection: Locator = this.page
+    .locator(".recommended_items")
+    .describe("Recommended items section");
+  readonly recommendedProductItems: Locator = this.recommendedItemsSection
+    .locator(".product-image-wrapper")
+    .describe("Recommended product items");
+  readonly viewCartModal: Locator = this.page
+    .locator(".modal-content")
+    .describe("View cart modal");
+  readonly viewCartButton: Locator = this.viewCartModal
+    .getByRole("link", { name: /view cart/i })
+    .describe("View cart button");
+  readonly subscription: SubscriptionSteps;
+
+  // Expose navigation links for backward compatibility
+  get signupLoginLink() {
+    return this.navigation.signupLoginLink;
+  }
+  get loggedInText() {
+    return this.navigation.loggedInText;
+  }
+  get logoutLink() {
+    return this.navigation.logoutLink;
+  }
+  get deleteAccountLink() {
+    return this.navigation.deleteAccountLink;
+  }
 
   constructor(page: Page) {
-    super(page);
-    this.signupLoginLink = page.getByRole('link', { name: 'Signup / Login' }).describe('Signup / Login link');
-    this.loggedInText = page.locator('li').filter({ hasText: 'Logged in as' }).describe('Logged in text');
-    this.logoutLink = page.getByRole('link', { name: 'Logout' }).describe('Logout link');
-    this.subscriptionText = page.getByRole('heading', { name: 'Subscription' }).describe('Subscription heading');
-    this.fullFledgedText = page.getByText('Full-Fledged practice website for Automation Engineers').first().describe('Full-Fledged text');
-    this.scrollUpArrowButton = page.locator('#scrollUp').describe('Scroll up arrow button');
-    this.recommendedItemsHeading = page.getByRole('heading', { name: 'recommended items' }).describe('Recommended items heading');
-    this.recommendedItemsSection = page.locator('.recommended_items').describe('Recommended items section');
-    this.recommendedProductItems = this.recommendedItemsSection.locator('.product-image-wrapper').describe('Recommended product items');
-    this.viewCartModal = page.locator('.modal-content').describe('View cart modal');
-    this.viewCartButton = this.viewCartModal.getByRole('link', { name: /view cart/i }).describe('View cart button');
-    this.deleteAccountLink = page.getByRole('link', { name: ' Delete Account' }).describe('Delete Account link');
+    super(
+      page,
+      page
+        .getByText("Full-Fledged practice website for Automation Engineers")
+        .first()
+        .describe("Full-Fledged text"),
+    );
+    this.subscription = new SubscriptionSteps(page);
   }
 
   async goto() {
@@ -37,23 +61,31 @@ export class HomePage extends BasePage {
   }
 
   async clickSignupLogin() {
-    await this.signupLoginLink.click();
+    await this.navigation.clickSignupLogin();
   }
 
   async clickLogout() {
-    await this.logoutLink.click();
+    await this.navigation.clickLogout();
   }
 
   async verifyLoggedInVisible() {
-    await expect(this.loggedInText, 'Logged in text should be visible').toBeVisible();
+    await expect(
+      this.loggedInText,
+      "Logged in text should be visible",
+    ).toBeVisible();
   }
 
   async verifyLoggedInNotVisible() {
-    await expect(this.loggedInText, 'Logged in text should not be visible').not.toBeVisible();
+    await expect(
+      this.loggedInText,
+      "Logged in text should not be visible",
+    ).not.toBeVisible();
   }
 
   async scrollToBottom() {
-    await this.page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+    await this.page.evaluate(() =>
+      window.scrollTo(0, document.body.scrollHeight),
+    );
   }
 
   async scrollToTop() {
@@ -61,11 +93,17 @@ export class HomePage extends BasePage {
   }
 
   async verifySubscriptionVisible() {
-    await expect(this.subscriptionText, 'Subscription text should be visible').toBeVisible();
+    await expect(
+      this.subscriptionText,
+      "Subscription text should be visible",
+    ).toBeVisible();
   }
 
   async verifyFullFledgedTextVisible() {
-    await expect(this.fullFledgedText, 'Full-Fledged text should be visible').toBeVisible();
+    await expect(
+      this.fullFledgedText,
+      "Full-Fledged text should be visible",
+    ).toBeVisible();
   }
 
   async clickScrollUpArrow() {
@@ -73,24 +111,48 @@ export class HomePage extends BasePage {
   }
 
   async verifyRecommendedItemsVisible() {
-    await expect(this.recommendedItemsHeading, 'Recommended items heading should be visible').toBeVisible();
-    await expect(this.recommendedProductItems.first(), 'Recommended product items should be visible').toBeVisible();
+    await expect(
+      this.recommendedItemsHeading,
+      "Recommended items heading should be visible",
+    ).toBeVisible();
+    await expect(
+      this.recommendedProductItems.first(),
+      "Recommended product items should be visible",
+    ).toBeVisible();
   }
 
   async getRecommendedProductName(index: number): Promise<string> {
     const product = this.recommendedProductItems.nth(index);
-    const name = await product.locator('.productinfo p').textContent();
-    return name?.trim() || '';
+    const name = await product.locator(".productinfo p").textContent();
+    return name?.trim() || "";
   }
 
   async addRecommendedItemToCart(index: number) {
     const product = this.recommendedProductItems.nth(index);
     // Ensure the product is scrolled into view within the carousel
     await product.scrollIntoViewIfNeeded();
-    await product.locator('.productinfo a.add-to-cart').click();
+    await product.locator(".productinfo a.add-to-cart").click();
   }
 
   async clickViewCartFromModal() {
     await this.viewCartButton.click();
+  }
+
+  async performSubscription(email: string) {
+    await this.subscription.performSubscription(email);
+  }
+
+  // Expose subscription locators for backward compatibility
+  get subscriptionHeading() {
+    return this.subscription.subscriptionHeading;
+  }
+  get subscriptionEmailInput() {
+    return this.subscription.subscriptionEmailInput;
+  }
+  get subscriptionSubmitBtn() {
+    return this.subscription.subscriptionSubmitBtn;
+  }
+  get subscriptionSuccessMsg() {
+    return this.subscription.subscriptionSuccessMsg;
   }
 }

@@ -957,9 +957,7 @@ test('should work', async ({ api }) => {
     try {
         const response = await api.doSomething();
         expect(response.status()).toBe(200);
-    } catch (e) {
-        console.log('Test failed but continuing...'); // NO!
-    }
+    } 
 });
 
 // GOOD: Let tests fail naturally

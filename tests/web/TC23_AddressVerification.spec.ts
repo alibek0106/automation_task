@@ -33,7 +33,7 @@ test.describe('TC23: Verify Address Details in Checkout Page', { tag: '@meladze'
     await test.step('Fill all details in Signup and create account', async () => {
       await loginPage.signup(user.name, user.email);
       await signupPage.fillAccountDetails(user);
-      await signupPage.submit();
+      await signupPage.clickCreateAccount();
     });
 
     await test.step('Verify ACCOUNT CREATED! and click Continue button', async () => {

@@ -5,7 +5,8 @@ test.describe('TC05: Search Product and Verify Results', { tag: '@meladze' }, ()
   test('should search for products and verify results', async ({
     homePage,
     productsPage,
-    productDetailsPage
+    productDetailsPage,
+    productSteps
   }) => {
 
     await test.step('Navigate to Products page', async () => {
@@ -19,7 +20,7 @@ test.describe('TC05: Search Product and Verify Results', { tag: '@meladze' }, ()
       const searchTerm1 = TestData.SEARCH.VALID_TERM_1;
       await productsPage.searchProduct(searchTerm1);
       await productsPage.verifySearchedProductsVisible();
-      await productsPage.verifyProductListContains(searchTerm1);
+      await productSteps.verifyProductListContains(searchTerm1);
     });
 
     await test.step('Verify product card details', async () => {
@@ -36,7 +37,7 @@ test.describe('TC05: Search Product and Verify Results', { tag: '@meladze' }, ()
       const searchTerm2 = TestData.SEARCH.VALID_TERM_2;
       await productsPage.searchProduct(searchTerm2);
       await productsPage.verifySearchedProductsVisible();
-      await productsPage.verifyProductListContains(searchTerm2);
+      await productSteps.verifyProductListContains(searchTerm2);
     });
 
     await test.step('Search for invalid product and verify no results', async () => {
