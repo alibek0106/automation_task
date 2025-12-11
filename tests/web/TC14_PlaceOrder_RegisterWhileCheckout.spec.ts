@@ -11,6 +11,7 @@ test.describe('TC14: Place Order: Register while Checkout', { tag: '@Abdykarimov
     let user: User;
     let payment: PaymentDetails;
     const productToAdd = PRODUCT_NAMES[0];
+    const randomStringLength = 8;
 
     // 2. Setup: Generate Data & Open App
     test.beforeEach(async ({ homePage, page }) => {
@@ -56,7 +57,7 @@ test.describe('TC14: Place Order: Register while Checkout', { tag: '@Abdykarimov
 
         // Step 5: Review & Place Order
         await test.step('Review Order and Place Order', async () => {
-            const orderRef = RandomDataGenerator.getRandomString(8);
+            const orderRef = RandomDataGenerator.getRandomString(randomStringLength);
             const comment = `Test Order Ref: ${orderRef} - Placed by ${payment.nameOnCard}`;
 
             await checkoutSteps.placeOrder(comment);

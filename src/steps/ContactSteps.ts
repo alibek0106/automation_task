@@ -1,5 +1,6 @@
 import { expect } from '@playwright/test';
 import { ContactPage } from '../pages/ContactPage';
+import { TIMEOUTS } from '../constants/Timeouts';
 
 export class ContactSteps {
     private contactPage: ContactPage;
@@ -25,7 +26,7 @@ export class ContactSteps {
         await expect(
             this.contactPage.successMessage,
             'Success message should be visible'
-        ).toBeVisible({ timeout: 10000 });
+        ).toBeVisible({ timeout: TIMEOUTS.DEFAULT });
 
         await expect(
             this.contactPage.successMessage,

@@ -14,6 +14,7 @@ export abstract class BasePage {
   readonly subscriptionSuccessMsg: Locator;
   readonly signupLoginLink: Locator;
   readonly deleteAccountBtn: Locator;
+  readonly logoutLink: Locator;
 
   constructor(page: Page, uniqueElement: Locator) {
     this.page = page;
@@ -25,6 +26,7 @@ export abstract class BasePage {
     this.subscriptionSuccessMsg = page.getByText('You have been successfully subscribed!').describe('Subscription success message');
     this.signupLoginLink = page.getByRole('link', { name: 'Signup / Login' }).describe('Signup / Login link');
     this.deleteAccountBtn = page.getByRole('link', { name: ' Delete Account' }).describe('Delete Account button');
+    this.logoutLink = page.getByRole('link', { name: 'Logout' }).describe('Logout link');
   }
 
   /**
@@ -58,6 +60,14 @@ export abstract class BasePage {
 
   async clickSignupLogin() {
     await this.signupLoginLink.click();
+  }
+
+  async clickLogout() {
+    await this.logoutLink.click();
+  }
+
+  async verifyLogoutLinkVisible() {
+    await expect(this.logoutLink, 'Logout link should be visible').toBeVisible();
   }
 
   /**

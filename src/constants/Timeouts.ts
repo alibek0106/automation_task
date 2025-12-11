@@ -1,0 +1,7 @@
+export enum TIMEOUTS {
+    SHORT = 2000,
+    DEFAULT = 5000,
+    LONG = 10000,
+    EXTRA_LONG = 30000,
+    EXTENDED = 60000,
+}

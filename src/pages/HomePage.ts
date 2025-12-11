@@ -4,7 +4,6 @@ import { BasePage } from './BasePage';
 
 export class HomePage extends BasePage {
   readonly loggedInText: Locator;
-  readonly logoutLink: Locator;
   readonly subscriptionText: Locator;
   readonly fullFledgedText: Locator;
   readonly scrollUpArrowButton: Locator;
@@ -20,7 +19,6 @@ export class HomePage extends BasePage {
     super(page, uniqueElement);
     this.fullFledgedText = uniqueElement;
     this.loggedInText = page.locator('li').filter({ hasText: 'Logged in as' }).describe('Logged in text');
-    this.logoutLink = page.getByRole('link', { name: 'Logout' }).describe('Logout link');
     this.subscriptionText = page.getByRole('heading', { name: 'Subscription' }).describe('Subscription heading');
     this.scrollUpArrowButton = page.locator('#scrollUp').describe('Scroll up arrow button');
     this.recommendedItemsHeading = page.getByRole('heading', { name: 'recommended items' }).describe('Recommended items heading');
@@ -33,10 +31,6 @@ export class HomePage extends BasePage {
 
   async goto() {
     await super.goto(Routes.WEB.HOME);
-  }
-
-  async clickLogout() {
-    await this.logoutLink.click();
   }
 
   async verifyLoggedInVisible() {
