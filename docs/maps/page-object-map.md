@@ -20,7 +20,17 @@
 
 ## Existing Page Objects
 
-### AutomationExerciseLandingPage (tests/pages/AutomationExerciseLandingPage.ts)
+### BasePage (src/pages/BasePage.ts)
+**Purpose:** Parent class for all Page Objects containing shared logic and `page` instance.
+
+| Method | Parameters | Returns | Description |
+|--------|------------|---------|-------------|
+| constructor() | page: Page | - | Initializes the page instance |
+
+---
+
+### AutomationExerciseLandingPage (src/pages/AutomationExerciseLandingPage.ts)
+**Extends:** `BasePage`
 **URL:** https://automationexercise.com/
 **Purpose:** Main landing page
 
@@ -34,7 +44,8 @@
 
 ---
 
-### AutomationExerciseLoginPage (tests/pages/AutomationExerciseLoginPage.ts)
+### AutomationExerciseLoginPage (src/pages/AutomationExerciseLoginPage.ts)
+**Extends:** `BasePage`
 **URL:** https://automationexercise.com/login
 **Purpose:** Login and Signup forms
 
@@ -58,7 +69,8 @@
 
 ---
 
-### AutomationExerciseNavigationMenu (tests/pages/AutomationExerciseNavigationMenu.ts)
+### AutomationExerciseNavigationMenu (src/pages/AutomationExerciseNavigationMenu.ts)
+**Extends:** `BasePage`
 **Purpose:** Header navigation menu
 
 | Method | Parameters | Returns | Description |
@@ -85,7 +97,8 @@
 
 ---
 
-### AutomationExerciseSignupPage (tests/pages/AutomationExerciseSignupPage.ts)
+### AutomationExerciseSignupPage (src/pages/AutomationExerciseSignupPage.ts)
+**Extends:** `BasePage`
 **URL:** https://automationexercise.com/signup (ENTER ACCOUNT INFORMATION page)
 **Purpose:** Account information form after initial signup
 
@@ -132,7 +145,8 @@
 
 ---
 
-### AccountCreatedPage (tests/pages/AccountCreatedPage.ts)
+### AccountCreatedPage (src/pages/AccountCreatedPage.ts)
+**Extends:** `BasePage`
 **Purpose:** Account creation success page
 
 | Method | Parameters | Returns | Description |

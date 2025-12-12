@@ -7,3 +7,5 @@ playwright/.cache/
 .DS_Store
 dist/
 .auth
+tests/testData/user-data.json
+.env

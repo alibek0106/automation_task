@@ -35,6 +35,7 @@ src/
 │   └── api/
 │       └── *.ts
 ├── pages/            # Page Object classes
+│   ├── BasePage.ts   # Parent class for all pages
 │   └── *.page.ts
 └── utils/            # Helpers, DataFactory
     └── DataFactory.ts

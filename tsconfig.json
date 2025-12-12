@@ -1,23 +1,22 @@
 {
     "compilerOptions": {
-        "target": "ES2022",
+        "target": "ES2019",
         "module": "commonjs",
-        "moduleResolution": "node",
+        "lib": [
+            "esnext",
+            "dom",
+            "dom.iterable"
+        ],
+        "types": [
+            "node"
+        ],
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
-        "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "types": [
-            "node",
-            "@playwright/test"
-        ]
+        "moduleResolution": "node"
     },
     "include": [
-        "src/**/*",
-        "tests/**/*",
-        "playwright.config.ts"
+        "**/*.ts"
     ]
 }
