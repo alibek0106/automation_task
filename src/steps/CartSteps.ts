@@ -1,60 +1,53 @@
-import { test, expect } from '@playwright/test';
+import { Page } from '@playwright/test';
+import { HomePage } from '../pages/HomePage';
 import { ProductsPage } from '../pages/ProductsPage';
-import { ProductDetailsPage } from '../pages/ProductDetailsPage';
-import { PRODUCT_NAMES } from '../constants/ProductData';
+import { ProductDetailPage } from '../pages/ProductDetailPage';
+import { CartPage } from '../pages/CartPage';
 
+/**
+ * Reusable steps for cart operations
+ */
 export class CartSteps {
     constructor(
+        private homePage: HomePage,
         private productsPage: ProductsPage,
-        private detailsPage: ProductDetailsPage
+        private productDetailPage: ProductDetailPage,
+        private cartPage: CartPage
     ) { }
 
     /**
-     * Adds a specific product by Name with custom quantity
+     * Add a single product to cart from products page
      */
-    async addProductWithQuantity(productName: string, quantity: number) {
-        await test.step(`Add "${productName}" with quantity ${quantity}`, async () => {
-            await this.productsPage.goto();
-            await this.productsPage.viewProductByName(productName);
-        })
-
-        // Verify we landed on the right page
-        // We expect the heading to match the name we clicked
-        await expect(this.detailsPage.productName, 'Product name does not match').toHaveText(productName);
-
-        await test.step('Add to cart with specified quantity', async () => {
-            await this.detailsPage.setQuantity(quantity);
-            await this.detailsPage.addToCart();
-
-            await expect(this.detailsPage.continueShoppingBtn, 'Continue shopping button is not visible').toBeVisible();
-            await this.detailsPage.clickContinueShopping();
-        })
+    async addProductToCart(productIndex: number = 0): Promise<void> {
+        await this.homePage.clickProducts();
+        await this.productsPage.clickViewProduct(productIndex);
+        await this.productDetailPage.addToCart();
+        await this.productDetailPage.clickViewCart();
     }
 
     /**
-     * Adds a specific product by Name and navigates to cart
+     * Add multiple products to cart
      */
-    async addProductAndGoToCart(productName: string) {
-        await test.step('Add a specific product by name and navigate to cart', async () => {
-            await this.productsPage.goto();
-            await this.productsPage.viewProductByName(productName);
+    async addMultipleProducts(productIndices: number[]): Promise<void> {
+        for (let i = 0; i < productIndices.length; i++) {
+            const index = productIndices[i];
+            await this.homePage.clickProducts();
+            await this.productsPage.addProductToCart(index);
 
-            await this.detailsPage.addToCart();
-            await expect(this.detailsPage.viewCartModalLink, 'View cart modal link is not visible').toBeVisible();
-            await this.detailsPage.clickViewCartFromModal();
-        })
-    }
-
-    /**
-     * Adds the first N products defined in our Data File
-     */
-    async populateCart(count: number): Promise<string[]> {
-        const productsToAdd = PRODUCT_NAMES.slice(0, count); // Get top N names
-
-        for (const name of productsToAdd) {
-            await this.addProductWithQuantity(name, 1);
+            // On last product, view cart; otherwise continue shopping
+            if (i === productIndices.length - 1) {
+                await this.productsPage.clickViewCart();
+            } else {
+                await this.productsPage.clickContinueShopping();
+            }
         }
+    }
 
-        return productsToAdd; // Return names so test knows what to expect
+    /**
+     * Verify cart page is displayed and has items
+     */
+    async verifyCartDisplayed(): Promise<void> {
+        await this.cartPage.verifyPageOpened();
+        await this.cartPage.verifyCartTableVisible();
     }
 }

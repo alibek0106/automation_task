@@ -1,134 +1,211 @@
-# GitHub Actions for Playwright Tests
+# Playwright TypeScript Automation Framework
 
-This project uses GitHub Actions to automatically run Playwright tests and publish the HTML report to GitHub Pages.
+Feature-first Spec-Driven web UI test automation framework using Playwright and TypeScript for reliable, maintainable test automation.
 
-## Workflow Overview
+## Quick Start
 
-The workflow (`.github/workflows/playwright.yml`) runs on:
-- **Push** to the `main` branch
-- **Pull requests** targeting the `main` branch
-- **Manual trigger** via the Actions tab
-  - You can select any branch to run tests on
-  - Default branch is `main`
+### Prerequisites
+- Node.js 18+
+- pnpm (recommended) or npm
 
-### Jobs
+### Installation
 
-#### 1. Test Job
-- Runs in Microsoft's official Playwright Docker container (`mcr.microsoft.com/playwright:v1.57.0-noble`)
-- Browsers are pre-installed in the container (no installation step needed)
-- Sets up Node.js 20 and pnpm
-- Implements pnpm store caching for faster dependency installation
-- Installs dependencies with `--frozen-lockfile` for reproducibility
-- Runs all Playwright tests with automatic retry (2 attempts) for failed tests
-- Captures video, screenshots, and traces for all test runs
-- Uploads test results (videos, traces, screenshots) as artifacts
-- Uploads the HTML report as an artifact
-
-#### 2. Deploy Job
-- Downloads the test report artifact
-- Deploys the HTML report to GitHub Pages
-- Runs even if tests fail (using `if: always()`)
-
-## Setup Instructions
-
-### Enable GitHub Pages
-
-1. Go to your repository **Settings** → **Pages**
-2. Under **Source**, select **GitHub Actions**
-3. Save the settings
-
-That's it! The workflow will automatically deploy reports on the next run.
-
-### View Reports
-
-After the workflow runs, your Playwright report will be available at:
-```
-https://<your-username>.github.io/<repository-name>/
-```
-
-You can find the exact URL in the workflow run logs or in the Pages settings.
-
-## Running Tests Manually
-
-You can manually trigger the workflow on any branch:
-
-1. Go to the **Actions** tab in your repository
-2. Click **Playwright Tests** workflow
-3. Click **Run workflow** button
-4. Enter the branch name you want to test (e.g., `feature/new-login`, `develop`, `main`)
-5. Click **Run workflow**
-
-This is useful for:
-- Testing feature branches before merging
-- Running tests on specific commits
-- Debugging issues on any branch
-
-## Local Testing
-
-Run tests locally using:
 ```bash
-pnpm test:e2e
+# Clone the repository
+git clone <repository-url>
+cd ai-swe-playwright-main
+
+# Install dependencies
+pnpm install
+
+# Install Playwright browsers
+pnpm exec playwright install
 ```
 
-View the HTML report locally:
+### Running Tests
+
 ```bash
-pnpm test:report
+# Run all tests
+npx playwright test
+
+# Run specific test file
+npx playwright test tests/example.spec.ts
+
+# Run tests with specific tag
+npx playwright test --grep "@smoke"
+
+# Run in debug mode
+npx playwright test --debug
+
+# Run with UI mode (interactive)
+npx playwright test --ui
+
+# View Report
+npx playwright show-report
 ```
 
-## Workflow Features
+## Environment Configuration
 
-- ✅ Automatic test execution on push/PR
-- ✅ Microsoft Playwright Docker image with pre-installed browsers
-- ✅ pnpm dependency caching for faster builds
-- ✅ **Video recording for all test runs**
-- ✅ **Trace collection for all test runs**
-- ✅ **Screenshot capture for all test runs**
-- ✅ **Automatic retry (2 attempts) for failed tests**
-- ✅ HTML report generation
-- ✅ GitHub Pages deployment
-- ✅ Test artifacts (videos, traces, screenshots) retained for 30 days
-- ✅ Concurrency control to prevent multiple deployments
-- ✅ Proper permissions for Pages deployment
-- ✅ Console output with list reporter for CI visibility
+### Required Environment Variables
 
-## Accessing Test Artifacts
+The framework requires the following environment variables to be set:
 
-After each workflow run, you can download debugging artifacts:
+- `BASE_URL` - Application base URL (e.g., https://example.com)
+- `USERNAME` - Test user username
+- `PASSWORD` - Test user password
 
-1. Go to the **Actions** tab in your repository
-2. Click on a workflow run
-3. Scroll to the **Artifacts** section at the bottom
-4. Download:
-   - **test-results**: Contains videos, traces, and screenshots for all tests
-   - **playwright-report**: HTML report for viewing in browser
+### Local Development Setup
 
-### Viewing Traces
+1. **Create .env file**:
+   ```bash
+   cp .env.example .env
+   ```
 
-To view trace files locally:
-```bash
-npx playwright show-trace path/to/trace.zip
+2. **Edit .env** and set your values:
+   ```env
+   BASE_URL=https://your-app-url.com
+   USERNAME=your_test_username
+   PASSWORD=your_test_password
+   ```
+
+3. **Never commit .env to version control** - it's already in `.gitignore`
+
+### CI/Jenkins Setup
+
+For Jenkins pipelines, use Credentials Binding to inject environment variables:
+
+```groovy
+pipeline {
+    agent any
+    
+    stages {
+        stage('Test') {
+            steps {
+                withCredentials([
+                    string(credentialsId: 'app-base-url', variable: 'BASE_URL'),
+                    usernamePassword(
+                        credentialsId: 'test-user-credentials',
+                        usernameVariable: 'USERNAME',
+                        passwordVariable: 'PASSWORD'
+                    )
+                ]) {
+                    sh 'pnpm install'
+                    sh 'pnpm test'
+                }
+            }
+        }
+    }
+}
 ```
 
-This opens an interactive trace viewer showing:
-- Network requests
-- Console logs
-- DOM snapshots
-- Screenshots at each step
-- Timing information
+**Security Notes**:
+- Passwords are automatically masked in logs
+- Never log raw credentials
+- Use Jenkins credentials management for sensitive data
 
-## Troubleshooting
+## Project Structure
 
-### Workflow fails with permissions error
-Ensure the workflow has the correct permissions in your repository settings:
-- Go to **Settings** → **Actions** → **General**
-- Under **Workflow permissions**, select **Read and write permissions**
+```
+Playwright-SDD/
+│
+├── docs/                      # Documentation
+│   ├── workflow.md           # Development workflow
+│   ├── tech-stack.md         # Technology stack
+│   ├── coding-standards.md   # Code style and naming
+│   ├── reporting.md          # Reporting setup
+│   ├── patterns/             # Rules and methodology
+│   │   ├── locators.md       # Locator extraction process
+│   │   ├── page-object.md    # Page Object rules
+│   │   ├── step-definition.md # Step definition rules
+│   │   ├── feature-input.md  # Gherkin rules
+│   │   ├── elements.md       # Framework elements
+│   │   └── api-utils.md      # API testing patterns
+│   ├── examples/             # Complete implementation examples
+│   └── maps/                 # Registry files
+│       ├── page-object-map.md # 🔴 MANDATORY: Track existing Page Objects
+│       └── steps-map.md       # 🔴 MANDATORY: Track existing Steps
+│
+├── tests/                     # Test implementation
+│   ├── api/                  # API Layer
+│   │   ├── builders/         # Request Builders
+│   │   ├── constants/        # HTTP Constants
+│   │   ├── routes/           # Endpoint definitions
+│   │   ├── schemas/          # Zod Schemas
+│   │   └── services/         # API Services
+│   ├── pages/                # Page Objects
+│   ├── steps/                # Step definitions (Action classes)
+│   ├── fixtures/             # Test fixtures (context -> pages -> steps -> api -> auth)
+│   ├── data/                 # Test data (environment/, auth/)
+│   └── specs/                # Spec files (Test Scenarios)
+│
+├── utils/                     # Utility functions
+│   ├── api/                  # API Utilities (ApiClient)
+│   ├── Config.ts             # Environment & secrets configuration
+│   ├── Decorators.ts         # @step decorator
+│   ├── TestDataGenerator.ts  # Random test data generation
+│   ├── JsonLoader.ts         # JSON file loader
+│   └── parseResponse.ts      # Zod validation utility
+│
+├── playwright.config.ts      # Playwright configuration
+├── package.json              # Dependencies and scripts
+└── tsconfig.json             # TypeScript configuration
+```
 
-### Pages deployment fails
-- Verify GitHub Pages is enabled in repository settings
-- Check that the source is set to **GitHub Actions**
-- Ensure the repository is public (or you have GitHub Pro/Enterprise for private repos)
+## Core Process: Spec Driven Development
 
-### Tests fail in CI but pass locally
-- Check environment variables (`.env` file is not available in CI by default)
-- Verify browser compatibility
-- Review the uploaded test artifacts for detailed logs
+**Input**: Gherkin Spec (AI Prompt) → **AI Agent** → **Output**: Pure Playwright TypeScript Test
+
+1.  **Spec Definition**: Define scenarios in Gherkin format (Given/When/Then) to use as a prompt for the AI.
+2.  **AI Generation**: The AI Agent converts the Gherkin spec into executable Playwright code.
+3.  **Locator Extraction**: AI uses `docs/patterns/locators.md` to find stable locators (via MCP).
+4.  **Page Objects**: AI creates/reuses Page Objects in `tests/pages/` (checking `page-object-map.md`).
+5.  **Step Implementation**: AI implements logic in `tests/steps/` or directly in tests using Page Objects.
+6.  **Validation**: Run tests to ensure they pass.
+
+## Key Features
+
+-   **TypeScript**: Type-safe, modern implementation.
+-   **Playwright Test Runner**: Fast, reliable, parallel execution.
+-   **Page Object Model**: Maintainable UI abstraction.
+-   **Element Wrappers**: Built-in logging and smart waits.
+-   **Spec Driven**: Tests derived from business specifications.
+-   **Reusable Components**: DRY principle enforcement.
+
+## Documentation
+
+### Start Here
+1.  **[Workflow](docs/workflow.md)** - Development process
+2.  **[Page Object Map](docs/maps/page-object-map.md)** - 🔴 Check before coding
+3.  **[Tech Stack](docs/tech-stack.md)** - Technologies used
+
+### Patterns (Rules)
+-   **[Locators](docs/patterns/locators.md)** - Extraction methodology
+-   **[Page Objects](docs/patterns/page-object.md)** - Page Object rules
+-   **[Step Definitions](docs/patterns/step-definition.md)** - Step rules
+-   **[Elements](docs/patterns/elements.md)** - Framework elements
+
+### Examples
+-   **[Locator Extraction](docs/examples/locator-extraction-example.md)**
+-   **[Page Object](docs/examples/page-object-example.md)**
+
+## Best Practices
+
+### ✅ Do's
+-   **Check maps/page-object-map.md BEFORE creating any code**
+-   Extract locators via MCP visual analysis first
+-   Create one Page Object per unique page/URL
+-   Reuse existing Page Objects and steps
+-   Use framework element wrappers
+-   **Update maps/page-object-map.md AFTER creating new code**
+
+### ❌ Don'ts
+-   Write code without locator validation
+-   Create duplicate Page Objects
+-   Use direct Playwright calls in tests (use Page Objects)
+-   Hard-code test data in code
+-   Use `page.waitForTimeout()` (manual sleep)
+
+## Support
+
+For issues or questions:
+-   Check [Examples](docs/examples/) for common scenarios

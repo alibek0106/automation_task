@@ -14,7 +14,6 @@ setup('authenticate workers', async ({ page, request, context, homePage, loginPa
         ? config.workers
         : 4;
 
-    console.log(`Creating ${workerCount} worker accounts for parallel execution...`);
 
     // Create unique account for each worker
     for (let workerIndex = 0; workerIndex < workerCount; workerIndex++) {
@@ -25,7 +24,6 @@ setup('authenticate workers', async ({ page, request, context, homePage, loginPa
             const storageStatePath = path.join(__dirname, `../playwright/.auth/worker-${workerIndex}.json`);
             const userDataPath = path.join(__dirname, `../playwright/.auth/user-${workerIndex}.json`);
 
-            console.log(`[Worker ${workerIndex}] Creating account: ${user.email}`);
 
             // Create user via API
             await userService.createAccount(user);
@@ -40,17 +38,13 @@ setup('authenticate workers', async ({ page, request, context, homePage, loginPa
             await context.storageState({ path: storageStatePath });
             fs.writeFileSync(userDataPath, JSON.stringify(user, null, 2));
 
-            console.log(`[Worker ${workerIndex}] Account created successfully`);
 
             // Clear session for next worker (if not last iteration)
             if (workerIndex < workerCount - 1) {
                 await context.clearCookies();
             }
         } catch (error) {
-            console.error(`[Worker ${workerIndex}] Failed to create account:`, error);
             throw error;
         }
     }
-
-    console.log(`Successfully created ${workerCount} worker accounts`);
 });

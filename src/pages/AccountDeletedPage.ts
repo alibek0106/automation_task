@@ -1,19 +1,35 @@
-import { Page, Locator } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { Page, Locator, expect } from "@playwright/test";
+import { BasePage } from "./BasePage";
 
 export class AccountDeletedPage extends BasePage {
-  readonly deletedMessage: Locator;
-  readonly continueBtn: Locator;
-  readonly deletedHeader: Locator;
+    readonly accountDeletedHeading: Locator = this.page
+        .getByRole("heading", { name: /account deleted/i })
+        .describe("Account deleted heading");
+    readonly continueButton: Locator = this.page
+        .getByRole("link", { name: /continue/i })
+        .describe("Continue button");
 
-  constructor(page: Page) {
-    super(page);
-    this.deletedHeader = page.getByRole('heading', { name: 'Account Deleted!' }).describe('Deleted page header');
-    this.deletedMessage = page.getByText('Account Deleted!').describe('Account deleted message');
-    this.continueBtn = page.locator('[data-qa="continue-button"]').describe('Continue button');
-  }
+    constructor(page: Page) {
+        super(
+            page,
+            page.getByRole("heading", { name: /account deleted/i }).describe("Account deleted heading")
+        );
+    }
 
-  async clickContinue() {
-    await this.continueBtn.click();
-  }
+    /**
+     * Verify account deleted message is visible
+     */
+    async verifyAccountDeleted(): Promise<void> {
+        await expect(
+            this.accountDeletedHeading,
+            "Account deleted heading should be visible"
+        ).toBeVisible();
+    }
+
+    /**
+     * Click continue button
+     */
+    async clickContinue(): Promise<void> {
+        await this.continueButton.click();
+    }
 }
