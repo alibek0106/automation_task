@@ -67,6 +67,18 @@ export class AutomationExerciseProductsPage extends BasePage {
         await product.locator('.add-to-cart').first().click();
     }
 
+    async viewProductDetailsByName(productName: string) {
+        // Find the product card with the text, then find the 'View Product' button within or associated with it?
+        // Structure: .col-sm-4 > .product-image-wrapper > .choose > .nav > li > a (View Product)
+        // Wait, 'viewProductButtons' in constructor is locator('.choose .nav-justified'). 
+        // This is a list matching cards.
+        // It's safer to scope to the product card.
+        // Product Card: .product-image-wrapper.
+        // Inside wrapper: .choose .nav-justified a
+        const productCard = this.productCards.filter({ hasText: productName }).first();
+        await productCard.locator('.choose a').click();
+    }
+
     async clickContinueShopping() {
         await this.page.getByRole('button', { name: 'Continue Shopping' }).click();
     }

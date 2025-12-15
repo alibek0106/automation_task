@@ -14,6 +14,11 @@ export class AutomationExerciseProductsSteps {
         await this.productsPage.viewProductDetails(0);
     }
 
+    @step('View details of product: {0}')
+    async viewProductDetails(productName: string) {
+        await this.productsPage.viewProductDetailsByName(productName);
+    }
+
     @step('Navigate to Products page')
     async navigateToProductsPage() {
         await this.productsPage.navigate();
