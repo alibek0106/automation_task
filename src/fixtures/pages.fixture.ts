@@ -9,6 +9,7 @@ import { AutomationExerciseCartPage } from '../pages/AutomationExerciseCartPage'
 import { AutomationExerciseCheckoutPage } from '../pages/AutomationExerciseCheckoutPage';
 import { AutomationExercisePaymentPage } from '../pages/AutomationExercisePaymentPage';
 import { AutomationExerciseOrderConfirmationPage } from '../pages/AutomationExerciseOrderConfirmationPage';
+import { AutomationExerciseContactUsPage } from '../pages/AutomationExerciseContactUsPage';
 import { Page } from '@playwright/test';
 
 export interface PagesFixture {
@@ -23,6 +24,7 @@ export interface PagesFixture {
     automationExerciseCheckoutPage: AutomationExerciseCheckoutPage;
     automationExercisePaymentPage: AutomationExercisePaymentPage;
     automationExerciseOrderConfirmationPage: AutomationExerciseOrderConfirmationPage;
+    automationExerciseContactUsPage: AutomationExerciseContactUsPage;
 }
 
 
@@ -59,5 +61,8 @@ export const pagesFixture = {
     },
     automationExerciseOrderConfirmationPage: async ({ page }: { page: Page }, use: (p: AutomationExerciseOrderConfirmationPage) => Promise<void>) => {
         await use(new AutomationExerciseOrderConfirmationPage(page));
+    },
+    automationExerciseContactUsPage: async ({ page }: { page: Page }, use: (p: AutomationExerciseContactUsPage) => Promise<void>) => {
+        await use(new AutomationExerciseContactUsPage(page));
     },
 };
