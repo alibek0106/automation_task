@@ -101,6 +101,41 @@ await automationExerciseNavigationSteps.verifyUserLoggedIn(username);
 
 ---
 
+---
+
+### AutomationExerciseProductsSteps (src/steps/AutomationExerciseProductsSteps.ts)
+**Purpose:** Products listing interactions
+
+| Method | Parameters | Description | Composite? |
+|--------|------------|-------------|------------|
+| verifyProductsPageVisible() | - | Verify products page loaded | ❌ |
+| viewFirstProductDetails() | - | Click first View Product button | ❌ |
+| addProductToCart() | index | Add product at index to cart | ❌ |
+
+---
+
+### AutomationExerciseProductDetailSteps (src/steps/AutomationExerciseProductDetailSteps.ts)
+**Purpose:** Product details page interactions
+
+| Method | Parameters | Description | Composite? |
+|--------|------------|-------------|------------|
+| verifyProductDetailVisible() | - | Verify details page loaded | ❌ |
+| addProductToCartWithQuantity() | quantity | Set quantity and add to cart | ✅ |
+| clickContinueShopping() | - | Handle modal "Continue Shopping" | ❌ |
+| clickViewCart() | - | Handle modal "View Cart" | ❌ |
+
+---
+
+### AutomationExerciseCartSteps (src/steps/AutomationExerciseCartSteps.ts)
+**Purpose:** Cart page verification
+
+| Method | Parameters | Description | Composite? |
+|--------|------------|-------------|------------|
+| verifyCartVisible() | - | Verify cart page loaded | ❌ |
+| verifyCartContent() | products | Verify list of products in cart | ✅ |
+
+---
+
 ## Update History
 
 | Date | Steps Class | Changes |
@@ -109,4 +144,7 @@ await automationExerciseNavigationSteps.verifyUserLoggedIn(username);
 | 2025-12-12 | AutomationExerciseLoginSteps | Added verifyNewUserSignupVisible(), enterSignupCredentials(), clickSignupButton(), signup() |
 | 2025-12-12 | AutomationExerciseNavigationSteps | Added clickHome(), clickProducts(), clickCart() |
 | 2025-12-12 | AutomationExerciseSignupSteps | Added full signup form methods |
+| 2025-12-15 | AutomationExerciseProductsSteps | Added keys steps for products page |
+| 2025-12-15 | AutomationExerciseProductDetailSteps | Added steps for product details |
+| 2025-12-15 | AutomationExerciseCartSteps | Added steps for cart verification |
 | 2025-12-12 | All | Reset for Automation Exercise project |

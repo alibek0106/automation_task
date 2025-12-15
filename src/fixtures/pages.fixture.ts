@@ -3,6 +3,9 @@ import { AutomationExerciseLoginPage } from '../pages/AutomationExerciseLoginPag
 import { AutomationExerciseSignupPage } from '../pages/AutomationExerciseSignupPage';
 import { AccountCreatedPage } from '../pages/AccountCreatedPage';
 import { AutomationExerciseNavigationMenu } from '../pages/AutomationExerciseNavigationMenu';
+import { AutomationExerciseProductsPage } from '../pages/AutomationExerciseProductsPage';
+import { AutomationExerciseProductDetailPage } from '../pages/AutomationExerciseProductDetailPage';
+import { AutomationExerciseCartPage } from '../pages/AutomationExerciseCartPage';
 import { Page } from '@playwright/test';
 
 export interface PagesFixture {
@@ -11,6 +14,9 @@ export interface PagesFixture {
     automationExerciseSignupPage: AutomationExerciseSignupPage;
     accountCreatedPage: AccountCreatedPage;
     automationExerciseNavigationMenu: AutomationExerciseNavigationMenu;
+    automationExerciseProductsPage: AutomationExerciseProductsPage;
+    automationExerciseProductDetailPage: AutomationExerciseProductDetailPage;
+    automationExerciseCartPage: AutomationExerciseCartPage;
 }
 
 export const pagesFixture = {
@@ -28,5 +34,14 @@ export const pagesFixture = {
     },
     automationExerciseNavigationMenu: async ({ page }: { page: Page }, use: (p: AutomationExerciseNavigationMenu) => Promise<void>) => {
         await use(new AutomationExerciseNavigationMenu(page));
+    },
+    automationExerciseProductsPage: async ({ page }: { page: Page }, use: (p: AutomationExerciseProductsPage) => Promise<void>) => {
+        await use(new AutomationExerciseProductsPage(page));
+    },
+    automationExerciseProductDetailPage: async ({ page }: { page: Page }, use: (p: AutomationExerciseProductDetailPage) => Promise<void>) => {
+        await use(new AutomationExerciseProductDetailPage(page));
+    },
+    automationExerciseCartPage: async ({ page }: { page: Page }, use: (p: AutomationExerciseCartPage) => Promise<void>) => {
+        await use(new AutomationExerciseCartPage(page));
     },
 };

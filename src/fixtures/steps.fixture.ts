@@ -2,6 +2,9 @@ import { AutomationExerciseLandingSteps } from '../steps/AutomationExerciseLandi
 import { AutomationExerciseLoginSteps } from '../steps/AutomationExerciseLoginSteps';
 import { AutomationExerciseSignupSteps } from '../steps/AutomationExerciseSignupSteps';
 import { AutomationExerciseNavigationSteps } from '../steps/AutomationExerciseNavigationSteps';
+import { AutomationExerciseProductsSteps } from '../steps/AutomationExerciseProductsSteps';
+import { AutomationExerciseProductDetailSteps } from '../steps/AutomationExerciseProductDetailSteps';
+import { AutomationExerciseCartSteps } from '../steps/AutomationExerciseCartSteps';
 import { PagesFixture } from './pages.fixture';
 
 export interface StepsFixture {
@@ -9,6 +12,9 @@ export interface StepsFixture {
     automationExerciseLoginSteps: AutomationExerciseLoginSteps;
     automationExerciseSignupSteps: AutomationExerciseSignupSteps;
     automationExerciseNavigationSteps: AutomationExerciseNavigationSteps;
+    automationExerciseProductsSteps: AutomationExerciseProductsSteps;
+    automationExerciseProductDetailSteps: AutomationExerciseProductDetailSteps;
+    automationExerciseCartSteps: AutomationExerciseCartSteps;
 }
 
 export const stepsFixture = {
@@ -23,5 +29,14 @@ export const stepsFixture = {
     },
     automationExerciseNavigationSteps: async ({ automationExerciseNavigationMenu }: PagesFixture, use: (s: AutomationExerciseNavigationSteps) => Promise<void>) => {
         await use(new AutomationExerciseNavigationSteps(automationExerciseNavigationMenu));
+    },
+    automationExerciseProductsSteps: async ({ automationExerciseProductsPage }: PagesFixture, use: (s: AutomationExerciseProductsSteps) => Promise<void>) => {
+        await use(new AutomationExerciseProductsSteps(automationExerciseProductsPage));
+    },
+    automationExerciseProductDetailSteps: async ({ automationExerciseProductDetailPage }: PagesFixture, use: (s: AutomationExerciseProductDetailSteps) => Promise<void>) => {
+        await use(new AutomationExerciseProductDetailSteps(automationExerciseProductDetailPage));
+    },
+    automationExerciseCartSteps: async ({ automationExerciseCartPage }: PagesFixture, use: (s: AutomationExerciseCartSteps) => Promise<void>) => {
+        await use(new AutomationExerciseCartSteps(automationExerciseCartPage));
     },
 };

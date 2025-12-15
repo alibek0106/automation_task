@@ -162,6 +162,62 @@
 
 ---
 
+### AutomationExerciseProductsPage (src/pages/AutomationExerciseProductsPage.ts)
+**Extends:** `BasePage`
+**URL:** https://automationexercise.com/products
+**Purpose:** List of all products
+
+| Method | Parameters | Returns | Description |
+|--------|------------|---------|-------------|
+| navigate() | - | Promise<void> | Navigate to Products page |
+| verifyPageOpened() | - | Promise<void> | Verify products page is linked |
+| viewProductDetails() | index: number | Promise<void> | Click View Product for item at index |
+| addProductToCart() | index: number | Promise<void> | Click Add to Cart for item at index |
+
+**Locators:**
+- Products List: `.features_items`
+- View Product Buttons: `.choose .nav-justified`
+- Add to Cart Buttons: `.add-to-cart-overlay`
+
+---
+
+### AutomationExerciseProductDetailPage (src/pages/AutomationExerciseProductDetailPage.ts)
+**Extends:** `BasePage`
+**Purpose:** Individual product details and quantity selection
+
+| Method | Parameters | Returns | Description |
+|--------|------------|---------|-------------|
+| verifyProductDetailVisible() | - | Promise<void> | Verify details visible |
+| setQuantity() | quantity: string | Promise<void> | Set product quantity |
+| addToCart() | - | Promise<void> | Click Add to cart |
+| clickContinueShopping() | - | Promise<void> | Click Continue Shopping in modal |
+| clickViewCart() | - | Promise<void> | Click View Cart in modal |
+
+**Locators:**
+- Quantity Input: `#quantity`
+- Add to Cart Button: `button.cart`
+- Continue Shopping: `.modal-footer button`
+- View Cart: `.modal-body a[href="/view_cart"]`
+
+---
+
+### AutomationExerciseCartPage (src/pages/AutomationExerciseCartPage.ts)
+**Extends:** `BasePage`
+**URL:** https://automationexercise.com/view_cart
+**Purpose:** Shopping cart view
+
+| Method | Parameters | Returns | Description |
+|--------|------------|---------|-------------|
+| verifyCartVisible() | - | Promise<void> | Verify cart table visible |
+| verifyProductQuantity() | name, quantity | Promise<void> | Verify quantity for specific product |
+| verifyProductPrice() | name, price | Promise<void> | Verify price for specific product |
+| verifyTotalPrice() | name, total | Promise<void> | Verify total price for specific product |
+
+**Locators:**
+- Cart Table: `#cart_info_table`
+
+---
+
 ## Method Naming Conventions
 
 ### Actions
@@ -184,4 +240,7 @@
 | 2025-12-12 | AutomationExerciseSignupPage | Added new Page Object for signup form | AI Agent |
 | 2025-12-12 | AccountCreatedPage | Added new Page Object for account created page | AI Agent |
 | 2025-12-12 | AutomationExerciseLoginPage | Added verifyNewUserSignupVisible() method | AI Agent |
+| 2025-12-15 | AutomationExerciseProductsPage | Added new Page Object for products list | AI Agent |
+| 2025-12-15 | AutomationExerciseProductDetailPage | Added new Page Object for product details | AI Agent |
+| 2025-12-15 | AutomationExerciseCartPage | Added new Page Object for cart | AI Agent |
 | 2025-12-12 | All | Reset for Automation Exercise project | System |
