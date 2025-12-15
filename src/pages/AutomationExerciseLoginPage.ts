@@ -1,5 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { Routes } from '../constants/Routes';
+import { MESSSAGES } from '../constants/Messages';
 import { BasePage } from './BasePage';
 
 export class AutomationExerciseLoginPage extends BasePage {
@@ -21,12 +22,12 @@ export class AutomationExerciseLoginPage extends BasePage {
         this.loginEmailInput = page.locator('[data-qa="login-email"]');
         this.loginPasswordInput = page.locator('[data-qa="login-password"]');
         this.loginButton = page.locator('[data-qa="login-button"]');
-        this.loginHeader = page.getByRole('heading', { name: 'Login to your account' });
+        this.loginHeader = page.getByRole('heading', { name: MESSSAGES.LOGIN_HEADER });
 
         this.signupNameInput = page.locator('[data-qa="signup-name"]');
         this.signupEmailInput = page.locator('[data-qa="signup-email"]');
         this.signupButton = page.locator('[data-qa="signup-button"]');
-        this.newUserSignupHeader = page.getByRole('heading', { name: 'New User Signup!' });
+        this.newUserSignupHeader = page.getByRole('heading', { name: MESSSAGES.NEW_USER_SIGNUP });
     }
 
     async navigate() {

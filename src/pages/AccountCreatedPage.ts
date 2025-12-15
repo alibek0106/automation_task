@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { MESSSAGES } from '../constants/Messages';
 import { BasePage } from './BasePage';
 
 export class AccountCreatedPage extends BasePage {
@@ -7,7 +8,7 @@ export class AccountCreatedPage extends BasePage {
 
     constructor(page: Page) {
         super(page);
-        this.accountCreatedHeader = page.getByText('ACCOUNT CREATED!');
+        this.accountCreatedHeader = page.getByText(MESSSAGES.ACCOUNT_CREATED);
         this.continueButton = page.locator('[data-qa="continue-button"]');
     }
 

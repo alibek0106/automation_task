@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { MESSSAGES } from '../constants/Messages';
 import { BasePage } from './BasePage';
 
 export class AutomationExerciseCartPage extends BasePage {
@@ -9,6 +10,15 @@ export class AutomationExerciseCartPage extends BasePage {
         super(page);
         this.cartTable = page.locator('#cart_info_table');
         this.cartRows = page.locator('#cart_info_table tbody tr');
+    }
+
+    async removeProduct(productName: string) {
+        const row = this.cartRows.filter({ hasText: productName });
+        await row.locator('.cart_quantity_delete').click();
+    }
+
+    async verifyCartEmpty() {
+        await expect(this.page.locator('#empty_cart .text-center')).toContainText(MESSSAGES.CART_EMPTY);
     }
 
     async verifyCartVisible() {
@@ -36,5 +46,9 @@ export class AutomationExerciseCartPage extends BasePage {
 
     async getCartProducts() {
         return await this.cartRows.all();
+    }
+
+    async verifyProductRemoved(productName: string) {
+        await expect(this.cartRows.filter({ hasText: productName })).not.toBeVisible();
     }
 }

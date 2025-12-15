@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { MESSSAGES } from '../constants/Messages';
 import { BasePage } from './BasePage';
 
 export class AutomationExerciseSignupPage extends BasePage {
@@ -32,7 +33,7 @@ export class AutomationExerciseSignupPage extends BasePage {
     constructor(page: Page) {
         super(page);
 
-        this.accountInfoHeader = page.getByText('ENTER ACCOUNT INFORMATION');
+        this.accountInfoHeader = page.getByText(MESSSAGES.ENTER_ACCOUNT_INFO);
 
         this.titleMr = page.locator('#id_gender1');
         this.titleMrs = page.locator('#id_gender2');

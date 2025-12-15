@@ -1,16 +1,17 @@
 import { faker } from '@faker-js/faker';
+import { USER_CONSTANTS } from '../constants/UserConstants';
 
 export class DataFactory {
     static generateUser() {
         // Use consistent formatting for easier debugging
         const firstName = faker.person.firstName();
         const lastName = faker.person.lastName();
-        const email = faker.internet.email({ firstName, lastName, provider: 'test.com' });
+        const email = faker.internet.email({ firstName, lastName, provider: USER_CONSTANTS.EMAIL_PROVIDER });
 
         return {
             name: `${firstName} ${lastName}`,
             email: email.toLowerCase(),
-            password: 'StrongP@ss1!', // Default strong password
+            password: USER_CONSTANTS.DEFAULT_PASSWORD, // Default strong password
             firstName,
             lastName
         };
@@ -18,8 +19,8 @@ export class DataFactory {
 
     static generateAccountDetails() {
         return {
-            title: faker.helpers.arrayElement(['Mr.', 'Mrs.']) as 'Mr.' | 'Mrs.',
-            password: 'StrongP@ss1!',
+            title: faker.helpers.arrayElement([USER_CONSTANTS.TITLES.MR, USER_CONSTANTS.TITLES.MRS]) as 'Mr.' | 'Mrs.',
+            password: USER_CONSTANTS.DEFAULT_PASSWORD,
             day: String(faker.number.int({ min: 1, max: 28 })),
             month: faker.date.month(),
             year: String(faker.number.int({ min: 1970, max: 2005 }))
@@ -33,7 +34,7 @@ export class DataFactory {
             company: faker.company.name(),
             address: faker.location.streetAddress(),
             address2: faker.location.secondaryAddress(),
-            country: 'United States', // Restricted list in app
+            country: USER_CONSTANTS.COUNTRY, // Restricted list in app
             state: faker.location.state(),
             city: faker.location.city(),
             zipcode: faker.location.zipCode(),
