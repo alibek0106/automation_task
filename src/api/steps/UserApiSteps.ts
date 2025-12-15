@@ -1,6 +1,7 @@
 import { ApiClient } from '../ApiClient';
 import { User, AccountDetails, AddressInfo } from '../../utils/DataFactory';
 import { expect } from '@playwright/test';
+import { API_STATUS_CODES } from '../../utils/Constants';
 
 export class UserApiSteps {
     constructor(private apiClient: ApiClient) { }
@@ -33,7 +34,7 @@ export class UserApiSteps {
         // API returns 200/201 but strict checking is good. 
         // AutomationExercise API often returns JSON string like "User created!" inside HTML sometimes?
         // Let's assume expect(response.ok()).toBeTruthy();
-        expect(response.status()).toBe(200); // Doc said 201 but typically 200
+        expect(response.status()).toBe(API_STATUS_CODES.OK); // Doc said 201 but typically 200
         // Or confirm status logic later. Start with basics.
     }
 
@@ -43,6 +44,6 @@ export class UserApiSteps {
             password: password
         };
         const response = await this.apiClient.delete('/api/deleteAccount', data);
-        expect(response.status()).toBe(200);
+        expect(response.status()).toBe(API_STATUS_CODES.OK);
     }
 }

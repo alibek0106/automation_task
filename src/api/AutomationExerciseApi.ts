@@ -1,5 +1,5 @@
 import { APIRequestContext, expect } from '@playwright/test';
-import { API_ENDPOINTS, TIMEOUTS } from '../utils/Constants';
+import { API_ENDPOINTS, TIMEOUTS, API_STATUS_CODES } from '../utils/Constants';
 import { User } from '../utils/DataFactory';
 
 export class AutomationExerciseApi {
@@ -35,7 +35,7 @@ export class AutomationExerciseApi {
 
         // The API might return 200 even for failures, so we check the response body if possible
         // But for this exercise, we assume 200 OK means success unless we parse the message
-        expect(response.status(), `Failed to register user via API: ${response.statusText()}`).toBe(200);
+        expect(response.status(), `Failed to register user via API: ${response.statusText()}`).toBe(API_STATUS_CODES.OK);
 
         const responseBody = await response.text();
         expect(responseBody).toContain('User created!');
@@ -55,7 +55,7 @@ export class AutomationExerciseApi {
             timeout: TIMEOUTS.API_TIMEOUT
         });
 
-        expect(response.status(), `Failed to delete user via API: ${response.statusText()}`).toBe(200);
+        expect(response.status(), `Failed to delete user via API: ${response.statusText()}`).toBe(API_STATUS_CODES.OK);
         const responseBody = await response.text();
         expect(responseBody).toContain('Account deleted!');
     }
