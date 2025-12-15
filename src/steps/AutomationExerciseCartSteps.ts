@@ -32,4 +32,9 @@ export class AutomationExerciseCartSteps {
     async verifyCartEmpty() {
         await this.cartPage.verifyCartEmpty();
     }
+
+    @step('Click "Proceed To Checkout"')
+    async proceedToCheckout() {
+        await this.cartPage.proceedToCheckout();
+    }
 }

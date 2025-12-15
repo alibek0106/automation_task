@@ -2,25 +2,25 @@ import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class AutomationExerciseProductDetailPage extends BasePage {
-    readonly quantityInput: Locator;
-    readonly addToCartButton: Locator;
-    readonly productInformation: Locator;
-    readonly productName: Locator;
-    readonly productPrice: Locator;
-    readonly continueShoppingButton: Locator;
-    readonly viewCartLink: Locator;
+    private readonly quantityInput: Locator;
+    private readonly addToCartButton: Locator;
+    private readonly productInformation: Locator;
+    private readonly productName: Locator;
+    private readonly productPrice: Locator;
+    private readonly continueShoppingButton: Locator;
+    private readonly viewCartLink: Locator;
 
     constructor(page: Page) {
-        super(page);
-        this.quantityInput = page.locator('#quantity');
-        this.addToCartButton = page.locator('button.cart');
-        this.productInformation = page.locator('.product-information');
+        super(page, 'ProductDetailPage');
+        this.quantityInput = this.resolveLocator('#quantity', 'Quantity Input');
+        this.addToCartButton = this.resolveLocator('button.cart', 'Add To Cart Button');
+        this.productInformation = this.resolveLocator('.product-information', 'Product Information');
         // Product Details
-        this.productName = page.locator('.product-information h2');
-        this.productPrice = page.locator('.product-information span span');
+        this.productName = this.resolveLocator('.product-information h2', 'Product Name');
+        this.productPrice = this.resolveLocator('.product-information span span', 'Product Price');
         // Modal buttons
-        this.continueShoppingButton = page.locator('.modal-footer button');
-        this.viewCartLink = page.locator('.modal-body a[href="/view_cart"]');
+        this.continueShoppingButton = this.resolveLocator('.modal-footer button', 'Continue Shopping Button');
+        this.viewCartLink = this.resolveLocator('.modal-body a[href="/view_cart"]', 'View Cart Link');
     }
 
     async verifyProductDetailVisible() {

@@ -5,28 +5,28 @@ import { BasePage } from './BasePage';
 
 export class AutomationExerciseLoginPage extends BasePage {
     // Login Form Locators
-    readonly loginEmailInput: Locator;
-    readonly loginPasswordInput: Locator;
-    readonly loginButton: Locator;
-    readonly loginHeader: Locator;
+    private readonly loginEmailInput: Locator;
+    private readonly loginPasswordInput: Locator;
+    private readonly loginButton: Locator;
+    private readonly loginHeader: Locator;
 
     // Signup Form Locators
-    readonly signupNameInput: Locator;
-    readonly signupEmailInput: Locator;
-    readonly signupButton: Locator;
-    readonly newUserSignupHeader: Locator;
+    private readonly signupNameInput: Locator;
+    private readonly signupEmailInput: Locator;
+    private readonly signupButton: Locator;
+    private readonly newUserSignupHeader: Locator;
 
     constructor(page: Page) {
-        super(page);
+        super(page, 'LoginPage');
 
-        this.loginEmailInput = page.locator('[data-qa="login-email"]');
-        this.loginPasswordInput = page.locator('[data-qa="login-password"]');
-        this.loginButton = page.locator('[data-qa="login-button"]');
-        this.loginHeader = page.getByRole('heading', { name: MESSSAGES.LOGIN_HEADER });
+        this.loginEmailInput = this.resolveLocator('[data-qa="login-email"]', 'Login Email Input');
+        this.loginPasswordInput = this.resolveLocator('[data-qa="login-password"]', 'Login Password Input');
+        this.loginButton = this.resolveLocator('[data-qa="login-button"]', 'Login Button');
+        this.loginHeader = page.getByRole('heading', { name: MESSSAGES.LOGIN_HEADER }); // getByRole is self-describing enough usually
 
-        this.signupNameInput = page.locator('[data-qa="signup-name"]');
-        this.signupEmailInput = page.locator('[data-qa="signup-email"]');
-        this.signupButton = page.locator('[data-qa="signup-button"]');
+        this.signupNameInput = this.resolveLocator('[data-qa="signup-name"]', 'Signup Name Input');
+        this.signupEmailInput = this.resolveLocator('[data-qa="signup-email"]', 'Signup Email Input');
+        this.signupButton = this.resolveLocator('[data-qa="signup-button"]', 'Signup Button');
         this.newUserSignupHeader = page.getByRole('heading', { name: MESSSAGES.NEW_USER_SIGNUP });
     }
 

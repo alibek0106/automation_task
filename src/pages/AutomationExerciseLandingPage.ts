@@ -3,11 +3,11 @@ import { Routes } from '../constants/Routes';
 import { BasePage } from './BasePage';
 
 export class AutomationExerciseLandingPage extends BasePage {
-    readonly body: Locator;
+    private readonly body: Locator;
 
     constructor(page: Page) {
-        super(page);
-        this.body = page.locator('body');
+        super(page, 'LandingPage');
+        this.body = this.resolveLocator('body', 'Body');
     }
 
     async navigate() {

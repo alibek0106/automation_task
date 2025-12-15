@@ -4,58 +4,58 @@ import { BasePage } from './BasePage';
 
 export class AutomationExerciseSignupPage extends BasePage {
     // Header
-    readonly accountInfoHeader: Locator;
+    private readonly accountInfoHeader: Locator;
 
     // Account Info
-    readonly titleMr: Locator;
-    readonly titleMrs: Locator;
-    readonly passwordInput: Locator;
-    readonly daysDropdown: Locator;
-    readonly monthsDropdown: Locator;
-    readonly yearsDropdown: Locator;
-    readonly newsletterCheckbox: Locator;
-    readonly specialOffersCheckbox: Locator;
+    private readonly titleMr: Locator;
+    private readonly titleMrs: Locator;
+    private readonly passwordInput: Locator;
+    private readonly daysDropdown: Locator;
+    private readonly monthsDropdown: Locator;
+    private readonly yearsDropdown: Locator;
+    private readonly newsletterCheckbox: Locator;
+    private readonly specialOffersCheckbox: Locator;
 
     // Address Info
-    readonly firstNameInput: Locator;
-    readonly lastNameInput: Locator;
-    readonly companyInput: Locator;
-    readonly addressInput: Locator;
-    readonly address2Input: Locator;
-    readonly countryDropdown: Locator;
-    readonly stateInput: Locator;
-    readonly cityInput: Locator;
-    readonly zipcodeInput: Locator;
-    readonly mobileNumberInput: Locator;
+    private readonly firstNameInput: Locator;
+    private readonly lastNameInput: Locator;
+    private readonly companyInput: Locator;
+    private readonly addressInput: Locator;
+    private readonly address2Input: Locator;
+    private readonly countryDropdown: Locator;
+    private readonly stateInput: Locator;
+    private readonly cityInput: Locator;
+    private readonly zipcodeInput: Locator;
+    private readonly mobileNumberInput: Locator;
 
-    readonly createAccountButton: Locator;
+    private readonly createAccountButton: Locator;
 
     constructor(page: Page) {
-        super(page);
+        super(page, 'SignupPage');
 
         this.accountInfoHeader = page.getByText(MESSSAGES.ENTER_ACCOUNT_INFO);
 
-        this.titleMr = page.locator('#id_gender1');
-        this.titleMrs = page.locator('#id_gender2');
-        this.passwordInput = page.locator('[data-qa="password"]');
-        this.daysDropdown = page.locator('[data-qa="days"]');
-        this.monthsDropdown = page.locator('[data-qa="months"]');
-        this.yearsDropdown = page.locator('[data-qa="years"]');
-        this.newsletterCheckbox = page.locator('#newsletter');
-        this.specialOffersCheckbox = page.locator('#optin');
+        this.titleMr = this.resolveLocator('#id_gender1', 'Title Mr');
+        this.titleMrs = this.resolveLocator('#id_gender2', 'Title Mrs');
+        this.passwordInput = this.resolveLocator('[data-qa="password"]', 'Password Input');
+        this.daysDropdown = this.resolveLocator('[data-qa="days"]', 'Days Dropdown');
+        this.monthsDropdown = this.resolveLocator('[data-qa="months"]', 'Months Dropdown');
+        this.yearsDropdown = this.resolveLocator('[data-qa="years"]', 'Years Dropdown');
+        this.newsletterCheckbox = this.resolveLocator('#newsletter', 'Newsletter Checkbox');
+        this.specialOffersCheckbox = this.resolveLocator('#optin', 'Special Offers Checkbox');
 
-        this.firstNameInput = page.locator('[data-qa="first_name"]');
-        this.lastNameInput = page.locator('[data-qa="last_name"]');
-        this.companyInput = page.locator('[data-qa="company"]');
-        this.addressInput = page.locator('[data-qa="address"]');
-        this.address2Input = page.locator('[data-qa="address2"]');
-        this.countryDropdown = page.locator('[data-qa="country"]');
-        this.stateInput = page.locator('[data-qa="state"]');
-        this.cityInput = page.locator('[data-qa="city"]');
-        this.zipcodeInput = page.locator('[data-qa="zipcode"]');
-        this.mobileNumberInput = page.locator('[data-qa="mobile_number"]');
+        this.firstNameInput = this.resolveLocator('[data-qa="first_name"]', 'First Name Input');
+        this.lastNameInput = this.resolveLocator('[data-qa="last_name"]', 'Last Name Input');
+        this.companyInput = this.resolveLocator('[data-qa="company"]', 'Company Input');
+        this.addressInput = this.resolveLocator('[data-qa="address"]', 'Address Input');
+        this.address2Input = this.resolveLocator('[data-qa="address2"]', 'Address2 Input');
+        this.countryDropdown = this.resolveLocator('[data-qa="country"]', 'Country Dropdown');
+        this.stateInput = this.resolveLocator('[data-qa="state"]', 'State Input');
+        this.cityInput = this.resolveLocator('[data-qa="city"]', 'City Input');
+        this.zipcodeInput = this.resolveLocator('[data-qa="zipcode"]', 'Zipcode Input');
+        this.mobileNumberInput = this.resolveLocator('[data-qa="mobile_number"]', 'Mobile Number Input');
 
-        this.createAccountButton = page.locator('[data-qa="create-account"]');
+        this.createAccountButton = this.resolveLocator('[data-qa="create-account"]', 'Create Account Button');
     }
 
     async verifyAccountInfoPageOpened() {

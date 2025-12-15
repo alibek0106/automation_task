@@ -3,13 +3,17 @@ import { MESSSAGES } from '../constants/Messages';
 import { BasePage } from './BasePage';
 
 export class AutomationExerciseCartPage extends BasePage {
-    readonly cartTable: Locator;
-    readonly cartRows: Locator;
+    private readonly cartTable: Locator;
+    private readonly cartRows: Locator;
+    private readonly emptyCartMessage: Locator;
+    private readonly proceedToCheckoutButton: Locator;
 
     constructor(page: Page) {
-        super(page);
-        this.cartTable = page.locator('#cart_info_table');
-        this.cartRows = page.locator('#cart_info_table tbody tr');
+        super(page, 'CartPage');
+        this.cartTable = this.resolveLocator('#cart_info_table', 'Cart Table');
+        this.cartRows = this.resolveLocator('#cart_info_table tbody tr', 'Cart Rows');
+        this.emptyCartMessage = this.resolveLocator('#empty_cart', 'Empty Cart Message');
+        this.proceedToCheckoutButton = this.resolveLocator('text=Proceed To Checkout', 'Proceed To Checkout Button');
     }
 
     async removeProduct(productName: string) {
@@ -18,7 +22,11 @@ export class AutomationExerciseCartPage extends BasePage {
     }
 
     async verifyCartEmpty() {
-        await expect(this.page.locator('#empty_cart .text-center')).toContainText(MESSSAGES.CART_EMPTY);
+        await expect(this.emptyCartMessage).toContainText(MESSSAGES.CART_EMPTY);
+    }
+
+    async proceedToCheckout() {
+        await this.proceedToCheckoutButton.click();
     }
 
     async verifyCartVisible() {

@@ -19,9 +19,18 @@ export class AutomationExerciseProductsSteps {
         await this.productsPage.navigate();
     }
 
-    @step('Add product at index {0} to cart')
-    async addProductToCart(index: number) {
-        await this.productsPage.addProductToCart(index);
+    @step('Add product "{0}" to cart')
+    async addProductToCart(product: string | number) {
+        if (typeof product === 'number') {
+            await this.productsPage.addProductToCart(product);
+        } else {
+            await this.productsPage.addProductToCartByName(product);
+        }
+    }
+
+    @step('Click "Continue Shopping"')
+    async clickContinueShopping() {
+        await this.productsPage.clickContinueShopping();
     }
 
     @step('Search for product: {0}')

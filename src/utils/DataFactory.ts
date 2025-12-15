@@ -1,6 +1,26 @@
 import { faker } from '@faker-js/faker';
 import { USER_CONSTANTS } from '../constants/UserConstants';
 
+export interface User {
+    name: string;
+    email: string;
+    password: string;
+    title: 'Mr.' | 'Mrs.';
+    day: string;
+    month: string;
+    year: string;
+    firstName: string;
+    lastName: string;
+    company: string;
+    address: string;
+    address2: string;
+    country: string;
+    state: string;
+    city: string;
+    zipcode: string;
+    mobileNumber: string;
+}
+
 export class DataFactory {
     static generateUser() {
         // Use consistent formatting for easier debugging
@@ -39,6 +59,18 @@ export class DataFactory {
             city: faker.location.city(),
             zipcode: faker.location.zipCode(),
             mobileNumber: faker.phone.number()
+        };
+    }
+
+    static generateFullUser(): User {
+        const user = this.generateUser();
+        const account = this.generateAccountDetails();
+        const address = this.generateAddressInfo();
+
+        return {
+            ...user,
+            ...account,
+            ...address
         };
     }
 }

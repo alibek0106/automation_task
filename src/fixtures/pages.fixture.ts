@@ -6,6 +6,9 @@ import { AutomationExerciseNavigationMenu } from '../pages/AutomationExerciseNav
 import { AutomationExerciseProductsPage } from '../pages/AutomationExerciseProductsPage';
 import { AutomationExerciseProductDetailPage } from '../pages/AutomationExerciseProductDetailPage';
 import { AutomationExerciseCartPage } from '../pages/AutomationExerciseCartPage';
+import { AutomationExerciseCheckoutPage } from '../pages/AutomationExerciseCheckoutPage';
+import { AutomationExercisePaymentPage } from '../pages/AutomationExercisePaymentPage';
+import { AutomationExerciseOrderConfirmationPage } from '../pages/AutomationExerciseOrderConfirmationPage';
 import { Page } from '@playwright/test';
 
 export interface PagesFixture {
@@ -17,7 +20,11 @@ export interface PagesFixture {
     automationExerciseProductsPage: AutomationExerciseProductsPage;
     automationExerciseProductDetailPage: AutomationExerciseProductDetailPage;
     automationExerciseCartPage: AutomationExerciseCartPage;
+    automationExerciseCheckoutPage: AutomationExerciseCheckoutPage;
+    automationExercisePaymentPage: AutomationExercisePaymentPage;
+    automationExerciseOrderConfirmationPage: AutomationExerciseOrderConfirmationPage;
 }
+
 
 export const pagesFixture = {
     automationExerciseLandingPage: async ({ page }: { page: Page }, use: (p: AutomationExerciseLandingPage) => Promise<void>) => {
@@ -43,5 +50,14 @@ export const pagesFixture = {
     },
     automationExerciseCartPage: async ({ page }: { page: Page }, use: (p: AutomationExerciseCartPage) => Promise<void>) => {
         await use(new AutomationExerciseCartPage(page));
+    },
+    automationExerciseCheckoutPage: async ({ page }: { page: Page }, use: (p: AutomationExerciseCheckoutPage) => Promise<void>) => {
+        await use(new AutomationExerciseCheckoutPage(page));
+    },
+    automationExercisePaymentPage: async ({ page }: { page: Page }, use: (p: AutomationExercisePaymentPage) => Promise<void>) => {
+        await use(new AutomationExercisePaymentPage(page));
+    },
+    automationExerciseOrderConfirmationPage: async ({ page }: { page: Page }, use: (p: AutomationExerciseOrderConfirmationPage) => Promise<void>) => {
+        await use(new AutomationExerciseOrderConfirmationPage(page));
     },
 };

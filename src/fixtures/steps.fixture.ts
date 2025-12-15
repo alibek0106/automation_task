@@ -5,6 +5,8 @@ import { AutomationExerciseNavigationSteps } from '../steps/AutomationExerciseNa
 import { AutomationExerciseProductsSteps } from '../steps/AutomationExerciseProductsSteps';
 import { AutomationExerciseProductDetailSteps } from '../steps/AutomationExerciseProductDetailSteps';
 import { AutomationExerciseCartSteps } from '../steps/AutomationExerciseCartSteps';
+import { AutomationExerciseCheckoutSteps } from '../steps/AutomationExerciseCheckoutSteps';
+import { AutomationExercisePaymentSteps } from '../steps/AutomationExercisePaymentSteps';
 import { PagesFixture } from './pages.fixture';
 
 export interface StepsFixture {
@@ -15,6 +17,8 @@ export interface StepsFixture {
     automationExerciseProductsSteps: AutomationExerciseProductsSteps;
     automationExerciseProductDetailSteps: AutomationExerciseProductDetailSteps;
     automationExerciseCartSteps: AutomationExerciseCartSteps;
+    automationExerciseCheckoutSteps: AutomationExerciseCheckoutSteps;
+    automationExercisePaymentSteps: AutomationExercisePaymentSteps;
 }
 
 export const stepsFixture = {
@@ -38,5 +42,11 @@ export const stepsFixture = {
     },
     automationExerciseCartSteps: async ({ automationExerciseCartPage }: PagesFixture, use: (s: AutomationExerciseCartSteps) => Promise<void>) => {
         await use(new AutomationExerciseCartSteps(automationExerciseCartPage));
+    },
+    automationExerciseCheckoutSteps: async ({ automationExerciseCheckoutPage }: PagesFixture, use: (s: AutomationExerciseCheckoutSteps) => Promise<void>) => {
+        await use(new AutomationExerciseCheckoutSteps(automationExerciseCheckoutPage));
+    },
+    automationExercisePaymentSteps: async ({ automationExercisePaymentPage, automationExerciseOrderConfirmationPage }: PagesFixture, use: (s: AutomationExercisePaymentSteps) => Promise<void>) => {
+        await use(new AutomationExercisePaymentSteps(automationExercisePaymentPage, automationExerciseOrderConfirmationPage));
     },
 };
