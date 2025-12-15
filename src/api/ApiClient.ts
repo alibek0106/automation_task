@@ -21,4 +21,8 @@ export class ApiClient {
             form: data
         });
     }
+
+    async get(endpoint: string): Promise<APIResponse> {
+        return await this.request.get(`${Routes.BASE_URL}${endpoint}`);
+    }
 }
