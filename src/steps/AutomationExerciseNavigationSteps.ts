@@ -24,6 +24,11 @@ export class AutomationExerciseNavigationSteps {
         await this.navigationMenu.verifyUserLoggedIn(username);
     }
 
+    @step('Verify user is not logged in')
+    async verifyUserNotLoggedIn() {
+        await this.navigationMenu.verifyUserNotLoggedIn();
+    }
+
     @step('Click Home link')
     async clickHome() {
         await this.navigationMenu.clickHome();

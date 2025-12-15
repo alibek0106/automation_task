@@ -38,6 +38,10 @@ export class AutomationExerciseNavigationMenu extends BasePage {
         await expect(this.page.getByText(username)).toBeVisible();
     }
 
+    async verifyUserNotLoggedIn() {
+        await expect(this.loggedInAsText).not.toBeVisible();
+    }
+
     async clickHome() {
         await this.homeLink.click();
     }

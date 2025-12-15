@@ -8,6 +8,7 @@ export const Routes = {
     CART: '/view_cart',
     TEST_CASES: '/test_cases',
     API_TESTING: '/api_list',
+    PAYMENT: '/payment',
     VIDEO_TUTORIALS: 'https://www.youtube.com/c/AutomationExercise',
     CONTACT_US: '/contact_us',
 } as const;

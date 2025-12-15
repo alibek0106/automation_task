@@ -86,6 +86,7 @@
 | verifyUserLoggedIn() | username: string | Promise<void> | Verify "Logged in as..." text |
 | clickDeleteAccount() | - | Promise<void> | Click Delete Account link |
 | clickLogout() | - | Promise<void> | Click Logout link |
+| verifyUserNotLoggedIn() | - | Promise<void> | Verify "Logged in as" is not visible |
 
 **Locators:**
 - Home link: `a[href="/"]`

@@ -31,6 +31,7 @@
 |--------|------------|-------------|------------|
 | clickSignupLogin() | - | Click Signup/Login link | ❌ |
 | verifyUserLoggedIn() | username: string | Verify "Logged in as {username}" visible | ❌ |
+| verifyUserNotLoggedIn() | - | Verify user is not logged in | ❌ |
 | clickLogout() | - | Click Logout link | ❌ |
 | clickDeleteAccount() | - | Click Delete Account link | ❌ |
 | clickHome() | - | Click Home link | ❌ |

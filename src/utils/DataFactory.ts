@@ -21,6 +21,9 @@ export interface User {
     mobileNumber: string;
 }
 
+export type AccountDetails = ReturnType<typeof DataFactory.generateAccountDetails>;
+export type AddressInfo = ReturnType<typeof DataFactory.generateAddressInfo>;
+
 export class DataFactory {
     static generateUser() {
         // Use consistent formatting for easier debugging
