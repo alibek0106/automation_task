@@ -44,3 +44,20 @@ export const API_STATUS_CODES = {
     METHOD_NOT_ALLOWED: 405,
     INTERNAL_SERVER_ERROR: 500,
 };
+
+export const ERROR_MESSAGES = {
+    NO_PRODUCTS_FOUND: 'No products found for search term',
+    PRODUCT_VERIFICATION_FAILED: 'Product verification failed',
+    UNEXPECTED_PRODUCTS_FOUND: 'Expected no products, but found',
+    PRODUCT_COUNT_MISMATCH: 'Expected more than',
+};
+
+export const API_MESSAGES = {
+    METHOD_NOT_SUPPORTED: 'This request method is not supported.',
+};
+
+export const API_RESPONSE_KEYS = {
+    PRODUCTS: 'products',
+    RESPONSE_CODE: 'responseCode',
+    MESSAGE: 'message',
+};

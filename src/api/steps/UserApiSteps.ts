@@ -1,7 +1,7 @@
 import { ApiClient } from '../ApiClient';
 import { User, AccountDetails, AddressInfo } from '../../utils/DataFactory';
 import { expect } from '@playwright/test';
-import { API_STATUS_CODES } from '../../utils/Constants';
+import { API_STATUS_CODES, API_ENDPOINTS } from '../../utils/Constants';
 
 export class UserApiSteps {
     constructor(private apiClient: ApiClient) { }
@@ -28,7 +28,7 @@ export class UserApiSteps {
             mobile_number: address.mobileNumber
         };
 
-        const response = await this.apiClient.post('/api/createAccount', data);
+        const response = await this.apiClient.post(API_ENDPOINTS.CREATE_ACCOUNT, data);
         const responseBody = await response.text();
 
         // API returns 200/201 but strict checking is good. 
@@ -43,7 +43,7 @@ export class UserApiSteps {
             email: email,
             password: password
         };
-        const response = await this.apiClient.delete('/api/deleteAccount', data);
+        const response = await this.apiClient.delete(API_ENDPOINTS.DELETE_ACCOUNT, data);
         expect(response.status()).toBe(API_STATUS_CODES.OK);
     }
 }

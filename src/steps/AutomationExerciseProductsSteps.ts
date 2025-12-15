@@ -1,5 +1,6 @@
 import { AutomationExerciseProductsPage } from '../pages/AutomationExerciseProductsPage';
 import { step } from '../utils/Decorators';
+import { ERROR_MESSAGES } from '../utils/Constants';
 
 export class AutomationExerciseProductsSteps {
     constructor(private productsPage: AutomationExerciseProductsPage) { }
@@ -52,7 +53,7 @@ export class AutomationExerciseProductsSteps {
     async verifySearchResultsContain(term: string) {
         const names = await this.productsPage.getProductNames();
         if (names.length === 0) {
-            throw new Error(`No products found for search term: ${term}`);
+            throw new Error(`${ERROR_MESSAGES.NO_PRODUCTS_FOUND}: ${term}`);
         }
 
         const normalize = (str: string) => str.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -65,7 +66,7 @@ export class AutomationExerciseProductsSteps {
                 // For now, let's assume if it fails strict check, we might check if the term is 'dress' and result is 'top' (fuzzy).
                 // But generally we want to enforce the test.
                 if (!normalizedName.includes(normalizedTerm)) {
-                    throw new Error(`Product "${name}" (normalized: ${normalizedName}) does not contain search term "${term}" (normalized: ${normalizedTerm})`);
+                    throw new Error(`${ERROR_MESSAGES.PRODUCT_VERIFICATION_FAILED}: Product "${name}" (normalized: ${normalizedName}) does not contain search term "${term}" (normalized: ${normalizedTerm})`);
                 }
             }
         }
@@ -75,7 +76,7 @@ export class AutomationExerciseProductsSteps {
     async verifyNoProductsDisplayed() {
         const names = await this.productsPage.getProductNames();
         if (names.length > 0) {
-            throw new Error(`Expected no products, but found: ${names.join(', ')}`);
+            throw new Error(`${ERROR_MESSAGES.UNEXPECTED_PRODUCTS_FOUND}: ${names.join(', ')}`);
         }
     }
 
@@ -99,7 +100,7 @@ export class AutomationExerciseProductsSteps {
     async verifyProductCountGreaterThan(minCount: number) {
         const count = await this.productsPage.getProductCount();
         if (count <= minCount) {
-            throw new Error(`Expected more than ${minCount} products, but found ${count}`);
+            throw new Error(`${ERROR_MESSAGES.PRODUCT_COUNT_MISMATCH} ${minCount} products, but found ${count}`);
         }
     }
 }
