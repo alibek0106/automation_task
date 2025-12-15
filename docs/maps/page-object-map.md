@@ -173,6 +173,7 @@
 | verifyPageOpened() | - | Promise<void> | Verify products page is linked |
 | viewProductDetails() | index: number | Promise<void> | Click View Product for item at index |
 | addProductToCart() | index: number | Promise<void> | Click Add to Cart for item at index |
+| getProductCard() | index: number | Locator | Get product card locator by index |
 
 **Locators:**
 - Products List: `.features_items`

@@ -29,10 +29,10 @@ Gherkin Spec (ephemeral) → AI → Test/Steps/PageObject → Playwright
 
 | Layer | Location | Rules | Docs |
 |-------|----------|-------|------|
-| Test | `tests/specs/*.spec.ts` | Call Steps ONLY | [docs/examples/complete-test-example.md](docs/examples/complete-test-example.md) |
-| Steps | `tests/steps/*Steps.ts` | `@step` on ALL methods | [docs/patterns/step-definition.md](docs/patterns/step-definition.md) |
-| API Steps | `tests/api-steps/*ApiSteps.ts` | `@step` on ALL methods | [docs/patterns/api-utils.md](docs/patterns/api-utils.md) |
-| Page Object | `tests/pages/*Page.ts` | BasePage + `.describe()` | [docs/patterns/page-object.md](docs/patterns/page-object.md) |
+| Test | `tests/*.spec.ts` | Call Steps ONLY | [docs/examples/complete-test-example.md](docs/examples/complete-test-example.md) |
+| Steps | `src/steps/*Steps.ts` | `@step` on ALL methods | [docs/patterns/step-definition.md](docs/patterns/step-definition.md) |
+| API Steps | `src/api-steps/*ApiSteps.ts` | `@step` on ALL methods | [docs/patterns/api-utils.md](docs/patterns/api-utils.md) |
+| Page Object | `src/pages/*Page.ts` | BasePage + `.describe()` | [docs/patterns/page-object.md](docs/patterns/page-object.md) |
 
 ## Key Rules
 

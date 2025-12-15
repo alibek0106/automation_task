@@ -37,4 +37,16 @@ export class AutomationExerciseNavigationMenu extends BasePage {
         await expect(this.loggedInAsText).toBeVisible();
         await expect(this.page.getByText(username)).toBeVisible();
     }
+
+    async clickHome() {
+        await this.homeLink.click();
+    }
+
+    async clickProducts() {
+        await this.productsLink.click();
+    }
+
+    async clickCart() {
+        await this.cartLink.click();
+    }
 }

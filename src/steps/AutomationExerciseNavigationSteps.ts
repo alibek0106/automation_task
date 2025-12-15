@@ -23,4 +23,19 @@ export class AutomationExerciseNavigationSteps {
     async verifyUserLoggedIn(username: string) {
         await this.navigationMenu.verifyUserLoggedIn(username);
     }
+
+    @step('Click Home link')
+    async clickHome() {
+        await this.navigationMenu.clickHome();
+    }
+
+    @step('Click Products link')
+    async clickProducts() {
+        await this.navigationMenu.clickProducts();
+    }
+
+    @step('Click Cart link')
+    async clickCart() {
+        await this.navigationMenu.clickCart();
+    }
 }
