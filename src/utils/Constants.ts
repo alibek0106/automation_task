@@ -17,6 +17,11 @@ export const MESSAGES = {
     ORDER_PLACED: 'ORDER PLACED!',
     ORDER_CONFIRMED: 'Order Placed!',
     PAYMENT_SUCCESS: 'Your order has been placed successfully!',
+    CONTACT_SUCCESS: 'Success! Your details have been submitted successfully.',
+};
+
+export const URLS = {
+    CONTACT_US: '/contact_us',
 };
 
 export const PAGE_TITLES = {

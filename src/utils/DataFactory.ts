@@ -76,4 +76,13 @@ export class DataFactory {
             ...address
         };
     }
+
+    static generateContactFormData() {
+        return {
+            name: faker.person.fullName(),
+            email: faker.internet.email(),
+            subject: faker.lorem.sentence(3),
+            message: faker.lorem.paragraph(1) // Ensure it meets length requirements if any
+        };
+    }
 }
