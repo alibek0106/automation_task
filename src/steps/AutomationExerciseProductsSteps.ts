@@ -78,4 +78,28 @@ export class AutomationExerciseProductsSteps {
             throw new Error(`Expected no products, but found: ${names.join(', ')}`);
         }
     }
+
+    @step('Filter by Category: {0} > {1}')
+    async filterByCategory(mainCategory: string, subCategory: string) {
+        await this.productsPage.clickCategory(mainCategory);
+        await this.productsPage.clickSubCategory(mainCategory, subCategory);
+    }
+
+    @step('Filter by Brand: {0}')
+    async filterByBrand(brandName: string) {
+        await this.productsPage.clickBrand(brandName);
+    }
+
+    @step('Verify page header is "{0}"')
+    async verifyPageHeader(expectedTitle: string) {
+        await this.productsPage.verifyPageHeader(expectedTitle);
+    }
+
+    @step('Verify displayed product count is greater than {0}')
+    async verifyProductCountGreaterThan(minCount: number) {
+        const count = await this.productsPage.getProductCount();
+        if (count <= minCount) {
+            throw new Error(`Expected more than ${minCount} products, but found ${count}`);
+        }
+    }
 }
