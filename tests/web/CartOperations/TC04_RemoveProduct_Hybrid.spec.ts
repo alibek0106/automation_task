@@ -1,0 +1,97 @@
+import { isolatedTest as test, expect } from "../../../src/fixtures";
+import { DataFactory } from "../../../src/utils/DataFactory";
+import { User } from "../../../src/models/UserModels";
+
+test.describe("TC04-Hybrid: Remove Product from Cart (API Setup)", () => {
+    let testUser: User;
+
+    test.beforeEach(async ({ userApiSteps, homePage, loginPage }) => {
+        // Create user via API for faster setup
+        testUser = DataFactory.generateUser();
+        await userApiSteps.createUserViaApi(testUser);
+
+        // Login via UI
+        await homePage.goto();
+        await homePage.clickSignupLogin();
+        await loginPage.login(testUser.email, testUser.password);
+        await expect(
+            homePage.loggedInText,
+            "User should be logged in after API creation"
+        ).toContainText(testUser.name);
+    });
+
+    test.afterEach(async ({ userApiSteps }) => {
+        // Cleanup: Delete user via API
+        await userApiSteps.deleteUserViaApi(testUser.email, testUser.password);
+    });
+
+    test("should remove products from cart and verify empty state", async ({
+        homePage,
+        productsPage,
+        productDetailPage,
+        cartPage,
+    }) => {
+        let firstProductName: string;
+        let secondProductName: string;
+
+        // Step 0: Ensure cart is clean
+        await test.step("Ensure cart is clean", async () => {
+            await cartPage.goto();
+            const count = await cartPage.getCartItemCount();
+            // If cart has items, remove them all
+            while ((await cartPage.getCartItemCount()) > 0) {
+                const items = await cartPage.getCartItems();
+                if (items.length > 0) {
+                    await cartPage.removeProductByName(items[0].name);
+                } else {
+                    break;
+                }
+            }
+        });
+
+        // Step 1: Add 2 products to cart
+        await test.step("Add first product to cart", async () => {
+            await homePage.goto();
+            await homePage.clickProducts();
+            await productsPage.clickViewProduct(0);
+            firstProductName = await productDetailPage.getProductName();
+            await productDetailPage.addToCart();
+            await productDetailPage.clickContinueShopping();
+        });
+
+        await test.step("Add second product to cart", async () => {
+            await productsPage.goto();
+            await productsPage.clickViewProduct(1);
+            secondProductName = await productDetailPage.getProductName();
+            await productDetailPage.addToCart();
+            await productDetailPage.clickViewCart();
+        });
+
+        // Step 2: Verify cart has 2 products
+        await test.step("Verify cart contains 2 products", async () => {
+            const initialCount = await cartPage.getCartItemCount();
+            expect(initialCount, "Cart should have 2 products initially").toBe(2);
+        });
+
+        // Step 3: Remove first product
+        await test.step("Remove first product", async () => {
+            await cartPage.removeProductByName(firstProductName);
+
+            // Verify only second product remains
+            const countAfterFirst = await cartPage.getCartItemCount();
+            expect(countAfterFirst, "Cart should have 1 product after first removal").toBe(1);
+            await cartPage.verifyProductInCart(secondProductName);
+        });
+
+        // Step 4: Remove second product
+        await test.step("Remove second product", async () => {
+            await cartPage.removeProductByName(secondProductName);
+        });
+
+        // Step 5: Verify cart is empty
+        await test.step("Verify cart is empty", async () => {
+            await cartPage.verifyCartEmpty();
+        });
+    });
+});
+

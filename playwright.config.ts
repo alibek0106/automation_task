@@ -39,8 +39,16 @@ export default defineConfig({
             testMatch: /global\.setup\.ts/,
         },
         {
+            name: 'api',
+            testMatch: /.*\/api\/.*\.spec\.ts/,
+            use: {
+                baseURL: process.env.BASE_URL || 'https://www.automationexercise.com',
+            },
+        },
+        {
             name: 'chromium',
             dependencies: ['setup'],
+            testMatch: /.*\/web\/.*\.spec\.ts/,
             use: {
                 ...devices['Desktop Chrome'],
                 // Worker-specific storage state is loaded via auth.fixture.ts

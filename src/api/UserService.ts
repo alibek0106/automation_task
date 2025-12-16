@@ -1,11 +1,10 @@
-import { expect } from '@playwright/test';
+import { APIResponse } from '@playwright/test';
 import { ApiClient } from './ApiClient';
-import { User, ApiResponseSchema } from '../models/UserModels';
+import { User } from '../models/UserModels';
 import { Routes } from '../constants/Routes';
-import { StatusCode } from '../constants/StatusCode';
 
 export class UserService extends ApiClient {
-    async createAccount(user: User) {
+    async createAccount(user: User): Promise<APIResponse> {
         const formData = {
             name: user.name,
             email: user.email,
@@ -26,14 +25,50 @@ export class UserService extends ApiClient {
             mobile_number: user.mobileNumber
         };
 
-        const response = await this.post(Routes.API.CREATE_ACCOUNT, formData);
-        expect(response.status(), 'Response status should be 200').toBe(StatusCode.OK);
+        return this.post(Routes.API.CREATE_ACCOUNT, formData);
+    }
 
-        const parsed = ApiResponseSchema.parse(await response.json());
+    async verifyLogin(email: string, password: string): Promise<APIResponse> {
+        return this.post(Routes.API.VERIFY_LOGIN, { email, password });
+    }
 
-        expect(parsed.responseCode, 'Response code should be 201').toBe(StatusCode.CREATED);
-        expect(parsed.message, 'Response message should be "User created!"').toBe('User created!');
+    async verifyLoginWithoutEmail(password: string): Promise<APIResponse> {
+        return this.post(Routes.API.VERIFY_LOGIN, { password });
+    }
 
-        return parsed;
+    async deleteAccount(email: string, password: string): Promise<APIResponse> {
+        return this.delete(Routes.API.DELETE_ACCOUNT, { email, password });
+    }
+
+    async updateAccount(user: User): Promise<APIResponse> {
+        const formData = {
+            name: user.name,
+            email: user.email,
+            password: user.password,
+            title: user.title,
+            birth_date: user.birthDay,
+            birth_month: user.birthMonth,
+            birth_year: user.birthYear,
+            firstname: user.firstName,
+            lastname: user.lastName,
+            company: user.company,
+            address1: user.address1,
+            address2: user.address2 || '',
+            country: user.country,
+            zipcode: user.zipcode,
+            state: user.state,
+            city: user.city,
+            mobile_number: user.mobileNumber
+        };
+
+        return this.put(Routes.API.UPDATE_ACCOUNT, formData);
+    }
+
+    async getUserDetailByEmail(email: string): Promise<APIResponse> {
+        return this.get(Routes.API.GET_USER_DETAIL_BY_EMAIL, { params: { email } });
+    }
+
+    async deleteVerifyLogin(): Promise<APIResponse> {
+        return this.delete(Routes.API.VERIFY_LOGIN);
     }
 }

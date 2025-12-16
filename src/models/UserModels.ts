@@ -30,3 +30,29 @@ export const ApiResponseSchema = z.object({
     responseCode: z.number(),
     message: z.string(),
 }).strict().describe('Standard API response structure');
+
+// User detail response schema
+export const UserDetailResponseSchema = z.object({
+    responseCode: z.number(),
+    user: z.object({
+        id: z.number(),
+        name: z.string(),
+        email: z.string(),
+        title: z.string(),
+        birth_date: z.string(),
+        birth_month: z.string(),
+        birth_year: z.string(),
+        firstname: z.string(),
+        lastname: z.string(),
+        company: z.string(),
+        address1: z.string(),
+        address2: z.string().optional(),
+        country: z.string(),
+        zipcode: z.string(),
+        state: z.string(),
+        city: z.string(),
+        mobile_number: z.string(),
+    }),
+}).strict();
+
+export type UserDetailResponse = z.infer<typeof UserDetailResponseSchema>;

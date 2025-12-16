@@ -14,7 +14,13 @@ export const Routes = {
         TEST_CASES: '/test_cases',
     },
     API: {
-        CREATE_ACCOUNT: '/api/createAccount',
+        PRODUCTS_LIST: '/api/productsList',
+        BRANDS_LIST: '/api/brandsList',
+        SEARCH_PRODUCT: '/api/searchProduct',
         VERIFY_LOGIN: '/api/verifyLogin',
+        CREATE_ACCOUNT: '/api/createAccount',
+        DELETE_ACCOUNT: '/api/deleteAccount',
+        UPDATE_ACCOUNT: '/api/updateAccount',
+        GET_USER_DETAIL_BY_EMAIL: '/api/getUserDetailByEmail',
     },
 } as const;
