@@ -3,49 +3,33 @@ import { User } from '../models/UserModels';
 import { BasePage } from './BasePage';
 
 export class SignupPage extends BasePage {
-    readonly titleMr: Locator;
-    readonly titleMrs: Locator;
-    readonly password: Locator;
-    readonly daySelect: Locator;
-    readonly monthSelect: Locator;
-    readonly yearSelect: Locator;
-    readonly newsletterCheck: Locator;
-    readonly offersCheck: Locator;
-    readonly firstName: Locator;
-    readonly lastName: Locator;
-    readonly company: Locator;
-    readonly address1: Locator;
-    readonly address2: Locator;
-    readonly country: Locator;
-    readonly state: Locator;
-    readonly city: Locator;
-    readonly zipcode: Locator;
-    readonly mobile: Locator;
-    readonly createAccountBtn: Locator;
-    readonly accountInfoHeading: Locator;
+    // Helper arrow function to reduce duplication for test ID locators
+    private getByDataQa = (name: string, description: string): Locator =>
+        this.page.getByTestId(name).describe(description);
+
+    readonly accountInfoHeading: Locator = this.page.getByText('Enter Account Information').describe('Account Info Heading');
+    readonly titleMr: Locator = this.page.getByLabel('Mr.').describe('Title Mr');
+    readonly titleMrs: Locator = this.page.getByLabel('Mrs.').describe('Title Mrs');
+    readonly password: Locator = this.getByDataQa('password', 'Password input');
+    readonly daySelect: Locator = this.getByDataQa('days', 'Day select');
+    readonly monthSelect: Locator = this.getByDataQa('months', 'Month select');
+    readonly yearSelect: Locator = this.getByDataQa('years', 'Year select');
+    readonly newsletterCheck: Locator = this.page.getByLabel('Sign up for our newsletter!').describe('Newsletter check');
+    readonly offersCheck: Locator = this.page.getByLabel('Receive special offers from our partners!').describe('Offers check');
+    readonly firstName: Locator = this.getByDataQa('first_name', 'First name input');
+    readonly lastName: Locator = this.getByDataQa('last_name', 'Last name input');
+    readonly company: Locator = this.getByDataQa('company', 'Company input');
+    readonly address1: Locator = this.getByDataQa('address', 'Address input');
+    readonly address2: Locator = this.getByDataQa('address2', 'Secondary Address input');
+    readonly country: Locator = this.getByDataQa('country', 'Country select');
+    readonly state: Locator = this.getByDataQa('state', 'State input');
+    readonly city: Locator = this.getByDataQa('city', 'City input');
+    readonly zipcode: Locator = this.getByDataQa('zipcode', 'Zipcode input');
+    readonly mobile: Locator = this.getByDataQa('mobile_number', 'Mobile input');
+    readonly createAccountBtn: Locator = this.getByDataQa('create-account', 'Create account button');
 
     constructor(page: Page) {
         super(page);
-        this.accountInfoHeading = page.getByText('Enter Account Information').describe('Account Info Heading');
-        this.titleMr = page.getByLabel('Mr.').describe('Title Mr');
-        this.titleMrs = page.getByLabel('Mrs.').describe('Title Mrs');
-        this.password = page.locator('[data-qa="password"]').describe('Password input');
-        this.daySelect = page.locator('[data-qa="days"]').describe('Day select');
-        this.monthSelect = page.locator('[data-qa="months"]').describe('Month select');
-        this.yearSelect = page.locator('[data-qa="years"]').describe('Year select');
-        this.newsletterCheck = page.getByLabel('Sign up for our newsletter!').describe('Newsletter check');
-        this.offersCheck = page.getByLabel('Receive special offers from our partners!').describe('Offers check');
-        this.firstName = page.locator('[data-qa="first_name"]').describe('First name input');
-        this.lastName = page.locator('[data-qa="last_name"]').describe('Last name input');
-        this.company = page.locator('[data-qa="company"]').describe('Company input');
-        this.address1 = page.locator('[data-qa="address"]').describe('Address input');
-        this.address2 = page.locator('[data-qa="address2"]').describe('Secondary Address input');
-        this.country = page.locator('[data-qa="country"]').describe('Country select');
-        this.state = page.locator('[data-qa="state"]').describe('State input');
-        this.city = page.locator('[data-qa="city"]').describe('City input');
-        this.zipcode = page.locator('[data-qa="zipcode"]').describe('Zipcode input');
-        this.mobile = page.locator('[data-qa="mobile_number"]').describe('Mobile input');
-        this.createAccountBtn = page.locator('[data-qa="create-account"]').describe('Create account button');
     }
 
     async fillAccountDetails(user: User) {
@@ -70,7 +54,7 @@ export class SignupPage extends BasePage {
         await this.mobile.fill(user.mobileNumber);
     }
 
-    async submit() {
+    async clickCreateAccount() {
         await this.createAccountBtn.click();
     }
 }

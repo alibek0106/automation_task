@@ -3,31 +3,38 @@ import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { SignupPage } from '../pages/SignupPage';
 import { AccountCreatedPage } from '../pages/AccountCreatedPage';
-import { AccountDeletedPage } from '../pages/AccountDeletedPage';
 import { ProductsPage } from '../pages/ProductsPage';
-import { ProductDetailsPage } from '../pages/ProductDetailsPage';
+import { ProductDetailPage } from '../pages/ProductDetailPage';
 import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { PaymentPage } from '../pages/PaymentPage';
-import { ContactPage } from '../pages/ContactPage';
+import { PaymentDonePage } from '../pages/PaymentDonePage';
+import { ContactUsPage } from '../pages/ContactUsPage';
+import { AccountDeletedPage } from '../pages/AccountDeletedPage';
+import { NavigationMenu } from '../components/NavigationMenu';
 
 export type PageFixtures = {
+  navigation: NavigationMenu;
   homePage: HomePage;
   loginPage: LoginPage;
   signupPage: SignupPage;
   accountCreatedPage: AccountCreatedPage;
   productsPage: ProductsPage;
-  productDetailsPage: ProductDetailsPage;
+  productDetailPage: ProductDetailPage;
   cartPage: CartPage;
   checkoutPage: CheckoutPage;
   paymentPage: PaymentPage;
-  contactPage: ContactPage;
+  paymentDonePage: PaymentDonePage;
+  contactUsPage: ContactUsPage;
   accountDeletedPage: AccountDeletedPage;
 };
 
 export const pageFixtures = {
-  homePage: async ({ page }: { page: Page }, use: (p: HomePage) => Promise<void>) => {
-    await use(new HomePage(page));
+  navigation: async ({ page }: { page: Page }, use: (n: NavigationMenu) => Promise<void>) => {
+    await use(new NavigationMenu(page));
+  },
+  homePage: async ({ page, navigation }: { page: Page; navigation: NavigationMenu }, use: (p: HomePage) => Promise<void>) => {
+    await use(new HomePage(page, navigation));
   },
   loginPage: async ({ page }: { page: Page }, use: (p: LoginPage) => Promise<void>) => {
     await use(new LoginPage(page));
@@ -41,8 +48,8 @@ export const pageFixtures = {
   productsPage: async ({ page }: { page: Page }, use: (p: ProductsPage) => Promise<void>) => {
     await use(new ProductsPage(page));
   },
-  productDetailsPage: async ({ page }: { page: Page }, use: (p: ProductDetailsPage) => Promise<void>) => {
-    await use(new ProductDetailsPage(page));
+  productDetailPage: async ({ page }: { page: Page }, use: (p: ProductDetailPage) => Promise<void>) => {
+    await use(new ProductDetailPage(page));
   },
   cartPage: async ({ page }: { page: Page }, use: (p: CartPage) => Promise<void>) => {
     await use(new CartPage(page));
@@ -53,8 +60,11 @@ export const pageFixtures = {
   paymentPage: async ({ page }: { page: Page }, use: (p: PaymentPage) => Promise<void>) => {
     await use(new PaymentPage(page));
   },
-  contactPage: async ({ page }: { page: Page }, use: (p: ContactPage) => Promise<void>) => {
-    await use(new ContactPage(page));
+  paymentDonePage: async ({ page }: { page: Page }, use: (p: PaymentDonePage) => Promise<void>) => {
+    await use(new PaymentDonePage(page));
+  },
+  contactUsPage: async ({ page }: { page: Page }, use: (p: ContactUsPage) => Promise<void>) => {
+    await use(new ContactUsPage(page));
   },
   accountDeletedPage: async ({ page }: { page: Page }, use: (p: AccountDeletedPage) => Promise<void>) => {
     await use(new AccountDeletedPage(page));

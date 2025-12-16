@@ -1,159 +1,190 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { Routes } from '../constants/Routes';
-import { BasePage } from './BasePage';
+import { Page, Locator, expect } from "@playwright/test";
+import { Routes } from "../constants/Routes";
+import { BasePage } from "./BasePage";
 
 export class ProductsPage extends BasePage {
-  // Navigation & Actions
-  readonly productsNavLink: Locator;
-  readonly continueShoppingBtn: Locator;
-  readonly viewCartLink: Locator;
+    readonly pageHeading: Locator = this.page
+        .getByRole("heading", { name: /all products/i })
+        .describe("All Products heading");
+    readonly searchInput: Locator = this.page
+        .locator("#search_product")
+        .describe("Search product input");
+    readonly searchButton: Locator = this.page
+        .locator("#submit_search")
+        .describe("Search submit button");
+    readonly searchedProductsHeading: Locator = this.page
+        .getByRole("heading", { name: /searched products/i })
+        .describe("Searched Products heading");
+    readonly productsList: Locator = this.page
+        .locator(".features_items")
+        .describe("Products list container");
+    readonly productItems: Locator = this.productsList
+        .locator(".col-sm-4")
+        .describe("Individual product items");
+    readonly categorySidebar: Locator = this.page
+        .locator(".left-sidebar .panel-group")
+        .describe("Category sidebar");
+    readonly brandsSidebar: Locator = this.page
+        .locator(".brands_products")
+        .describe("Brands sidebar");
 
-  // Search
-  readonly searchInput: Locator;
-  readonly searchButton: Locator;
-  readonly allProductsHeading: Locator;
-  readonly searchedProductsHeading: Locator;
-
-  // Product Cards
-  readonly productCards: Locator;
-  readonly productItems: Locator;
-
-  // Sidebar - Categories & Brands
-  readonly categorySidebar: Locator;
-  readonly brandsSidebar: Locator;
-
-  constructor(page: Page) {
-    super(page);
-
-    // Navigation
-    this.productsNavLink = page.getByRole('link', { name: 'Products' }).describe('Products Navigation Link');
-    this.continueShoppingBtn = page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping Button');
-    this.viewCartLink = page.getByText(' Cart', { exact: true }).describe('View Cart Link');
-
-    // Headings - using role for better semantics
-    this.allProductsHeading = page.getByRole('heading', { name: 'All Products' }).describe('All Products Heading');
-    this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' }).describe('Searched Products Heading');
-
-    // Search
-    this.searchInput = page.locator('input#search_product').describe('Search Input');
-    this.searchButton = page.locator('button#submit_search').describe('Search Button');
-
-    // Products
-    this.productCards = page.locator('.product-image-wrapper').describe('Product Cards');
-    this.productItems = page.locator('.features_items .col-sm-4').describe('Product Items');
-
-    // Sidebar
-    this.categorySidebar = page.locator('#accordian').describe('Category Sidebar');
-    this.brandsSidebar = page.locator('.brands_products').describe('Brands Sidebar');
-  }
-
-  async goto() {
-    await super.goto(Routes.WEB.PRODUCTS);
-  }
-
-  async navigateToProducts() {
-    await this.productsNavLink.click();
-    await this.waitForLoadState('domcontentloaded');
-  }
-
-  async verifyAllProductsVisible() {
-    await expect(this.allProductsHeading, 'All products heading should be visible').toBeVisible();
-    await expect(this.productItems.first(), 'First product item should be visible').toBeVisible();
-  }
-
-  async verifySearchBoxVisible() {
-    await expect(this.searchInput, 'Search input should be visible').toBeVisible();
-  }
-
-  async searchProduct(productName: string) {
-    await this.searchInput.fill(productName);
-    await this.searchButton.click();
-    // Wait for search results to load by ensuring the heading is present
-    await this.searchedProductsHeading.waitFor({ state: 'visible', timeout: 10000 });
-  }
-
-  async verifySearchedProductsVisible() {
-    await expect(this.searchedProductsHeading, 'Searched products heading should be visible').toBeVisible();
-  }
-
-  async verifyProductListContains(searchTerm: string) {
-    await this.productItems.first().waitFor({ state: 'visible' });
-    const count = await this.productItems.count();
-    expect(count, 'Product list should contain at least one item').toBeGreaterThan(0);
-
-    // Check first few items to ensure relevance
-    for (let i = 0; i < Math.min(count, 3); i++) {
-      const productCard = this.productItems.nth(i);
-      await expect(productCard, 'Product card should contain search term').toContainText(searchTerm, { ignoreCase: true });
+    constructor(page: Page) {
+        super(
+            page,
+            page.getByRole("heading", { name: /all products/i }).describe("All Products heading")
+        );
     }
-  }
 
-  async verifyProductCardDetails() {
-    const firstProduct = this.productItems.first();
-    await expect(firstProduct.locator('.productinfo img'), 'Product image should be visible').toBeVisible();
-    await expect(firstProduct.locator('.productinfo h2'), 'Product name should be visible').toBeVisible();
-    await expect(firstProduct.locator('.productinfo p'), 'Product price should be visible').toBeVisible();
-    await expect(firstProduct.locator('.choose a'), 'Product action buttons should be visible').toBeVisible();
-  }
+    async goto() {
+        await super.goto(Routes.WEB.PRODUCTS);
+    }
 
-  async clickFirstViewProduct() {
-    await this.productItems.first().locator('.choose a').click();
-  }
+    /**
+     * Search for products by keyword
+     */
+    async search(keyword: string): Promise<void> {
+        await this.searchInput.fill(keyword);
+        await this.searchButton.click();
+    }
 
-  async selectCategory(categoryName: string, subCategoryName: string) {
-    const categoryLink = this.categorySidebar.locator(`.panel-heading a[href="#${categoryName}"]`);
-    await categoryLink.click();
+    /**
+     * Verify search results heading is visible
+     */
+    async verifySearchResultsVisible(): Promise<void> {
+        await expect(
+            this.searchedProductsHeading,
+            "Searched products heading should be visible"
+        ).toBeVisible();
+    }
 
-    const subCategoryLink = this.categorySidebar.locator(`#${categoryName} a:has-text("${subCategoryName}")`);
-    await subCategoryLink.click();
-  }
+    /**
+     * Get all visible product names from search/listing
+     */
+    async getProductNames(): Promise<string[]> {
+        const names: string[] = [];
+        const count = await this.productItems.count();
 
-  async verifyCategoryTitle(title: string) {
-    const heading = this.page.locator('h2.title');
-    await expect(heading, 'Category title should contain expected text').toContainText(title, { ignoreCase: true });
-  }
+        for (let i = 0; i < count; i++) {
+            const productName = await this.productItems
+                .nth(i)
+                .locator(".productinfo p")
+                .textContent();
+            if (productName) {
+                names.push(productName.trim());
+            }
+        }
 
-  async selectBrand(brandName: string) {
-    const brandLink = this.brandsSidebar.locator('li a').filter({ hasText: brandName });
-    await brandLink.click();
-  }
+        return names;
+    }
 
-  async addProductToCart(index: number) {
-    const product = this.productItems.nth(index);
-    await product.hover();
-    await product.locator('.productinfo a.add-to-cart').click();
+    /**
+     * Get product count
+     */
+    async getProductCount(): Promise<number> {
+        try {
+            await this.productItems.first().waitFor({ state: "visible", timeout: 3000 });
+            return await this.productItems.count();
+        } catch {
+            // No products found
+            return 0;
+        }
+    }
 
-    // Handle the modal
-    await this.continueShoppingBtn.waitFor({ state: 'visible' });
-    await this.continueShoppingBtn.click();
-  }
+    /**
+     * Click on "View Product" for a specific product by index
+     */
+    async clickViewProduct(index: number): Promise<void> {
+        const link = this.productItems
+            .nth(index)
+            .getByRole("link", { name: /view product/i });
 
-  async viewProductByName(productName: string) {
-    const card = this.productCards.filter({ hasText: productName });
-    const viewLink = card.getByRole('link', { name: 'View Product' });
-    await viewLink.click();
-  }
+        await Promise.all([
+            this.page.waitForURL(/\/product_details\//),
+            link.click(),
+        ]);
+    }
 
-  async navigateToCart() {
-    await this.viewCartLink.click();
-  }
+    /**
+     * Add product to cart directly from listing (hover + click)
+     */
+    async addProductToCart(index: number): Promise<void> {
+        const product = this.productItems.nth(index);
+        await product.hover();
+        await product.locator(".add-to-cart").first().click();
 
-  async verifyCategorySidebarVisible() {
-    await expect(this.categorySidebar, 'Category sidebar should be visible').toBeVisible();
-    await expect(this.page.getByText('Category', { exact: true }), 'Category text should be visible').toBeVisible();
-  }
+        // Wait for "Added!" modal to appear so follow-up actions (continue/view cart) are stable.
+        await this.page.locator(".modal-content").waitFor({ state: "visible" });
+    }
 
-  async verifyBrandsSidebarVisible() {
-    await expect(this.brandsSidebar, 'Brands sidebar should be visible').toBeVisible();
-    await expect(this.page.getByText('Brands', { exact: true }), 'Brands text should be visible').toBeVisible();
-  }
+    /**
+     * Click Continue Shopping button from modal
+     */
+    async clickContinueShopping(): Promise<void> {
+        const modal = this.page.locator(".modal-content");
+        await modal.waitFor({ state: "visible" });
+        await modal.getByRole("button", { name: /continue shopping/i }).click();
+    }
 
-  async getProductCount(): Promise<number> {
-    return await this.productItems.count();
-  }
+    /**
+     * Click View Cart button from modal
+     */
+    async clickViewCart(): Promise<void> {
+        const modal = this.page.locator(".modal-content");
+        await modal.waitFor({ state: "visible" });
+        await modal.getByRole("link", { name: /view cart/i }).click();
+    }
 
-  async verifyProductCountGreaterThan(min: number) {
-    const count = await this.getProductCount();
-    expect(count, 'Product count should be greater than expected').toBeGreaterThan(min);
-  }
+    /**
+     * Select a category from sidebar
+     * @param mainCategory - e.g., "Women", "Men", "Kids"
+     * @param subCategory - e.g., "Dress", "Tops", "Jeans"
+     */
+    async selectCategory(mainCategory: string, subCategory: string): Promise<void> {
+        // Click main category to expand if needed - use first() to avoid strict mode
+        const mainCategoryLink = this.categorySidebar
+            .getByRole("link")
+            .filter({ hasText: new RegExp(`^\\s*${mainCategory}\\s*$`) })
+            .first();
+        await mainCategoryLink.click();
+
+        // Click subcategory
+        // Scope to the left sidebar category links to avoid strict-mode collisions with ads/popups.
+        const subCategoryLink = this.categorySidebar
+            .locator("a[href*='category_products']")
+            .filter({ hasText: new RegExp(subCategory, "i") })
+            .first();
+        await subCategoryLink.click();
+    }
+
+    /**
+     * Select a brand from sidebar
+     */
+    async selectBrand(brandName: string): Promise<void> {
+        await this.brandsSidebar
+            .getByRole("link", { name: new RegExp(brandName, "i") })
+            .click();
+    }
+
+    /**
+     * Verify category title is displayed
+     */
+
+    /**
+     * Verify brand title is displayed
+     */
+
+    /**
+     * Get product price by index
+     */
+    async getProductPrice(index: number): Promise<string> {
+        const priceText = await this.productItems
+            .nth(index)
+            .locator(".productinfo h2")
+            .textContent();
+        return priceText?.trim() || "";
+    }
+
+    /**
+     * Verify products list is visible
+     */
 }

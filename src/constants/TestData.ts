@@ -90,4 +90,17 @@ export const TestData = {
         /** Expected success message */
         SUCCESS_MESSAGE: 'Success! Your details have been submitted successfully.',
     },
+
+    /**
+     * Auth-related constants for API negative/edge-case tests
+     */
+    AUTH: {
+        /** Dummy password value used for negative tests */
+        DUMMY_PASSWORD: 'somepassword',
+        /** Invalid credentials used for negative tests */
+        INVALID_CREDENTIALS: {
+            email: 'invaliduser@example.com',
+            password: 'invalidpassword',
+        },
+    },
 } as const;

@@ -1,50 +1,90 @@
-import { expect, test } from '@playwright/test';
+import { expect } from '@playwright/test';
+import { HomePage } from '../pages/HomePage';
 import { CartPage } from '../pages/CartPage';
 import { CheckoutPage } from '../pages/CheckoutPage';
 import { PaymentPage } from '../pages/PaymentPage';
+import { PaymentDonePage } from '../pages/PaymentDonePage';
+import { User } from '../models/UserModels';
 import { PaymentDetails } from '../models/PaymentModels';
+import { step } from '../utils/StepDecorator';
 
+/**
+ * Reusable steps for checkout flow
+ */
 export class CheckoutSteps {
     constructor(
+        private homePage: HomePage,
         private cartPage: CartPage,
         private checkoutPage: CheckoutPage,
-        private paymentPage: PaymentPage
+        private paymentPage: PaymentPage,
+        private paymentDonePage: PaymentDonePage
     ) { }
 
     /**
-     * Clicks Proceed to Checkout. 
-     * Handles the case where user is not logged in (expects modal).
+     * Complete full checkout flow from cart to order confirmation
      */
-    async proceedToCheckoutExpectLoginModal() {
-        await test.step('Proceed to checkout (Expect Login Modal)', async () => {
-            await this.cartPage.clickProceedToCheckout();
-            await expect(this.cartPage.checkoutModalRegisterLoginLink, 'Checkout modal register/login link is not visible').toBeVisible();
-            await this.cartPage.clickRegisterLoginFromModal();
-        });
+    @step('Complete full checkout flow')
+    async completeCheckout(userData: User, paymentData: PaymentDetails, comment?: string): Promise<void> {
+        // Go to cart and proceed to checkout
+        await this.cartPage.clickProceedToCheckout();
+
+        // Verify addresses
+        await this.checkoutPage.verifyDeliveryAddress(userData);
+        await this.checkoutPage.verifyBillingAddress(userData);
+
+        // Enter comment if provided
+        if (comment) {
+            await this.checkoutPage.enterComment(comment);
+        }
+
+        // Place order
+        await this.checkoutPage.clickPlaceOrder();
+
+        // Complete payment
+        await this.paymentPage.verifyPaymentPageVisible();
+        await this.paymentPage.fillPaymentDetails(paymentData);
+        await this.paymentPage.clickPayAndConfirm();
+
+        // Verify success
+        await this.paymentDonePage.verifyOrderSuccess();
     }
 
     /**
-     * Clicks Proceed to Checkout when already logged in.
+     * Proceed to checkout (for tests that need to do steps manually)
      */
-    async proceedToCheckoutSuccess() {
-        await test.step('Proceed to checkout (Logged In)', async () => {
-            await this.cartPage.clickProceedToCheckout();
-            await expect(this.checkoutPage.deliveryAddressSection, 'Delivery address section is not visible').toBeVisible();
-        });
+    @step('Proceed to checkout')
+    async proceedToCheckout(): Promise<void> {
+        await this.cartPage.clickProceedToCheckout();
     }
 
-    async placeOrder(comment: string) {
-        await test.step(`Place order with comment: "${comment}"`, async () => {
+    /**
+     * Verify addresses in checkout
+     */
+    @step('Verify checkout addresses')
+    async verifyAddresses(userData: User): Promise<void> {
+        await this.checkoutPage.verifyDeliveryAddress(userData);
+        await this.checkoutPage.verifyBillingAddress(userData);
+    }
+
+    /**
+     * Place order with optional comment
+     */
+    @step('Place order')
+    async placeOrder(comment?: string): Promise<void> {
+        if (comment) {
             await this.checkoutPage.enterComment(comment);
-            await this.checkoutPage.clickPlaceOrder();
-        });
+        }
+        await this.checkoutPage.clickPlaceOrder();
     }
 
-    async enterPaymentAndConfirm(payment: PaymentDetails) {
-        await test.step('Enter payment details and confirm', async () => {
-            await this.paymentPage.fillPaymentDetails(payment.nameOnCard, payment.cardNumber, payment.cvc, payment.expiryMonth, payment.expiryYear);
-            await this.paymentPage.clickPayAndConfirm();
-            await expect(this.paymentPage.successMessage, 'Success message is not visible').toBeVisible();
-        })
+    /**
+     * Complete payment
+     */
+    @step('Complete payment flow')
+    async completePayment(paymentData: PaymentDetails): Promise<void> {
+        await this.paymentPage.verifyPaymentPageVisible();
+        await this.paymentPage.fillPaymentDetails(paymentData);
+        await this.paymentPage.clickPayAndConfirm();
+        await this.paymentDonePage.verifyOrderSuccess();
     }
 }

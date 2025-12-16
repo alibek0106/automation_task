@@ -1,128 +1,263 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { BasePage } from './BasePage';
-import { CartItem, CartItemSchema } from '../models/ProductModels';
+import { Page, Locator, expect } from "@playwright/test";
+import { Routes } from "../constants/Routes";
+import { BasePage } from "./BasePage";
+
+export interface CartItem {
+    name: string;
+    price: string;
+    quantity: string;
+    total: string;
+}
 
 export class CartPage extends BasePage {
-    readonly emptyCartMessage: Locator;
-    readonly cartTable: Locator;
-    readonly proceedToCheckoutBtn: Locator;
-    readonly checkoutModalRegisterLoginLink: Locator;
+    readonly cartTable: Locator = this.page
+        .locator("#cart_info_table")
+        .describe("Cart info table");
+    readonly cartTableRows: Locator = this.cartTable
+        .locator("tbody tr")
+        .describe("Cart table rows");
+    readonly proceedToCheckoutButton: Locator = this.page
+        .getByText("Proceed To Checkout")
+        .describe("Proceed to checkout button");
+    readonly emptyCartMessage: Locator = this.page
+        .locator("#empty_cart")
+        .describe("Empty cart message");
+    // Subscription elements
+    readonly subscriptionHeading: Locator = this.page
+        .getByRole("heading", { name: /subscription/i })
+        .describe("Subscription heading");
+    readonly subscriptionEmailInput: Locator = this.page
+        .locator("#susbscribe_email")
+        .describe("Subscription email input");
+    readonly subscriptionButton: Locator = this.page
+        .locator("#subscribe")
+        .describe("Subscription submit button");
+    readonly subscriptionSuccessMessage: Locator = this.page
+        .locator(".alert-success.alert")
+        .describe("Subscription success message");
 
     constructor(page: Page) {
-        super(page);
-        this.emptyCartMessage = page.getByText('Cart is empty!').describe('Empty Cart Message');
-        this.cartTable = page
-            .getByRole('table')
-            .filter({ hasText: 'Item' })
-            .filter({ hasText: 'Quantity' });
-        this.proceedToCheckoutBtn = page.getByText('Proceed To Checkout').describe('Proceed To Checkout Button');
-        this.checkoutModalRegisterLoginLink = page.getByRole('link', { name: 'Register / Login' });
+        super(
+            page,
+            page.locator("#cart_info_table").describe("Cart info table")
+        );
     }
 
-    private getAllRows(): Locator {
-        return this.cartTable
-            .getByRole('row')
-            .filter({ hasNotText: 'Description' }) // Skip Header
-            .filter({ hasNotText: 'Item' });       // Safety Skip
-    }
-
-    getProductRow(productName: string): Locator {
-        return this.getAllRows()
-            .filter({ has: this.page.getByRole('link', { name: productName, exact: true }) });
-    }
-
-    getRowByIndex(index: number): Locator {
-        return this.getAllRows().nth(index);
-    }
-
-    private async extractRowData(row: Locator): Promise<CartItem> {
-        const cells = row.getByRole('cell');
-
-        // Semantic Location Strategy
-        const name = await cells.nth(1).getByRole('link').innerText();
-        const priceText = await cells.nth(2).innerText();
-        const quantityText = await cells.nth(3).getByRole('button').innerText();
-        const totalText = await cells.nth(4).innerText();
-        const rowId = await row.getAttribute('id');
-
-        // Parsing Logic
-        const cleanPrice = (val: string) => parseInt(val.replace(/\D/g, ''), 10);
-
-        return {
-            id: rowId || 'unknown',
-            name: name.trim(),
-            price: cleanPrice(priceText),
-            quantity: parseInt(quantityText, 10),
-            total: cleanPrice(totalText),
-        };
-    }
-
-    async getProductByName(productName: string): Promise<CartItem> {
-        const row = this.getProductRow(productName);
-        const rawData = await this.extractRowData(row);
-        return CartItemSchema.parse(rawData);
+    async goto() {
+        await super.goto(Routes.WEB.VIEW_CART);
     }
 
     /**
-     * Get data for a product by index (e.g. "Get the first item in cart")
+     * Get all items in cart
      */
-    async getProductByIndex(index: number): Promise<CartItem> {
-        const row = this.getRowByIndex(index);
-        return await this.extractRowData(row);
-    }
+    async getCartItems(): Promise<CartItem[]> {
+        const items: CartItem[] = [];
+        const count = await this.cartTableRows.count();
 
-    /**
-     * Remove a specific product by name
-     */
-    async removeProduct(productName: string): Promise<void> {
-        const row = this.getProductRow(productName);
-        // Find 'a' tag in the 6th cell (Index 5)
-        const deleteBtn = row.getByRole('cell').nth(5).locator('a');
-        await deleteBtn.click();
-    }
-
-    async getCartCount(): Promise<number> {
-        if (await this.emptyCartMessage.isVisible()) return 0;
-        return await this.getAllRows().count();
-    }
-
-    /**
-     * Calculates total of all visible rows
-     */
-    async getCalculatedTotal(): Promise<number> {
-        const count = await this.getCartCount();
-        let total = 0;
         for (let i = 0; i < count; i++) {
-            const item = await this.getProductByIndex(i);
-            total += item.total;
+            const row = this.cartTableRows.nth(i);
+
+            const name = await row.locator(".cart_description h4 a").textContent();
+            const price = await row.locator(".cart_price p").textContent();
+            const quantity = await row.locator(".cart_quantity button").textContent();
+            const total = await row.locator(".cart_total_price").textContent();
+
+            items.push({
+                name: name?.trim() || "",
+                price: price?.trim() || "",
+                quantity: quantity?.trim() || "",
+                total: total?.trim() || "",
+            });
         }
-        return total;
+
+        return items;
     }
 
-    async clickProceedToCheckout() {
-        await this.proceedToCheckoutBtn.click();
+    /**
+     * Get cart item count
+     */
+    async getCartItemCount(): Promise<number> {
+        try {
+            await this.cartTableRows.first().waitFor({ state: "visible", timeout: 3000 });
+            return await this.cartTableRows.count();
+        } catch {
+            return 0;
+        }
     }
 
-    async clickRegisterLoginFromModal() {
-        await this.checkoutModalRegisterLoginLink.click();
+    /**
+     * Remove product from cart by index
+     */
+    async removeProduct(index: number): Promise<void> {
+        const initialCount = await this.cartTableRows.count();
+        await this.cartTableRows.nth(index).locator(".cart_delete a").click();
+
+        // Wait for the cart rows count to decrease (no hard waits)
+        await expect(
+            this.cartTableRows,
+            `Cart rows count should decrease after removing item at index ${index}`
+        ).toHaveCount(Math.max(0, initialCount - 1));
     }
 
-    async verifyRegisterLoginModal() {
-        const registerLoginModal = this.page.locator('.modal-content');
-        await expect(registerLoginModal).toBeVisible({ timeout: 5000 });
-        const registerLink = registerLoginModal.getByRole('link', { name: /Register.*Login/i });
-        await expect(registerLink).toBeVisible();
+    /**
+     * Remove product from cart by name
+     */
+    async removeProductByName(productName: string): Promise<void> {
+        const row = this.cartTableRows.filter({
+            has: this.page.locator(".cart_description h4 a", { hasText: productName }),
+        });
+        await expect(row, `Product "${productName}" should exist in cart before removal`).toHaveCount(1);
+        await row.locator(".cart_delete a").click();
+        await expect(row, `Product "${productName}" should be removed from cart`).toHaveCount(0);
     }
 
+    /**
+     * Verify product is in cart by name
+     */
+    async verifyProductInCart(productName: string): Promise<void> {
+        const row = this.cartTableRows.filter({
+            has: this.page.locator(".cart_description h4 a", { hasText: productName }),
+        });
+
+        await expect(
+            row,
+            `Product "${productName}" should be in cart`
+        ).toBeVisible();
+    }
+
+    /**
+     * Verify product is NOT in cart by name
+     */
+    async verifyProductNotInCart(productName: string): Promise<void> {
+        const row = this.cartTableRows.filter({
+            has: this.page.locator(".cart_description h4 a", { hasText: productName }),
+        });
+
+        await expect(
+            row,
+            `Product "${productName}" should not exist in cart`
+        ).toHaveCount(0);
+    }
+
+    /**
+     * Remove all products from cart (idempotent)
+     */
+    async clearCart(): Promise<void> {
+        // Cart page can render either a table or an empty-cart message.
+        // Don't hard-fail if the table doesn't exist.
+        await this.page.waitForLoadState("domcontentloaded");
+        const hasTable = await this.cartTable.count() > 0;
+        const hasEmptyMessage = await this.emptyCartMessage.count() > 0;
+        if (!hasTable && hasEmptyMessage) {
+            return;
+        }
+        if (!hasTable) {
+            // Best-effort: allow navigation/rendering lag, but return if still absent.
+            await this.cartTable.waitFor({ state: "attached", timeout: 5000 }).catch(() => {});
+        }
+        if (await this.cartTable.count() === 0) {
+            return;
+        }
+
+        let count = await this.cartTableRows.count();
+        while (count > 0) {
+            await this.removeProduct(0);
+            count = await this.cartTableRows.count();
+        }
+    }
+
+    /**
+     * Verify cart is empty
+     */
+    async verifyCartEmpty(): Promise<void> {
+        const count = await this.getCartItemCount();
+        expect(count, "Cart should be empty").toBe(0);
+    }
+
+    /**
+     * Get product quantity by name
+     */
     async getProductQuantity(productName: string): Promise<number> {
-        const row = this.getProductRow(productName);
-        const quantityText = await row.getByRole('cell').nth(3).innerText();
-        return parseInt(quantityText, 10);
+        const row = this.cartTableRows.filter({
+            has: this.page.locator(".cart_description h4 a", { hasText: productName }),
+        });
+
+        const quantityText = await row.locator(".cart_quantity button").textContent();
+        return parseInt(quantityText?.trim() || "0", 10);
     }
 
-    async getProductTotal(productName: string): Promise<number> {
-        const row = this.getProductRow(productName);
-        const totalText = await row.getByRole('cell').nth(4).innerText();
-        return parseInt(totalText.replace(/\D/g, ''), 10);
+    /**
+     * Get product total price by name
+     */
+    async getProductTotal(productName: string): Promise<string> {
+        const row = this.cartTableRows.filter({
+            has: this.page.locator(".cart_description h4 a", { hasText: productName }),
+        });
+
+        const total = await row.locator(".cart_total_price").textContent();
+        return total?.trim() || "";
+    }
+
+    /**
+     * Get overall cart total (sum of all items)
+     */
+    async getCartTotal(): Promise<string> {
+        // This would require summing all individual totals or finding a total element
+        const items = await this.getCartItems();
+        let total = 0;
+
+        for (const item of items) {
+            // Remove "Rs. " prefix and parse
+            const itemTotal = parseFloat(item.total.replace(/Rs\.\s*/, "").replace(/,/g, ""));
+            total += itemTotal;
+        }
+
+        return `Rs. ${total}`;
+    }
+
+    /**
+     * Click proceed to checkout
+     */
+    async clickProceedToCheckout(): Promise<void> {
+        await this.proceedToCheckoutButton.click();
+    }
+
+    /**
+     * Verify cart table is visible
+     */
+    async verifyCartTableVisible(): Promise<void> {
+        await expect(
+            this.cartTable,
+            "Cart table should be visible"
+        ).toBeVisible();
+    }
+
+    /**
+     * Subscribe with email address
+     */
+    async subscribeWithEmail(email: string): Promise<void> {
+        await this.scrollToBottom();
+        await this.subscriptionEmailInput.fill(email);
+        await this.subscriptionButton.click();
+    }
+
+    /**
+     * Verify subscription heading is visible
+     */
+    async verifySubscriptionVisible(): Promise<void> {
+        await expect(
+            this.subscriptionHeading,
+            "Subscription heading should be visible"
+        ).toBeVisible();
+    }
+
+    /**
+     * Verify subscription success message
+     */
+    async verifySubscriptionSuccess(): Promise<void> {
+        await expect(
+            this.subscriptionSuccessMessage,
+            "Subscription success message should be visible"
+        ).toContainText("You have been successfully subscribed!");
     }
 }
