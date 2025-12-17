@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
     VERIFY_LOGIN: '/api/verifyLogin',
     PRODUCTS_LIST: '/api/productsList',
     SEARCH_PRODUCT: '/api/searchProduct',
+    BRANDS_LIST: '/api/brandsList',
 };
 
 export const MESSAGES = {

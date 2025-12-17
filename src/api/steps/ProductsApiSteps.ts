@@ -93,4 +93,55 @@ export class ProductsApiSteps {
 
         console.log(`API correctly returned empty list for search term: ${searchTerm}`);
     }
+
+    @step('Get all brands via API')
+    async getAllBrands(): Promise<any[]> {
+        const response = await this.apiClient.get(API_ENDPOINTS.BRANDS_LIST);
+        await expect(response).toHaveStatusCode(API_STATUS_CODES.OK);
+
+        const responseBody = await response.json();
+        expect(responseBody).toHaveProperty('brands');
+        return responseBody.brands;
+    }
+
+    @step('Get all products via API')
+    async getAllProducts(): Promise<Product[]> {
+        const response = await this.apiClient.get(API_ENDPOINTS.PRODUCTS_LIST);
+        await expect(response).toHaveStatusCode(API_STATUS_CODES.OK);
+        const responseBody = await response.json();
+        return responseBody.products;
+    }
+
+    @step('Get products by Brand "{0}" via API')
+    async getProductsByBrand(brandName: string): Promise<Product[]> {
+        const allProducts = await this.getAllProducts();
+
+        // Filter logic: Check if product.brand matches brandName (case-insensitive)
+        const filtered = allProducts.filter(p =>
+            p.brand && p.brand.toLowerCase() === brandName.toLowerCase()
+        );
+
+        console.log(`API Found ${filtered.length} products for Brand: ${brandName}`);
+        return filtered;
+    }
+
+    @step('Get products by Category "{0}" > "{1}" via API')
+    async getProductsByCategory(mainCategory: string, subCategory: string): Promise<Product[]> {
+        const allProducts = await this.getAllProducts();
+
+        // Filter logic: 
+        // mainCategory matches product.category.usertype.usertype
+        // subCategory matches product.category.category
+        const filtered = allProducts.filter(p => {
+            // Safe navigation in case category structure is missing
+            const pMainCat = p.category?.usertype?.usertype;
+            const pSubCat = p.category?.category;
+
+            return pMainCat && pMainCat.toLowerCase() === mainCategory.toLowerCase() &&
+                pSubCat && pSubCat.toLowerCase() === subCategory.toLowerCase();
+        });
+
+        console.log(`API Found ${filtered.length} products for Category: ${mainCategory} > ${subCategory}`);
+        return filtered;
+    }
 }
