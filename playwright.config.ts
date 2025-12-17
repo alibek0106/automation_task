@@ -25,7 +25,11 @@ export default defineConfig({
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 4 : 4, // at least 4 workers
-    reporter: [['list'], ['html', { open: 'never' }]],
+    reporter: [
+        ['list'], // Console output
+        ['junit', { outputFile: 'results.xml' }], // XML for Jenkins to parse stacktraces
+        ['html', { outputFolder: 'playwright-report', open: 'never' }] // HTML for screenshots
+    ],
     use: {
         baseURL: process.env.BASE_URL || 'https://www.automationexercise.com',
         trace: 'on-first-retry',
