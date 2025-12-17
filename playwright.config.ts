@@ -26,15 +26,16 @@ export default defineConfig({
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 4 : 4, // at least 4 workers
-    reporter: [['list'], ['html', { open: 'never' }]],
+    reporter: [['list'], ['html', { outputFolder: 'playwright-report', open: 'never' }]],
     expect: {
         timeout: 10_000,
     },
     use: {
-        baseURL: process.env.BASE_URL || 'https://www.automationexercise.com',
-        trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
-        video: 'retain-on-failure',
+        baseURL: process.env.BASE_URL,
+        trace: 'on',
+        screenshot: 'on',
+        video: 'on',
+        headless: true,
         testIdAttribute: 'data-qa',
         actionTimeout: 15_000,
         navigationTimeout: 60_000,

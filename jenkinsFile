@@ -1,0 +1,66 @@
+pipeline {
+    agent any
+
+    stages {
+        // stage('Checkout') {
+        //     steps {
+        //         echo 'Checking out repository...'
+        //         git branch: 'main', url: 'https://github.com/Lukameladz3/Jenkins-Playwright-TS.git'
+        //     }
+        // }
+
+        stage('Install Dependencies') {
+            steps {
+                echo 'Installing dependencies...'
+                bat 'npm ci'
+                bat 'npx playwright install'
+                echo 'Dependencies installed'
+            }
+        }
+
+        stage('Run Tests in Parallel') {
+            parallel {
+                stage('Chromium') {
+                    steps {
+                        echo 'Running tests on Chromium...'
+                        bat 'npx playwright test --workers=4'
+                        echo 'Chromium tests finished'
+                    }
+                }
+                // Optional: run other browsers too
+                // stage('Firefox') {
+                //     steps {
+                //         bat 'npx playwright test --project=Firefox'
+                //     }
+                // }
+                // stage('WebKit') {
+                //     steps {
+                //         bat 'npx playwright test --project=WebKit'
+                //     }
+                // }
+            }
+        }
+        stage('Publish HTML Report') {
+            steps {
+                echo 'Publishing Playwright HTML report...'
+                publishHTML([
+                    allowMissing: false,
+                    alwaysLinkToLastBuild: true,
+                    keepAll: true,
+                    reportDir: 'playwright-report',    // folder containing index.html and all subfolders
+                    reportFiles: 'index.html',         // index.html only
+                    reportName: 'Playwright Test Report',
+                    reportTitles: 'Playwright Test Report'
+                ])
+            }
+        }
+
+    }
+
+    post {
+        always {
+            echo 'Archiving report files, screenshots, and videos...'
+            archiveArtifacts artifacts: 'playwright-report/**', fingerprint: true
+        }
+    }
+}
