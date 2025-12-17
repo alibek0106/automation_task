@@ -2,6 +2,13 @@ import { test } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 import { PRODUCTS } from '../../src/constants/Products';
 
+/**
+ * TC04: Cart Management
+ * 
+ * Validates product removal from cart including individual product removal
+ * and cart empty state verification.
+ */
+
 test.describe('Cart Management', () => {
     test('TC04: Remove products from cart and verify empty state', async ({
         automationExerciseLandingSteps,

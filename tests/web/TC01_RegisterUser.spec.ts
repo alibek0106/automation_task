@@ -3,6 +3,13 @@ import { DataFactory } from '../../src/utils/DataFactory';
 import * as fs from 'fs';
 import * as path from 'path';
 
+/**
+ * TC01: User Registration
+ * 
+ * Validates complete user registration flow including account creation,
+ * profile information submission, and successful login verification.
+ */
+
 test.describe('User Registration', () => {
     test('TC01: Register User with Complete Profile', async ({
         automationExerciseLandingSteps,

@@ -2,6 +2,13 @@ import { test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
 import { Routes } from '../../src/constants/Routes';
 
+/**
+ * TC07: User Logout
+ * 
+ * Validates user logout functionality including successful logout, UI updates,
+ * session termination, and access restrictions to protected routes.
+ */
+
 test.describe('TC07: User Logout Logic', () => {
     let user: ReturnType<typeof DataFactory.generateUser>;
 

@@ -67,4 +67,8 @@ export class AutomationExerciseContactUsPage extends BasePage {
     async clickHome() {
         await this.homeButton.click();
     }
+
+    async verifyStillOnPageAfterValidation(): Promise<void> {
+        await expect(this.page).toHaveURL(/contact_us/);
+    }
 }

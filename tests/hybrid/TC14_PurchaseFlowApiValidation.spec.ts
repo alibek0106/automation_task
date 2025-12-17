@@ -2,11 +2,6 @@ import { test } from '../../src/fixtures';
 import { expect } from '@playwright/test';
 import { DataFactory } from '../../src/utils/DataFactory';
 
-const TEST_DATA = {
-    PRODUCTS: ['Blue Top', 'Men Tshirt'],
-    ORDER_COMMENT: 'Test Order - API Validation',
-};
-
 test.describe('TC14: End-to-End Purchase Flow with API Data Validation', () => {
     let user = DataFactory.generateFullUser();
     let apiProductPrices: { [key: string]: string } = {};
@@ -25,13 +20,17 @@ test.describe('TC14: End-to-End Purchase Flow with API Data Validation', () => {
         automationExerciseNavigationSteps,
         automationExerciseLoginSteps,
         automationExerciseProductsSteps,
-        automationExerciseCartPage,
-        automationExerciseCheckoutPage,
-        automationExercisePaymentPage,
-        automationExerciseOrderConfirmationPage,
+        automationExerciseCartSteps,
+        automationExerciseCheckoutSteps,
+        automationExercisePaymentSteps,
         productsApiSteps,
         userApiSteps
     }) => {
+        const TEST_DATA = {
+            PRODUCTS: ['Blue Top', 'Men Tshirt'],
+            ORDER_COMMENT: 'Test Order - API Validation',
+        };
+
         await test.step('Login as registered user', async () => {
             await automationExerciseNavigationSteps.clickSignupLogin();
             await automationExerciseLoginSteps.login(user.email, user.password);
@@ -63,7 +62,7 @@ test.describe('TC14: End-to-End Purchase Flow with API Data Validation', () => {
 
         await test.step('Validate cart prices match API data', async () => {
             await automationExerciseNavigationSteps.clickCart();
-            const cartItems = await automationExerciseCartPage.getCartItemsDetails();
+            const cartItems = await automationExerciseCartSteps.getCartItemsDetails();
 
             for (const item of cartItems) {
                 const expectedPrice = apiProductPrices[item.name];
@@ -73,25 +72,24 @@ test.describe('TC14: End-to-End Purchase Flow with API Data Validation', () => {
 
         await test.step('Fetch user address from API and proceed to checkout', async () => {
             const apiUserDetails = await userApiSteps.getUserDetails(user.email);
-            await automationExerciseCartPage.proceedToCheckout();
-
-            const pageContent = await page.content();
-            expect(pageContent, 'Checkout page should display API address1').toContain(apiUserDetails.address1);
-            expect(pageContent, 'Checkout page should display API city').toContain(apiUserDetails.city);
-            expect(pageContent, 'Checkout page should display API zipcode').toContain(apiUserDetails.zipcode);
+            await automationExerciseCartSteps.proceedToCheckout();
+            await automationExerciseCheckoutSteps.verifyAddressFieldsInPage(
+                apiUserDetails.address1,
+                apiUserDetails.city,
+                apiUserDetails.zipcode,
+                page
+            );
         });
 
         await test.step('Complete payment and verify order', async () => {
-            await automationExerciseCheckoutPage.enterComment(TEST_DATA.ORDER_COMMENT);
-            await automationExerciseCheckoutPage.clickPlaceOrder();
-            await automationExercisePaymentPage.fillPaymentDetails();
-            await automationExercisePaymentPage.clickPayAndConfirm();
-            await automationExerciseOrderConfirmationPage.verifyOrderConfirmed();
+            await automationExerciseCheckoutSteps.enterCommentAndPlaceOrder(TEST_DATA.ORDER_COMMENT);
+            await automationExercisePaymentSteps.fillPaymentDetailsAndConfirm();
+            await automationExercisePaymentSteps.verifyOrderPlaced();
         });
 
         await test.step('Verify cart is empty after order completion', async () => {
             await automationExerciseNavigationSteps.clickCart();
-            await automationExerciseCartPage.verifyCartEmpty();
+            await automationExerciseCartSteps.verifyCartEmpty();
         });
     });
 });

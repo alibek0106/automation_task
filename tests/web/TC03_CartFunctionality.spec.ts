@@ -1,5 +1,12 @@
 import { test } from '../../src/fixtures';
 
+/**
+ * TC03: Shopping Cart Functionality
+ * 
+ * Validates adding multiple products to cart with quantity verification
+ * and total price calculations.
+ */
+
 test.describe('Shopping Cart Functionality', () => {
     test('TC03: Add Multiple Products to Cart and Verify Quantities and Totals', async ({
         automationExerciseLandingSteps,

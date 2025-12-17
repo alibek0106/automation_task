@@ -4,6 +4,13 @@ import { PAYMENT_INFO } from '../../src/utils/Constants';
 import { AutomationExerciseApi } from '../../src/api/AutomationExerciseApi';
 import { PRODUCT_DETAILS, PRODUCTS } from '../../src/constants/Products';
 
+/**
+ * TC06: End-to-End Purchase Flow
+ * 
+ * Validates complete purchase workflow including product selection, cart management,
+ * checkout with address verification, payment processing, and order confirmation.
+ */
+
 test.describe('End-to-End Purchase Flow', () => {
     let user: User;
 

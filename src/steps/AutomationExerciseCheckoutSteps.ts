@@ -25,4 +25,12 @@ export class AutomationExerciseCheckoutSteps {
         await this.checkoutPage.enterComment(comment);
         await this.checkoutPage.clickPlaceOrder();
     }
+
+    @step('Verify address fields are present in checkout page')
+    async verifyAddressFieldsInPage(address1: string, city: string, zipcode: string, page: Page): Promise<void> {
+        const pageContent = await page.content();
+        expect(pageContent, 'Checkout page should display address1').toContain(address1);
+        expect(pageContent, 'Checkout page should display city').toContain(city);
+        expect(pageContent, 'Checkout page should display zipcode').toContain(zipcode);
+    }
 }

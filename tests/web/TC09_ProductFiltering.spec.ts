@@ -1,5 +1,12 @@
 import { test } from '../../src/fixtures';
 
+/**
+ * TC09: Product Category and Brand Filtering
+ * 
+ * Validates product filtering by category and brand including filter switching
+ * and results verification.
+ */
+
 test.describe('TC09: Product Category and Brand Filtering', () => {
 
     test.beforeEach(async ({ automationExerciseLandingSteps, automationExerciseProductsSteps }) => {

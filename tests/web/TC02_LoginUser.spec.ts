@@ -2,6 +2,13 @@ import { test } from '../../src/fixtures';
 import * as fs from 'fs';
 import * as path from 'path';
 
+/**
+ * TC02: User Login
+ * 
+ * Validates user authentication with correct credentials and verifies
+ * successful login state in the UI.
+ */
+
 test.describe('User Authentication', () => {
     test('TC02: Login User with correct email and password', async ({
         automationExerciseLandingSteps,

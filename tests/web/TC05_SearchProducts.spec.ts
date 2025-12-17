@@ -1,5 +1,12 @@
 import { test } from '../../src/fixtures';
 
+/**
+ * TC05: Product Search Functionality
+ * 
+ * Validates product search including valid searches, case-insensitive matching,
+ * navigation to product details, and empty search results handling.
+ */
+
 test.describe('Product Search Functionality', () => {
 
     test.beforeEach(async ({ automationExerciseLandingSteps, automationExerciseNavigationSteps }) => {

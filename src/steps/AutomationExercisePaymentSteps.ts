@@ -37,4 +37,10 @@ export class AutomationExercisePaymentSteps {
     async clickContinue(): Promise<void> {
         await this.confirmationPage.clickContinue();
     }
+
+    @step('Fill payment details and confirm order')
+    async fillPaymentDetailsAndConfirm(): Promise<void> {
+        await this.paymentPage.fillPaymentDetails();
+        await this.paymentPage.clickPayAndConfirm();
+    }
 }

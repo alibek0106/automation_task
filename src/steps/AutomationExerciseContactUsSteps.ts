@@ -38,4 +38,9 @@ export class AutomationExerciseContactUsSteps {
     async clickHome() {
         await this.contactUsPage.clickHome();
     }
+
+    @step('Verify still on Contact Us page (validation failed)')
+    async verifyStillOnContactUsPage(): Promise<void> {
+        await this.contactUsPage.verifyStillOnPageAfterValidation();
+    }
 }

@@ -1,7 +1,14 @@
-import { test, expect } from '../../src/fixtures';
+import { test } from '../../src/fixtures';
 import path from 'path';
 import { DataFactory } from '../../src/utils/DataFactory';
-import { MESSAGES, URLS } from '../../src/utils/Constants';
+import { MESSAGES } from '../../src/utils/Constants';
+
+/**
+ * TC10: Contact Form Submission
+ * 
+ * Validates contact form submission functionality including successful submission
+ * with file attachments and form validation for mandatory fields and email format.
+ */
 
 test.describe('TC10: Contact Form Submission', () => {
 
@@ -28,12 +35,9 @@ test.describe('TC10: Contact Form Submission', () => {
         await automationExerciseContactUsSteps.clickHome();
     });
 
-    test('Scenario: Verify mandatory field validation', async ({ automationExerciseContactUsSteps, page }) => {
-        // Submit empty form
+    test('Scenario: Verify mandatory field validation', async ({ automationExerciseContactUsSteps }) => {
         await automationExerciseContactUsSteps.submitForm();
-
-        // Verify navigation explicitly did not happen (still on contact_us)
-        expect(page.url()).toContain(URLS.CONTACT_US);
+        await automationExerciseContactUsSteps.verifyStillOnContactUsPage();
     });
 
     const invalidEmails = [
@@ -44,11 +48,10 @@ test.describe('TC10: Contact Form Submission', () => {
     ];
 
     for (const data of invalidEmails) {
-        test(`Scenario: Verify email format validation - ${data.desc}`, async ({ automationExerciseContactUsSteps, page }) => {
+        test(`Scenario: Verify email format validation - ${data.desc}`, async ({ automationExerciseContactUsSteps }) => {
             await automationExerciseContactUsSteps.fillContactForm('Test', data.email, 'Sub', 'Msg');
             await automationExerciseContactUsSteps.submitForm();
-
-            expect(page.url()).toContain(URLS.CONTACT_US);
+            await automationExerciseContactUsSteps.verifyStillOnContactUsPage();
         });
     }
 });
