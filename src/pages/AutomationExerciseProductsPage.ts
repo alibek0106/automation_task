@@ -11,6 +11,8 @@ export class AutomationExerciseProductsPage extends BasePage {
     private readonly searchedProductsHeader: Locator;
     private readonly productNames: Locator;
     private readonly productCards: Locator;
+    private readonly productPrices: Locator;
+    private readonly emptyStateMessage: Locator;
 
     constructor(page: Page) {
         super(page, 'ProductsPage');
@@ -24,6 +26,8 @@ export class AutomationExerciseProductsPage extends BasePage {
         this.searchedProductsHeader = this.resolveLocator(`h2.title:has-text("${MESSAGES.SEARCHED_PRODUCTS}")`, 'Searched Products Header');
         this.productNames = this.resolveLocator('.productinfo p', 'Product Names');
         this.productCards = this.resolveLocator('.product-image-wrapper', 'Product Cards');
+        this.productPrices = this.resolveLocator('.productinfo h2', 'Product Prices');
+        this.emptyStateMessage = this.resolveLocator('.col-sm-12:has-text("No product")', 'Empty State Message');
 
         // Sidebar elements
         this.categoryPanel = this.resolveLocator('#accordian', 'Category Sidebar');
@@ -130,5 +134,55 @@ export class AutomationExerciseProductsPage extends BasePage {
 
     async getProductCount(): Promise<number> {
         return await this.productCards.count();
+    }
+
+    async getProductPrices(): Promise<string[]> {
+        return await this.productPrices.allInnerTexts();
+    }
+
+    /**
+     * Get product details including names and prices
+     * Returns array of objects with name and price for each product
+     */
+    async getProductDetails(): Promise<Array<{ name: string, price: string }>> {
+        const count = await this.productCards.count();
+        const products: Array<{ name: string, price: string }> = [];
+
+        for (let i = 0; i < count; i++) {
+            const card = this.productCards.nth(i);
+            const name = await card.locator('.productinfo p').innerText();
+            const price = await card.locator('.productinfo h2').innerText();
+            products.push({ name: name.trim(), price: price.trim() });
+        }
+
+        return products;
+    }
+
+    /**
+     * Verify a product card has the required structure
+     * @param index Zero-based index of the product card
+     */
+    async verifyProductCardStructure(index: number) {
+        const card = this.getProductCard(index);
+
+        // Verify image exists
+        const image = card.locator('img');
+        await expect(image).toBeVisible();
+
+        // Verify "View Product" link exists
+        const viewProductLink = card.locator('a:has-text("View Product")');
+        await expect(viewProductLink).toBeVisible();
+    }
+
+    /**
+     * Verify the empty state is displayed when no products are found
+     */
+    async verifyEmptyState() {
+        const count = await this.productCards.count();
+        expect(count, 'No product cards should be visible for empty search results').toBe(0);
+
+        // Note: The actual site might not show a specific "No products found" message
+        // It might just show an empty product list
+        // This can be adjusted based on actual site behavior
     }
 }

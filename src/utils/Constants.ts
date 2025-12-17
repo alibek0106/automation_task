@@ -10,6 +10,7 @@ export const API_ENDPOINTS = {
     DELETE_ACCOUNT: '/api/deleteAccount',
     VERIFY_LOGIN: '/api/verifyLogin',
     PRODUCTS_LIST: '/api/productsList',
+    SEARCH_PRODUCT: '/api/searchProduct',
 };
 
 export const MESSAGES = {
