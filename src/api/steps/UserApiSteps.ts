@@ -46,4 +46,12 @@ export class UserApiSteps {
         const response = await this.apiClient.delete(API_ENDPOINTS.DELETE_ACCOUNT, data);
         expect(response.status()).toBe(API_STATUS_CODES.OK);
     }
+
+    async getUserDetails(email: string): Promise<any> {
+        const response = await this.apiClient.get(`${API_ENDPOINTS.GET_USER_DETAILS}?email=${email}`);
+        expect(response.status()).toBe(API_STATUS_CODES.OK);
+        const responseBody = await response.json();
+        // The API returns { responseCode: 200, user: { ... } }
+        return responseBody.user;
+    }
 }

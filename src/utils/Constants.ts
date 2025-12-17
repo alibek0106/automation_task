@@ -12,6 +12,7 @@ export const API_ENDPOINTS = {
     PRODUCTS_LIST: '/api/productsList',
     SEARCH_PRODUCT: '/api/searchProduct',
     BRANDS_LIST: '/api/brandsList',
+    GET_USER_DETAILS: '/api/getUserDetailByEmail',
 };
 
 export const MESSAGES = {

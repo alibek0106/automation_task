@@ -41,6 +41,19 @@ export class AutomationExercisePaymentPage extends BasePage {
         await this.expirationYearInput.fill(year);
     }
 
+    async fillPaymentDetails(): Promise<void> {
+        // Uses constants for default payment flow
+        const { PAYMENT_INFO } = require('../utils/Constants');
+        await this.enterPaymentDetails(
+            PAYMENT_INFO.NAME_ON_CARD,
+            PAYMENT_INFO.CARD_NUMBER,
+            PAYMENT_INFO.CVC,
+            PAYMENT_INFO.EXPIRY_MONTH,
+            PAYMENT_INFO.EXPIRY_YEAR
+        );
+    }
+
+
     async clickPayAndConfirm(): Promise<void> {
         await this.payButton.click();
     }

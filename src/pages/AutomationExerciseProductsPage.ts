@@ -78,6 +78,13 @@ export class AutomationExerciseProductsPage extends BasePage {
         await product.locator('.add-to-cart').first().click();
     }
 
+    async verifySuccessMessage() {
+        // The modal appears after adding a product to cart
+        // Based on the automation exercise website structure
+        const modal = this.page.locator('#cartModal');
+        await expect(modal).toBeVisible({ timeout: TIMEOUTS.DEFAULT });
+    }
+
     async viewProductDetailsByName(productName: string) {
         // Find the product card with the text, then find the 'View Product' button within or associated with it?
         // Structure: .col-sm-4 > .product-image-wrapper > .choose > .nav > li > a (View Product)

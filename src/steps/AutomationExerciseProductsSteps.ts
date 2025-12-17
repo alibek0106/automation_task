@@ -40,6 +40,11 @@ export class AutomationExerciseProductsSteps {
         await this.productsPage.clickContinueShopping();
     }
 
+    @step('Verify success message is visible')
+    async verifySuccessMessage() {
+        await this.productsPage.verifySuccessMessage();
+    }
+
     @step('Search for product: {0}')
     async searchForProduct(term: string) {
         await this.productsPage.searchProduct(term);

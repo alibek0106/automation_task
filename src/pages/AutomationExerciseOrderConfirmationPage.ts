@@ -19,6 +19,10 @@ export class AutomationExerciseOrderConfirmationPage extends BasePage {
         await expect(this.orderPlacedMessage).toBeVisible();
     }
 
+    async verifyOrderConfirmed(): Promise<void> {
+        await this.verifyPageLoaded();
+    }
+
     async clickDownloadInvoice(): Promise<void> {
         await this.downloadInvoiceButton.click();
     }
