@@ -31,7 +31,7 @@ export default defineConfig({
         timeout: 10_000,
     },
     use: {
-        baseURL: process.env.BASE_URL,
+        baseURL: process.env.BASE_URL || 'https://www.automationexercise.com',
         trace: 'on',
         screenshot: 'on',
         video: 'on',
