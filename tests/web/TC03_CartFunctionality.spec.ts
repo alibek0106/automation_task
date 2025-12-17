@@ -1,4 +1,4 @@
-import { test } from '../src/fixtures';
+import { test } from '../../src/fixtures';
 
 test.describe('Shopping Cart Functionality', () => {
     test('TC03: Add Multiple Products to Cart and Verify Quantities and Totals', async ({

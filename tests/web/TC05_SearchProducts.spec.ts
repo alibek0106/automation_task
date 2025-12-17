@@ -1,4 +1,4 @@
-import { test, expect } from '../src/fixtures/index';
+import { test } from '../../src/fixtures';
 
 test.describe('Product Search Functionality', () => {
 

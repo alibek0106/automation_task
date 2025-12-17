@@ -1,6 +1,6 @@
-import { test } from '../src/fixtures/index';
-import { DataFactory } from '../src/utils/DataFactory';
-import { PRODUCTS, PRODUCT_DETAILS } from '../src/constants/Products';
+import { test } from '../../src/fixtures';
+import { DataFactory } from '../../src/utils/DataFactory';
+import { PRODUCTS, PRODUCT_DETAILS } from '../../src/constants/Products';
 
 test.describe('TC08: Cart Quantity Update', () => {
     let user: ReturnType<typeof DataFactory.generateUser>;

@@ -1,6 +1,6 @@
-import { test } from '../src/fixtures';
-import { DataFactory } from '../src/utils/DataFactory';
-import { PRODUCTS } from '../src/constants/Products';
+import { test } from '../../src/fixtures';
+import { DataFactory } from '../../src/utils/DataFactory';
+import { PRODUCTS } from '../../src/constants/Products';
 
 test.describe('Cart Management', () => {
     test('TC04: Remove products from cart and verify empty state', async ({

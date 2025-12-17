@@ -1,4 +1,4 @@
-import { test } from '../src/fixtures';
+import { test } from '../../src/fixtures';
 
 test.describe('API - Products List Method Validation', () => {
     test('TC12: Verify POST method is not supported for products list', async ({ productsApiSteps }) => {

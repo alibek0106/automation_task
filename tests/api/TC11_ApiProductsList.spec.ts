@@ -1,4 +1,4 @@
-import { test } from '../src/fixtures';
+import { test } from '../../src/fixtures';
 
 test.describe('API - Products List', () => {
     test('TC11: Get all products list successfully', async ({ productsApiSteps }) => {

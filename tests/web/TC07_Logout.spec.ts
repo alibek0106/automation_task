@@ -1,6 +1,6 @@
-import { test, expect } from '../src/fixtures/index';
-import { DataFactory } from '../src/utils/DataFactory';
-import { Routes } from '../src/constants/Routes';
+import { test, expect } from '../../src/fixtures';
+import { DataFactory } from '../../src/utils/DataFactory';
+import { Routes } from '../../src/constants/Routes';
 
 test.describe('TC07: User Logout Logic', () => {
     let user: ReturnType<typeof DataFactory.generateUser>;

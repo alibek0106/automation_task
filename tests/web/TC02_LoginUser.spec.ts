@@ -1,4 +1,4 @@
-import { test } from '../src/fixtures';
+import { test } from '../../src/fixtures';
 import * as fs from 'fs';
 import * as path from 'path';
 

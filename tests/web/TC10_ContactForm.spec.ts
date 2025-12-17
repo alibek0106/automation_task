@@ -1,7 +1,7 @@
-import { test, expect } from '../src/fixtures/index';
+import { test, expect } from '../../src/fixtures';
 import path from 'path';
-import { DataFactory } from '../src/utils/DataFactory';
-import { MESSAGES, URLS } from '../src/utils/Constants';
+import { DataFactory } from '../../src/utils/DataFactory';
+import { MESSAGES, URLS } from '../../src/utils/Constants';
 
 test.describe('TC10: Contact Form Submission', () => {
 

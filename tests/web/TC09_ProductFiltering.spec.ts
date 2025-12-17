@@ -1,4 +1,4 @@
-import { test } from '../src/fixtures/index';
+import { test } from '../../src/fixtures';
 
 test.describe('TC09: Product Category and Brand Filtering', () => {
 

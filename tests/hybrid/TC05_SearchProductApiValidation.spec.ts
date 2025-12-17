@@ -6,11 +6,9 @@ import { Product } from '../../src/api/models/SearchProduct';
  * 
  * This hybrid test validates that the UI search functionality matches the API response exactly.
  * It ensures data consistency between the backend (API) and frontend (UI).
- * 
- * Tags: @functional @search @hybrid @api_ui_sync
  */
 
-test.describe('Search Product with API Validation', () => {
+test.describe('Search Product with API Validation', { tag: '@functional @search @hybrid @api_ui_sync' }, () => {
 
     test.beforeEach(async ({ automationExerciseLandingSteps, automationExerciseNavigationSteps, automationExerciseProductsSteps }) => {
         await test.step('Navigate to Products page', async () => {

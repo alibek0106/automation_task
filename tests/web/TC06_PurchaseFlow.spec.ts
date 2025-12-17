@@ -1,8 +1,8 @@
-import { test } from '../src/fixtures';
-import { DataFactory, User } from '../src/utils/DataFactory';
-import { PAYMENT_INFO } from '../src/utils/Constants';
-import { AutomationExerciseApi } from '../src/api/AutomationExerciseApi';
-import { PRODUCT_DETAILS, PRODUCTS } from '../src/constants/Products';
+import { test } from '../../src/fixtures';
+import { DataFactory, User } from '../../src/utils/DataFactory';
+import { PAYMENT_INFO } from '../../src/utils/Constants';
+import { AutomationExerciseApi } from '../../src/api/AutomationExerciseApi';
+import { PRODUCT_DETAILS, PRODUCTS } from '../../src/constants/Products';
 
 test.describe('End-to-End Purchase Flow', () => {
     let user: User;

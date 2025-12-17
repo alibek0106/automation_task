@@ -1,5 +1,5 @@
-import { test } from '../src/fixtures';
-import { DataFactory } from '../src/utils/DataFactory';
+import { test } from '../../src/fixtures';
+import { DataFactory } from '../../src/utils/DataFactory';
 import * as fs from 'fs';
 import * as path from 'path';
 
