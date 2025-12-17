@@ -10,7 +10,7 @@ test.describe("TC08-Hybrid: Update Product Quantity in Cart (API Setup)", () => 
         // Create user via API for faster setup
         const workerIndex = test.info().workerIndex;
         testUser = DataFactory.generateUser({ workerIndex });
-        await userApiSteps.createUserViaApi(testUser);
+        await userApiSteps.createUser(testUser);
         userCreated = true;
 
         // Login via UI
@@ -26,7 +26,7 @@ test.describe("TC08-Hybrid: Update Product Quantity in Cart (API Setup)", () => 
     test.afterEach(async ({ userApiSteps }) => {
         // Cleanup: Delete user via API
         if (!userCreated) return;
-        await userApiSteps.deleteUserViaApi(testUser.email, testUser.password);
+        await userApiSteps.deleteUser(testUser.email, testUser.password);
     });
 
     test("should update product quantities and verify calculations with API price validation", async ({
@@ -49,7 +49,7 @@ test.describe("TC08-Hybrid: Update Product Quantity in Cart (API Setup)", () => 
 
         // Step 1: Get product from API for price validation
         await test.step("Get product details from API", async () => {
-            const apiProducts = await productApiSteps.getAllProductsViaApi();
+            const apiProducts = await productApiSteps.getAllProducts();
             expect(apiProducts.length, "API should return products").toBeGreaterThan(0);
         });
 
@@ -62,8 +62,8 @@ test.describe("TC08-Hybrid: Update Product Quantity in Cart (API Setup)", () => 
             productPrice = await productDetailPage.getProductPrice();
 
             // Get product price from API
-            const apiProducts = await productApiSteps.getAllProductsViaApi();
-            const apiProduct = await productApiSteps.getProductByNameViaApi(apiProducts, productName);
+            const apiProducts = await productApiSteps.getAllProducts();
+            const apiProduct = await productApiSteps.getProductByName(apiProducts, productName);
             expect(
                 apiProduct,
                 `Product "${productName}" should exist in API`

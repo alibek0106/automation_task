@@ -9,12 +9,12 @@ test.describe("TC01-Hybrid: User Registration with API Setup & Validation", () =
         // Create user via API for faster setup
         const workerIndex = test.info().workerIndex;
         testUser = DataFactory.generateUser({ workerIndex });
-        await userApiSteps.createUserViaApi(testUser);
+        await userApiSteps.createUser(testUser);
     });
 
     test.afterEach(async ({ userApiSteps }) => {
         // Cleanup: Delete user via API
-        await userApiSteps.deleteUserViaApi(testUser.email, testUser.password);
+        await userApiSteps.deleteUser(testUser.email, testUser.password);
     });
 
     test("should create user via API and verify account details in UI match API data", async ({
@@ -24,7 +24,7 @@ test.describe("TC01-Hybrid: User Registration with API Setup & Validation", () =
     }) => {
         // Step 1: Get user details via API for validation
         await test.step("Get user details via API", async () => {
-            const userDetail = await userApiSteps.getUserDetailViaApi(testUser.email);
+            const userDetail = await userApiSteps.getUserDetailByEmail(testUser.email);
             expect(
                 userDetail.user.email,
                 "API user email should match created user email"
@@ -61,7 +61,7 @@ test.describe("TC01-Hybrid: User Registration with API Setup & Validation", () =
 
         // Step 5: Verify user details via API match what we created
         await test.step("Verify user details in UI match API data", async () => {
-            const userDetail = await userApiSteps.getUserDetailViaApi(testUser.email);
+            const userDetail = await userApiSteps.getUserDetailByEmail(testUser.email);
 
             // Verify key user details match
             expect(
@@ -88,7 +88,7 @@ test.describe("TC01-Hybrid: User Registration with API Setup & Validation", () =
 
         // Step 6: Verify login via API
         await test.step("Verify login credentials work via API", async () => {
-            const loginValid = await userApiSteps.verifyLoginViaApi(
+            const loginValid = await userApiSteps.isLoginValid(
                 testUser.email,
                 testUser.password
             );

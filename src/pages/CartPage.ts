@@ -36,6 +36,27 @@ export class CartPage extends BasePage {
         .locator(".alert-success.alert")
         .describe("Subscription success message");
 
+    private escapeRegExp(value: string): string {
+        return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    }
+
+    private productNameToLooseRegExp(productName: string): RegExp {
+        const normalized = productName
+            .replace(/\u00a0/g, " ")
+            .trim()
+            .replace(/\s+/g, " ");
+        const parts = normalized
+            .split(" ")
+            .filter(Boolean)
+            .map((part) => this.escapeRegExp(part));
+        return new RegExp(parts.join("\\s+"), "i");
+    }
+
+    private readonly cartRowByProductName = (productName: string): Locator =>
+        this.cartTableRows.filter({
+            hasText: this.productNameToLooseRegExp(productName),
+        });
+
     constructor(page: Page) {
         super(
             page,
@@ -77,12 +98,7 @@ export class CartPage extends BasePage {
      * Get cart item count
      */
     async getCartItemCount(): Promise<number> {
-        try {
-            await this.cartTableRows.first().waitFor({ state: "visible", timeout: 3000 });
-            return await this.cartTableRows.count();
-        } catch {
-            return 0;
-        }
+        return this.cartTableRows.count();
     }
 
     /**
@@ -103,9 +119,7 @@ export class CartPage extends BasePage {
      * Remove product from cart by name
      */
     async removeProductByName(productName: string): Promise<void> {
-        const row = this.cartTableRows.filter({
-            has: this.page.locator(".cart_description h4 a", { hasText: productName }),
-        });
+        const row = this.cartRowByProductName(productName);
         await expect(row, `Product "${productName}" should exist in cart before removal`).toHaveCount(1);
         await row.locator(".cart_delete a").click();
         await expect(row, `Product "${productName}" should be removed from cart`).toHaveCount(0);
@@ -115,9 +129,7 @@ export class CartPage extends BasePage {
      * Verify product is in cart by name
      */
     async verifyProductInCart(productName: string): Promise<void> {
-        const row = this.cartTableRows.filter({
-            has: this.page.locator(".cart_description h4 a", { hasText: productName }),
-        });
+        const row = this.cartRowByProductName(productName);
 
         await expect(
             row,
@@ -129,9 +141,7 @@ export class CartPage extends BasePage {
      * Verify product is NOT in cart by name
      */
     async verifyProductNotInCart(productName: string): Promise<void> {
-        const row = this.cartTableRows.filter({
-            has: this.page.locator(".cart_description h4 a", { hasText: productName }),
-        });
+        const row = this.cartRowByProductName(productName);
 
         await expect(
             row,
@@ -146,18 +156,15 @@ export class CartPage extends BasePage {
         // Cart page can render either a table or an empty-cart message.
         // Don't hard-fail if the table doesn't exist.
         await this.page.waitForLoadState("domcontentloaded");
-        const hasTable = await this.cartTable.count() > 0;
-        const hasEmptyMessage = await this.emptyCartMessage.count() > 0;
-        if (!hasTable && hasEmptyMessage) {
-            return;
-        }
-        if (!hasTable) {
-            // Best-effort: allow navigation/rendering lag, but return if still absent.
-            await this.cartTable.waitFor({ state: "attached", timeout: 5000 }).catch(() => {});
-        }
-        if (await this.cartTable.count() === 0) {
-            return;
-        }
+        await Promise.race([
+            this.cartTable.waitFor({ state: "attached" }),
+            this.emptyCartMessage.waitFor({ state: "attached" }),
+        ]).catch(() => {});
+
+        const hasEmptyMessage = (await this.emptyCartMessage.count()) > 0;
+        const hasTable = (await this.cartTable.count()) > 0;
+        if (hasEmptyMessage && !hasTable) return;
+        if (!hasTable) return;
 
         let count = await this.cartTableRows.count();
         while (count > 0) {
@@ -178,9 +185,7 @@ export class CartPage extends BasePage {
      * Get product quantity by name
      */
     async getProductQuantity(productName: string): Promise<number> {
-        const row = this.cartTableRows.filter({
-            has: this.page.locator(".cart_description h4 a", { hasText: productName }),
-        });
+        const row = this.cartRowByProductName(productName);
 
         const quantityText = await row.locator(".cart_quantity button").textContent();
         return parseInt(quantityText?.trim() || "0", 10);
@@ -190,9 +195,7 @@ export class CartPage extends BasePage {
      * Get product total price by name
      */
     async getProductTotal(productName: string): Promise<string> {
-        const row = this.cartTableRows.filter({
-            has: this.page.locator(".cart_description h4 a", { hasText: productName }),
-        });
+        const row = this.cartRowByProductName(productName);
 
         const total = await row.locator(".cart_total_price").textContent();
         return total?.trim() || "";

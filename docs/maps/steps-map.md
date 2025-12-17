@@ -54,17 +54,17 @@
 ### UserApiSteps (`src/api/api-steps/UserApiSteps.ts`)
 - **Fixture**: `userApiSteps`
 - **Purpose**: Faster user setup/teardown and user detail reads (API)
-- **Primary methods**: `createUserViaApi(user)`, `deleteUserViaApi(email, password)`, `verifyLoginViaApi(email, password)`, `getUserDetailViaApi(email)`
+- **Primary methods**: `createUser(user)`, `deleteUser(email, password)`, `isLoginValid(email, password)`, `getUserDetailByEmail(email)`
 
 ### ProductApiSteps (`src/api/api-steps/ProductApiSteps.ts`)
 - **Fixture**: `productApiSteps`
 - **Purpose**: Product data validation between API and UI (API)
-- **Primary methods**: `getAllProductsViaApi()`, `searchProductsViaApi(searchTerm)`, `getProductByIdViaApi(products, id)`, `getProductByNameViaApi(products, name)`, `verifyProductPricesMatch(apiProduct, uiPrice)`, `parsePriceToNumber(priceString)`
+- **Primary methods**: `getAllProducts()`, `searchProducts(searchTerm)`, `getProductById(products, id)`, `getProductByName(products, name)`, `verifyProductPricesMatch(apiProduct, uiPrice)`, `parsePriceToNumber(priceString)`
 
 ### BrandApiSteps (`src/api/api-steps/BrandApiSteps.ts`)
 - **Fixture**: `brandApiSteps`
 - **Purpose**: Brand data validation between API and UI (API)
-- **Primary methods**: `getAllBrandsViaApi()`, `getBrandByNameViaApi(brands, brandName)`, `verifyBrandExistsViaApi(brandName)`, `getBrandNames(brands)`
+- **Primary methods**: `getAllBrands()`, `getBrandByName(brands, brandName)`, `isBrandExists(brandName)`, `getBrandNames(brands)`
 
 ---
 

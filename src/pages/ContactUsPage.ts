@@ -89,7 +89,7 @@ export class ContactUsPage extends BasePage {
         await expect(
             this.successMessage,
             "Success message element should be attached after contact form submission"
-        ).toBeAttached({ timeout: 15000 });
+        ).toBeAttached();
     }
 
     /**
@@ -100,9 +100,9 @@ export class ContactUsPage extends BasePage {
     }
 
     /**
-     * Verify form is visible
+     * Verify form content is visible
      */
-    async verifyFormVisible(): Promise<void> {
+    async verifyFormContentVisible(): Promise<void> {
         await expect(this.getInTouchHeading, "Get in touch heading should be visible").toBeVisible();
         await expect(this.nameInput, "Name input should be visible").toBeVisible();
         await expect(this.submitButton, "Submit button should be visible").toBeVisible();

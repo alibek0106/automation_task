@@ -7,29 +7,57 @@ export class SignupPage extends BasePage {
     private getByDataQa = (name: string, description: string): Locator =>
         this.page.getByTestId(name).describe(description);
 
-    readonly accountInfoHeading: Locator = this.page.getByText('Enter Account Information').describe('Account Info Heading');
-    readonly titleMr: Locator = this.page.getByLabel('Mr.').describe('Title Mr');
-    readonly titleMrs: Locator = this.page.getByLabel('Mrs.').describe('Title Mrs');
-    readonly password: Locator = this.getByDataQa('password', 'Password input');
-    readonly daySelect: Locator = this.getByDataQa('days', 'Day select');
-    readonly monthSelect: Locator = this.getByDataQa('months', 'Month select');
-    readonly yearSelect: Locator = this.getByDataQa('years', 'Year select');
-    readonly newsletterCheck: Locator = this.page.getByLabel('Sign up for our newsletter!').describe('Newsletter check');
-    readonly offersCheck: Locator = this.page.getByLabel('Receive special offers from our partners!').describe('Offers check');
-    readonly firstName: Locator = this.getByDataQa('first_name', 'First name input');
-    readonly lastName: Locator = this.getByDataQa('last_name', 'Last name input');
-    readonly company: Locator = this.getByDataQa('company', 'Company input');
-    readonly address1: Locator = this.getByDataQa('address', 'Address input');
-    readonly address2: Locator = this.getByDataQa('address2', 'Secondary Address input');
-    readonly country: Locator = this.getByDataQa('country', 'Country select');
-    readonly state: Locator = this.getByDataQa('state', 'State input');
-    readonly city: Locator = this.getByDataQa('city', 'City input');
-    readonly zipcode: Locator = this.getByDataQa('zipcode', 'Zipcode input');
-    readonly mobile: Locator = this.getByDataQa('mobile_number', 'Mobile input');
-    readonly createAccountBtn: Locator = this.getByDataQa('create-account', 'Create account button');
+    readonly accountInfoHeading: Locator;
+    readonly titleMr: Locator;
+    readonly titleMrs: Locator;
+    readonly password: Locator;
+    readonly daySelect: Locator;
+    readonly monthSelect: Locator;
+    readonly yearSelect: Locator;
+    readonly newsletterCheck: Locator;
+    readonly offersCheck: Locator;
+    readonly firstName: Locator;
+    readonly lastName: Locator;
+    readonly company: Locator;
+    readonly address1: Locator;
+    readonly address2: Locator;
+    readonly country: Locator;
+    readonly state: Locator;
+    readonly city: Locator;
+    readonly zipcode: Locator;
+    readonly mobile: Locator;
+    readonly createAccountBtn: Locator;
 
     constructor(page: Page) {
         super(page);
+
+        // POM best-practice: initialize locators in constructor (Playwright docs)
+        this.accountInfoHeading = this.page
+            .getByText('Enter Account Information')
+            .describe('Account Info Heading');
+        this.titleMr = this.page.getByLabel('Mr.').describe('Title Mr');
+        this.titleMrs = this.page.getByLabel('Mrs.').describe('Title Mrs');
+        this.password = this.getByDataQa('password', 'Password input');
+        this.daySelect = this.getByDataQa('days', 'Day select');
+        this.monthSelect = this.getByDataQa('months', 'Month select');
+        this.yearSelect = this.getByDataQa('years', 'Year select');
+        this.newsletterCheck = this.page
+            .getByLabel('Sign up for our newsletter!')
+            .describe('Newsletter check');
+        this.offersCheck = this.page
+            .getByLabel('Receive special offers from our partners!')
+            .describe('Offers check');
+        this.firstName = this.getByDataQa('first_name', 'First name input');
+        this.lastName = this.getByDataQa('last_name', 'Last name input');
+        this.company = this.getByDataQa('company', 'Company input');
+        this.address1 = this.getByDataQa('address', 'Address input');
+        this.address2 = this.getByDataQa('address2', 'Secondary Address input');
+        this.country = this.getByDataQa('country', 'Country select');
+        this.state = this.getByDataQa('state', 'State input');
+        this.city = this.getByDataQa('city', 'City input');
+        this.zipcode = this.getByDataQa('zipcode', 'Zipcode input');
+        this.mobile = this.getByDataQa('mobile_number', 'Mobile input');
+        this.createAccountBtn = this.getByDataQa('create-account', 'Create account button');
     }
 
     async fillAccountDetails(user: User) {

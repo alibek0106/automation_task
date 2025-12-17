@@ -47,10 +47,10 @@ export class HomePage extends BasePage {
   }
 
   async clickProducts(): Promise<void> {
-    await Promise.all([
-      this.page.waitForURL(new RegExp(`${Routes.WEB.PRODUCTS}(/|\\?|$)`), { waitUntil: "domcontentloaded" }),
-      this.navigation.productsLink.click(),
-    ]);
+    await this.clickAndWaitForURL(
+      new RegExp(`${Routes.WEB.PRODUCTS}(/|\\?|$)`),
+      () => this.navigation.productsLink.click(),
+    );
   }
 
   async clickContactUs(): Promise<void> {
@@ -91,6 +91,14 @@ export class HomePage extends BasePage {
       this.fullFledgedText,
       "Full-Fledged text should be visible"
     ).toBeVisible();
+  }
+
+  async verifyFullFledgedTextInViewport(): Promise<void> {
+    await this.verifyFullFledgedTextVisible();
+    await expect(
+      this.fullFledgedText,
+      "Hero text should be in viewport"
+    ).toBeInViewport();
   }
 
   async clickScrollUpArrow(): Promise<void> {

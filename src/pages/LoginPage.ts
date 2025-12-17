@@ -31,7 +31,7 @@ export class LoginPage extends BasePage {
         await this.loginBtn.click();
     }
 
-    async verifyLoginFormVisible() {
+    async verifyVisible() {
         // Soft assertions: Check all fields to see all failures at once (data verification)
         await expect.soft(this.loginEmailInput, 'Login email input should be visible').toBeVisible();
         await expect.soft(this.loginPasswordInput, 'Login password input should be visible').toBeVisible();

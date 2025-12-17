@@ -10,7 +10,7 @@ test.describe("TC04-Hybrid: Remove Product from Cart (API Setup)", () => {
         // Create user via API for faster setup
         const workerIndex = test.info().workerIndex;
         testUser = DataFactory.generateUser({ workerIndex });
-        await userApiSteps.createUserViaApi(testUser);
+        await userApiSteps.createUser(testUser);
         userCreated = true;
 
         // Login via UI
@@ -26,7 +26,7 @@ test.describe("TC04-Hybrid: Remove Product from Cart (API Setup)", () => {
     test.afterEach(async ({ userApiSteps }) => {
         // Cleanup: Delete user via API
         if (!userCreated) return;
-        await userApiSteps.deleteUserViaApi(testUser.email, testUser.password);
+        await userApiSteps.deleteUser(testUser.email, testUser.password);
     });
 
     test("should remove products from cart and verify empty state", async ({

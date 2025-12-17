@@ -9,12 +9,12 @@ test.describe("TC02-Hybrid: Login with API-Created User", () => {
         // Create user via API for faster setup
         const workerIndex = test.info().workerIndex;
         testUser = DataFactory.generateUser({ workerIndex });
-        await userApiSteps.createUserViaApi(testUser);
+        await userApiSteps.createUser(testUser);
     });
 
     test.afterEach(async ({ userApiSteps }) => {
         // Cleanup: Delete user via API
-        await userApiSteps.deleteUserViaApi(testUser.email, testUser.password);
+        await userApiSteps.deleteUser(testUser.email, testUser.password);
     });
 
     test("should login with API-created user credentials via UI", async ({

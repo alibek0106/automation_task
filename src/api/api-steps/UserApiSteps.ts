@@ -3,6 +3,7 @@ import { UserService } from '../Services/UserService';
 import { User, ApiResponseSchema, UserDetailResponseSchema, UserDetailResponse } from '../../models/UserModels';
 import { StatusCode } from '../../constants/StatusCode';
 import { step } from '../../utils/StepDecorator';
+import { retry, RetryableError } from '../../utils/Retry';
 
 /**
  * UserApiSteps - API operations for user management
@@ -17,44 +18,45 @@ export class UserApiSteps {
      * @returns Created user data (same as input)
      */
     @step('API: Create user account')
-    async createUserViaApi(user: User): Promise<User> {
-        const maxAttempts = 3;
-        let lastStatus = -1;
-        let lastBody: unknown = undefined;
-
-        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-            const response = await this.userService.createAccount(user);
-            lastStatus = response.status();
-
-            if (lastStatus === StatusCode.OK) {
-                const body = await response.json();
-                const parsed = ApiResponseSchema.parse(body);
-
-                expect(
-                    parsed.responseCode,
-                    `User creation should return responseCode 201, got ${parsed.responseCode}`
-                ).toBe(StatusCode.CREATED);
-                expect(
-                    parsed.message,
-                    'User creation message should be "User created!"'
-                ).toBe('User created!');
-
-                return user;
+    async createUser(user: User): Promise<User> {
+        const response = await retry(async (attempt) => {
+            const res = await this.userService.createAccount(user);
+            const status = res.status();
+            if ([StatusCode.INTERNAL_SERVER_ERROR, 502, 503, 504].includes(status)) {
+                const body = await res.json().catch(() => undefined);
+                throw new RetryableError(
+                    `Transient API error (attempt ${attempt}): status=${status}, body=${JSON.stringify(body)}`
+                );
             }
+            return res;
+        });
 
-            lastBody = await response.json().catch(() => undefined);
-            if (![StatusCode.INTERNAL_SERVER_ERROR, 502, 503, 504].includes(lastStatus)) {
-                break;
-            }
+        expect(
+            response.status(),
+            `Create user API should return HTTP 200, got ${response.status()}`
+        ).toBe(StatusCode.OK);
 
-            await new Promise((r) => setTimeout(r, 300 * attempt));
+        const body = await response.json();
+        const parsed = ApiResponseSchema.safeParse(body);
+        expect(
+            parsed.success,
+            `Create user response schema validation should succeed.\nIssues: ${
+                parsed.success ? 'none' : JSON.stringify(parsed.error.issues)
+            }`
+        ).toBeTruthy();
+        if (!parsed.success) {
+            throw parsed.error;
         }
 
-        // Assert HTTP status
         expect(
-            lastStatus,
-            `Create user API should return HTTP 200.\nLast body: ${JSON.stringify(lastBody)}`
-        ).toBe(StatusCode.OK);
+            parsed.data.responseCode,
+            `User creation should return responseCode 201, got ${parsed.data.responseCode}`
+        ).toBe(StatusCode.CREATED);
+        expect(
+            parsed.data.message,
+            'User creation message should be "User created!"'
+        ).toBe('User created!');
+
         return user;
     }
 
@@ -64,39 +66,33 @@ export class UserApiSteps {
      * @param password User password
      */
     @step('API: Delete user account')
-    async deleteUserViaApi(email: string, password: string): Promise<void> {
-        const maxAttempts = 3;
-        let lastStatus = -1;
-        let lastBody: any = undefined;
-
-        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-            const response = await this.userService.deleteAccount(email, password);
-            lastStatus = response.status();
-            lastBody = await response.json().catch(() => undefined);
-
-            if (lastStatus === StatusCode.OK) {
-                // Idempotent cleanup: API may reply "Account not found!" if already deleted.
-                if (lastBody?.message === 'Account deleted!' || lastBody?.message === 'Account not found!') {
-                    return;
-                }
-
-                // Fall through to assertion below for unexpected messages.
-                break;
+    async deleteUser(email: string, password: string): Promise<void> {
+        const response = await retry(async (attempt) => {
+            const res = await this.userService.deleteAccount(email, password);
+            const status = res.status();
+            if ([StatusCode.INTERNAL_SERVER_ERROR, 502, 503, 504].includes(status)) {
+                const body = await res.json().catch(() => undefined);
+                throw new RetryableError(
+                    `Transient API error (attempt ${attempt}): status=${status}, body=${JSON.stringify(body)}`
+                );
             }
+            return res;
+        });
 
-            if (![StatusCode.INTERNAL_SERVER_ERROR, 502, 503, 504].includes(lastStatus)) {
-                break;
-            }
-            await new Promise((r) => setTimeout(r, 300 * attempt));
+        expect(
+            response.status(),
+            `Delete user API should return HTTP 200, got ${response.status()}`
+        ).toBe(StatusCode.OK);
+
+        const body = await response.json().catch(() => undefined);
+        // Idempotent cleanup: API may reply "Account not found!" if already deleted.
+        if (body?.message === 'Account deleted!' || body?.message === 'Account not found!') {
+            return;
         }
 
         expect(
-            lastStatus,
-            `Delete user API should return HTTP 200.\nLast body: ${JSON.stringify(lastBody)}`
-        ).toBe(StatusCode.OK);
-        expect(
-            lastBody?.message,
-            'Account deletion message should be "Account deleted!"'
+            body?.message,
+            'Account deletion message should be "Account deleted!" (or "Account not found!" for idempotent cleanup)'
         ).toBe('Account deleted!');
     }
 
@@ -107,7 +103,7 @@ export class UserApiSteps {
      * @returns true if login is valid, false otherwise
      */
     @step('API: Verify login credentials')
-    async verifyLoginViaApi(email: string, password: string): Promise<boolean> {
+    async isLoginValid(email: string, password: string): Promise<boolean> {
         const response = await this.userService.verifyLogin(email, password);
 
         const body = await response.json();
@@ -124,7 +120,7 @@ export class UserApiSteps {
      * @returns User detail response
      */
     @step('API: Get user details by email')
-    async getUserDetailViaApi(email: string): Promise<UserDetailResponse> {
+    async getUserDetailByEmail(email: string): Promise<UserDetailResponse> {
         const response = await this.userService.getUserDetailByEmail(email);
 
         // Assert HTTP status
@@ -135,9 +131,18 @@ export class UserApiSteps {
 
         // Validate response schema
         const body = await response.json();
-        const parsed = UserDetailResponseSchema.parse(body);
+        const parsed = UserDetailResponseSchema.safeParse(body);
+        expect(
+            parsed.success,
+            `User detail response schema validation should succeed.\nIssues: ${
+                parsed.success ? 'none' : JSON.stringify(parsed.error.issues)
+            }`
+        ).toBeTruthy();
+        if (!parsed.success) {
+            throw parsed.error;
+        }
 
-        return parsed;
+        return parsed.data;
     }
 }
 

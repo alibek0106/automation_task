@@ -32,7 +32,7 @@ test.describe("TC10: Contact Form Submission with File Upload", () => {
             await homePage.goto();
             await homePage.clickContactUs();
             await contactUsPage.verifyPageOpened();
-            await contactUsPage.verifyFormVisible();
+            await contactUsPage.verifyFormContentVisible();
         });
 
         // Step 2: Fill contact form

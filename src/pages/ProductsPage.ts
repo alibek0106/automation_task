@@ -27,6 +27,14 @@ export class ProductsPage extends BasePage {
     readonly brandsSidebar: Locator = this.page
         .locator(".brands_products")
         .describe("Brands sidebar");
+    readonly categoryTitleHeading = (expectedTitle: string): Locator =>
+        this.page
+            .getByRole("heading", { name: new RegExp(expectedTitle, "i") })
+            .describe(`Category title heading: "${expectedTitle}"`);
+    readonly brandTitleHeading = (brandName: string): Locator =>
+        this.page
+            .getByRole("heading", { name: new RegExp(`brand.*${brandName}`, "i") })
+            .describe(`Brand title heading contains: "${brandName}"`);
 
     constructor(page: Page) {
         super(
@@ -81,13 +89,7 @@ export class ProductsPage extends BasePage {
      * Get product count
      */
     async getProductCount(): Promise<number> {
-        try {
-            await this.productItems.first().waitFor({ state: "visible", timeout: 3000 });
-            return await this.productItems.count();
-        } catch {
-            // No products found
-            return 0;
-        }
+        return this.productItems.count();
     }
 
     /**
@@ -168,10 +170,13 @@ export class ProductsPage extends BasePage {
     /**
      * Verify category title is displayed
      */
+    async verifyCategoryTitleVisible(expectedTitle: string): Promise<void> {
+        await expect(this.categoryTitleHeading(expectedTitle)).toBeVisible();
+    }
 
-    /**
-     * Verify brand title is displayed
-     */
+    async verifyBrandTitleVisible(brandName: string): Promise<void> {
+        await expect(this.brandTitleHeading(brandName)).toBeVisible();
+    }
 
     /**
      * Get product price by index
@@ -184,7 +189,4 @@ export class ProductsPage extends BasePage {
         return priceText?.trim() || "";
     }
 
-    /**
-     * Verify products list is visible
-     */
 }

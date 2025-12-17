@@ -15,9 +15,9 @@ export class AccountCreatedPage extends BasePage {
     }
 
     async clickContinue() {
-        await Promise.all([
-            this.page.waitForURL(new RegExp(`${Routes.WEB.HOME}($|\\?)`), { waitUntil: "domcontentloaded" }),
-            this.continueBtn.click(),
-        ]);
+        await this.clickAndWaitForURL(
+            new RegExp(`${Routes.WEB.HOME}($|\\?)`),
+            () => this.continueBtn.click()
+        );
     }
 }

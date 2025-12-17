@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { Page } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
 import { step } from '../utils/StepDecorator';
 
@@ -31,10 +31,6 @@ export class NavigationSteps {
 
     @step('Verify hero/full-fledged text is visible')
     async verifyHeroTextVisible(): Promise<void> {
-        await this.homePage.verifyFullFledgedTextVisible();
-        await expect(
-            this.homePage.fullFledgedText,
-            "Hero text should be in viewport"
-        ).toBeInViewport();
+        await this.homePage.verifyFullFledgedTextInViewport();
     }
 }

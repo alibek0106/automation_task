@@ -64,7 +64,7 @@ test.describe("TC09-Hybrid: Product Category and Brand Filtering with API Valida
 
         // Step 1: Get all brands via API
         await test.step("Get all brands via API", async () => {
-            const apiBrands = await brandApiSteps.getAllBrandsViaApi();
+            const apiBrands = await brandApiSteps.getAllBrands();
             expect(apiBrands.length, "API should return brands").toBeGreaterThan(0);
         });
 
@@ -77,7 +77,7 @@ test.describe("TC09-Hybrid: Product Category and Brand Filtering with API Valida
 
         // Step 3: Verify brands sidebar contains brands from API
         await test.step("Verify brands sidebar contains brands from API", async () => {
-            const apiBrands = await brandApiSteps.getAllBrandsViaApi();
+            const apiBrands = await brandApiSteps.getAllBrands();
             const apiBrandNames = await brandApiSteps.getBrandNames(apiBrands);
 
             // Verify brands sidebar is visible
@@ -94,7 +94,7 @@ test.describe("TC09-Hybrid: Product Category and Brand Filtering with API Valida
         // Step 4: Click on Polo brand and verify
         await test.step("Select Polo brand and verify with API", async () => {
             // Verify Polo brand exists in API
-            const poloExists = await brandApiSteps.verifyBrandExistsViaApi(poloBrand.name);
+            const poloExists = await brandApiSteps.isBrandExists(poloBrand.name);
             expect(poloExists, "Polo brand should exist in API").toBe(true);
 
             // Select Polo brand in UI
@@ -113,7 +113,7 @@ test.describe("TC09-Hybrid: Product Category and Brand Filtering with API Valida
             expect(productCount, "Brand should have at least one product").toBeGreaterThan(0);
 
             // Get all products from API to verify brand filtering
-            const allApiProducts = await productApiSteps.getAllProductsViaApi();
+            const allApiProducts = await productApiSteps.getAllProducts();
             const poloProducts = allApiProducts.filter(p => 
                 p.brand.toLowerCase() === poloBrand.name.toLowerCase()
             );
@@ -126,7 +126,7 @@ test.describe("TC09-Hybrid: Product Category and Brand Filtering with API Valida
         // Step 7: Switch to different brand (H&M) and verify
         await test.step("Select H&M brand and verify with API", async () => {
             // Verify H&M brand exists in API
-            const hmExists = await brandApiSteps.verifyBrandExistsViaApi(hmBrand.name);
+            const hmExists = await brandApiSteps.isBrandExists(hmBrand.name);
             expect(hmExists, "H&M brand should exist in API").toBe(true);
 
             // Select H&M brand in UI
@@ -142,7 +142,7 @@ test.describe("TC09-Hybrid: Product Category and Brand Filtering with API Valida
             expect(productCount, "Brand should have at least one product").toBeGreaterThan(0);
 
             // Get H&M products from API
-            const allApiProducts = await productApiSteps.getAllProductsViaApi();
+            const allApiProducts = await productApiSteps.getAllProducts();
             const hmProducts = allApiProducts.filter(p => 
                 p.brand.toLowerCase().includes(hmBrand.name.toLowerCase()) ||
                 p.brand.toLowerCase().includes(hmBrand.name.toLowerCase().replace("&", " "))

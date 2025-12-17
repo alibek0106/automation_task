@@ -25,7 +25,6 @@ export abstract class BasePage {
     await this.page.goto(url, {
       // domcontentloaded is typically more stable/faster than full load for this site
       waitUntil: "domcontentloaded",
-      timeout: 60000, // 60 seconds timeout for slow-loading pages
     });
   }
 
@@ -42,6 +41,20 @@ export abstract class BasePage {
    */
   async goBack(): Promise<void> {
     await this.page.goBack({ waitUntil: "domcontentloaded" });
+  }
+
+  /**
+   * Click an element and wait for a URL match.
+   * Uses configured navigationTimeout from Playwright config (no hardcoded timeouts).
+   */
+  protected async clickAndWaitForURL(
+    urlPattern: RegExp,
+    click: () => Promise<unknown>,
+  ): Promise<void> {
+    await Promise.all([
+      this.page.waitForURL(urlPattern, { waitUntil: "domcontentloaded" }),
+      click(),
+    ]);
   }
 
   /**
@@ -93,7 +106,7 @@ export abstract class BasePage {
    * Check if an element is in the viewport
    */
   async isElementInViewport(locator: Locator): Promise<boolean> {
-    return await locator.evaluate((element) => {
+    return locator.evaluate((element) => {
       const rect = element.getBoundingClientRect();
       return (
         rect.top >= 0 &&

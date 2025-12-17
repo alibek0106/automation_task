@@ -10,7 +10,7 @@ test.describe("TC03-Hybrid: Add Multiple Products to Cart (API Setup)", () => {
         // Step 1: Create user via API (faster than UI registration)
         const workerIndex = test.info().workerIndex;
         testUser = DataFactory.generateUser({ workerIndex });
-        await userApiSteps.createUserViaApi(testUser);
+        await userApiSteps.createUser(testUser);
         userCreated = true;
 
         // Step 2: Login via UI (validates login flow)
@@ -26,7 +26,7 @@ test.describe("TC03-Hybrid: Add Multiple Products to Cart (API Setup)", () => {
     test.afterEach(async ({ userApiSteps }) => {
         // Cleanup: Delete user via API
         if (!userCreated) return;
-        await userApiSteps.deleteUserViaApi(testUser.email, testUser.password);
+        await userApiSteps.deleteUser(testUser.email, testUser.password);
     });
 
     test("should add multiple products with different quantities and verify cart with API price validation", async ({
@@ -56,7 +56,7 @@ test.describe("TC03-Hybrid: Add Multiple Products to Cart (API Setup)", () => {
 
         // Step 1: Get all products via API for price validation
         await test.step("Get all products via API", async () => {
-            const apiProducts = await productApiSteps.getAllProductsViaApi();
+            const apiProducts = await productApiSteps.getAllProducts();
             expect(
                 apiProducts.length,
                 "API should return products"
@@ -78,8 +78,8 @@ test.describe("TC03-Hybrid: Add Multiple Products to Cart (API Setup)", () => {
             firstProductName = await productDetailPage.getProductName();
 
             // Get product details from API
-            const apiProducts = await productApiSteps.getAllProductsViaApi();
-            const apiProduct = await productApiSteps.getProductByNameViaApi(apiProducts, firstProductName);
+            const apiProducts = await productApiSteps.getAllProducts();
+            const apiProduct = await productApiSteps.getProductByName(apiProducts, firstProductName);
             expect(
                 apiProduct,
                 `Product "${firstProductName}" should exist in API`
@@ -108,8 +108,8 @@ test.describe("TC03-Hybrid: Add Multiple Products to Cart (API Setup)", () => {
             secondProductName = await productDetailPage.getProductName();
 
             // Get second product details from API
-            const apiProducts = await productApiSteps.getAllProductsViaApi();
-            const apiProduct = await productApiSteps.getProductByNameViaApi(apiProducts, secondProductName);
+            const apiProducts = await productApiSteps.getAllProducts();
+            const apiProduct = await productApiSteps.getProductByName(apiProducts, secondProductName);
             expect(
                 apiProduct,
                 `Product "${secondProductName}" should exist in API`

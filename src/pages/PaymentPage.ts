@@ -36,13 +36,27 @@ export class PaymentPage extends BasePage {
      * Fill all payment details
      */
     async fillPaymentDetails(payment: PaymentDetails): Promise<void> {
-        // Avoid scrollIntoViewIfNeeded flakiness on this site; rely on visibility/editable instead.
-        await expect(this.nameOnCardInput, "Name on card input should be visible").toBeVisible();
-        await expect(this.nameOnCardInput, "Name on card input should be editable").toBeEditable();
+        await this.paymentFormSection.scrollIntoViewIfNeeded();
+
+        const ensureEditable = async (locator: Locator, description: string) => {
+            await locator.scrollIntoViewIfNeeded();
+            await expect(locator, `${description} should be visible`).toBeVisible();
+            await expect(locator, `${description} should be editable`).toBeEditable();
+        };
+
+        await ensureEditable(this.nameOnCardInput, "Name on card input");
         await this.nameOnCardInput.fill(payment.nameOnCard);
+
+        await ensureEditable(this.cardNumberInput, "Card number input");
         await this.cardNumberInput.fill(payment.cardNumber);
+
+        await ensureEditable(this.cvcInput, "CVC input");
         await this.cvcInput.fill(payment.cvc);
+
+        await ensureEditable(this.expiryMonthInput, "Expiry month input");
         await this.expiryMonthInput.fill(payment.expiryMonth);
+
+        await ensureEditable(this.expiryYearInput, "Expiry year input");
         await this.expiryYearInput.fill(payment.expiryYear);
     }
 

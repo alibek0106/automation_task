@@ -21,6 +21,16 @@ export class CheckoutPage extends BasePage {
     readonly checkoutHeading: Locator = this.page
         .getByRole("heading", { name: /review your order/i })
         .describe("Checkout heading");
+    readonly orderReviewRows: Locator = this.orderReviewTable
+        .locator("tr")
+        .describe("Order review rows");
+    readonly orderReviewTotalRow: Locator = this.orderReviewRows
+        .last()
+        .describe("Order review total row");
+    readonly totalAmountText: Locator = this.orderReviewTotalRow
+        .locator("p")
+        .last()
+        .describe("Total amount text");
 
     constructor(page: Page) {
         super(
@@ -88,8 +98,7 @@ export class CheckoutPage extends BasePage {
      * Get total amount from checkout
      */
     async getTotalAmount(): Promise<string> {
-        const totalRow = this.orderReviewTable.locator("tr").last();
-        const totalText = await totalRow.locator("p").last().textContent();
+        const totalText = await this.totalAmountText.textContent();
         return totalText?.trim() || "";
     }
 }

@@ -16,7 +16,7 @@ export class BrandApiSteps {
      * @returns Array of brands
      */
     @step('API: Get all brands')
-    async getAllBrandsViaApi(): Promise<Brand[]> {
+    async getAllBrands(): Promise<Brand[]> {
         const response = await this.brandService.getAllBrands();
 
         // Assert HTTP status
@@ -27,15 +27,24 @@ export class BrandApiSteps {
 
         // Validate response schema
         const body = await response.json();
-        const parsed = BrandsListResponseSchema.parse(body);
+        const parsed = BrandsListResponseSchema.safeParse(body);
+        expect(
+            parsed.success,
+            `Brands list response schema validation should succeed.\nIssues: ${
+                parsed.success ? 'none' : JSON.stringify(parsed.error.issues)
+            }`
+        ).toBeTruthy();
+        if (!parsed.success) {
+            throw parsed.error;
+        }
 
         // Assert response code
         expect(
-            parsed.responseCode,
-            `Response code should be 200, got ${parsed.responseCode}`
+            parsed.data.responseCode,
+            `Response code should be 200, got ${parsed.data.responseCode}`
         ).toBe(StatusCode.OK);
 
-        return parsed.brands;
+        return parsed.data.brands;
     }
 
     /**
@@ -45,7 +54,7 @@ export class BrandApiSteps {
      * @returns Brand if found, undefined otherwise
      */
     @step('API: Find brand by name in list')
-    async getBrandByNameViaApi(brands: Brand[], brandName: string): Promise<Brand | undefined> {
+    async getBrandByName(brands: Brand[], brandName: string): Promise<Brand | undefined> {
         return brands.find(brand => 
             brand.brand.toLowerCase() === brandName.toLowerCase()
         );
@@ -56,10 +65,10 @@ export class BrandApiSteps {
      * @param brandName Brand name to check
      * @returns true if brand exists, false otherwise
      */
-    @step('API: Verify brand exists')
-    async verifyBrandExistsViaApi(brandName: string): Promise<boolean> {
-        const brands = await this.getAllBrandsViaApi();
-        const brand = await this.getBrandByNameViaApi(brands, brandName);
+    @step('API: Check if brand exists')
+    async isBrandExists(brandName: string): Promise<boolean> {
+        const brands = await this.getAllBrands();
+        const brand = await this.getBrandByName(brands, brandName);
         return brand !== undefined;
     }
 

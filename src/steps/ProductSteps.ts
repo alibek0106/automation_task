@@ -27,15 +27,11 @@ export class ProductSteps {
 
     @step('Verify category title')
     async verifyCategoryTitle(expectedTitle: string): Promise<void> {
-        const titleLocator = this.productsPage.page
-            .getByRole("heading", { name: new RegExp(expectedTitle, "i") });
-        await expect(titleLocator, `Category title should be "${expectedTitle}"`).toBeVisible();
+        await this.productsPage.verifyCategoryTitleVisible(expectedTitle);
     }
 
     @step('Verify brand title')
     async verifyBrandTitle(brandName: string): Promise<void> {
-        const titleLocator = this.productsPage.page
-            .getByRole("heading", { name: new RegExp(`brand.*${brandName}`, "i") });
-        await expect(titleLocator, `Brand title should contain "${brandName}"`).toBeVisible();
+        await this.productsPage.verifyBrandTitleVisible(brandName);
     }
 }

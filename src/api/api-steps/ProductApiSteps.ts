@@ -4,6 +4,8 @@ import { SearchService } from '../Services/SearchService';
 import { Product, ProductsListResponseSchema, SearchProductResponseSchema } from '../../models/ProductModels';
 import { StatusCode } from '../../constants/StatusCode';
 import { step } from '../../utils/StepDecorator';
+import { retry, RetryableError } from '../../utils/Retry';
+import { parsePriceToNumber as parsePrice, pricesMatch } from '../../utils/PriceUtils';
 
 /**
  * ProductApiSteps - API operations for product data
@@ -20,42 +22,42 @@ export class ProductApiSteps {
      * @returns Array of products
      */
     @step('API: Get all products')
-    async getAllProductsViaApi(): Promise<Product[]> {
-        const maxAttempts = 3;
-        let lastStatus = -1;
-        let lastBody: unknown = undefined;
-
-        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-            const response = await this.productService.getAllProducts();
-            lastStatus = response.status();
-
-            if (lastStatus === StatusCode.OK) {
-                const body = await response.json();
-                const parsed = ProductsListResponseSchema.parse(body);
-
-                expect(
-                    parsed.responseCode,
-                    `Response code should be 200, got ${parsed.responseCode}`
-                ).toBe(StatusCode.OK);
-
-                return parsed.products;
+    async getAllProducts(): Promise<Product[]> {
+        const response = await retry(async (attempt) => {
+            const res = await this.productService.getAllProducts();
+            const status = res.status();
+            if ([StatusCode.INTERNAL_SERVER_ERROR, 502, 503, 504].includes(status)) {
+                const body = await res.json().catch(() => undefined);
+                throw new RetryableError(
+                    `Transient API error (attempt ${attempt}): status=${status}, body=${JSON.stringify(body)}`
+                );
             }
+            return res;
+        });
 
-            lastBody = await response.json().catch(() => undefined);
-            if (![StatusCode.INTERNAL_SERVER_ERROR, 502, 503, 504].includes(lastStatus)) {
-                break;
-            }
+        expect(
+            response.status(),
+            `Get all products API should return HTTP 200, got ${response.status()}`
+        ).toBe(StatusCode.OK);
 
-            // Backoff for transient upstream issues (no Playwright page waits)
-            await new Promise((r) => setTimeout(r, 300 * attempt));
+        const body = await response.json();
+        const parsed = ProductsListResponseSchema.safeParse(body);
+        expect(
+            parsed.success,
+            `Products list response schema validation should succeed.\nIssues: ${
+                parsed.success ? 'none' : JSON.stringify(parsed.error.issues)
+            }`
+        ).toBeTruthy();
+        if (!parsed.success) {
+            throw parsed.error;
         }
 
-        // Assert HTTP status
         expect(
-            lastStatus,
-            `Get all products API should return HTTP 200 (may transiently fail).\nLast body: ${JSON.stringify(lastBody)}`
+            parsed.data.responseCode,
+            `Response code should be 200, got ${parsed.data.responseCode}`
         ).toBe(StatusCode.OK);
-        return [];
+
+        return parsed.data.products;
     }
 
     /**
@@ -64,41 +66,42 @@ export class ProductApiSteps {
      * @returns Array of matching products
      */
     @step('API: Search products')
-    async searchProductsViaApi(searchTerm: string): Promise<Product[]> {
-        const maxAttempts = 3;
-        let lastStatus = -1;
-        let lastBody: unknown = undefined;
-
-        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-            const response = await this.searchService.searchProduct(searchTerm);
-            lastStatus = response.status();
-
-            if (lastStatus === StatusCode.OK) {
-                const body = await response.json();
-                const parsed = SearchProductResponseSchema.parse(body);
-
-                expect(
-                    parsed.responseCode,
-                    `Search response code should be 200, got ${parsed.responseCode}`
-                ).toBe(StatusCode.OK);
-
-                return parsed.products;
+    async searchProducts(searchTerm: string): Promise<Product[]> {
+        const response = await retry(async (attempt) => {
+            const res = await this.searchService.searchProduct(searchTerm);
+            const status = res.status();
+            if ([StatusCode.INTERNAL_SERVER_ERROR, 502, 503, 504].includes(status)) {
+                const body = await res.json().catch(() => undefined);
+                throw new RetryableError(
+                    `Transient API error (attempt ${attempt}): status=${status}, body=${JSON.stringify(body)}`
+                );
             }
+            return res;
+        });
 
-            lastBody = await response.json().catch(() => undefined);
-            if (![StatusCode.INTERNAL_SERVER_ERROR, 502, 503, 504].includes(lastStatus)) {
-                break;
-            }
+        expect(
+            response.status(),
+            `Search products API should return HTTP 200 for "${searchTerm}", got ${response.status()}`
+        ).toBe(StatusCode.OK);
 
-            await new Promise((r) => setTimeout(r, 300 * attempt));
+        const body = await response.json();
+        const parsed = SearchProductResponseSchema.safeParse(body);
+        expect(
+            parsed.success,
+            `Search product response schema validation should succeed.\nIssues: ${
+                parsed.success ? 'none' : JSON.stringify(parsed.error.issues)
+            }`
+        ).toBeTruthy();
+        if (!parsed.success) {
+            throw parsed.error;
         }
 
-        // Assert HTTP status
         expect(
-            lastStatus,
-            `Search products API should return HTTP 200 for "${searchTerm}" (may transiently fail).\nLast body: ${JSON.stringify(lastBody)}`
+            parsed.data.responseCode,
+            `Search response code should be 200, got ${parsed.data.responseCode}`
         ).toBe(StatusCode.OK);
-        return [];
+
+        return parsed.data.products;
     }
 
     /**
@@ -108,7 +111,7 @@ export class ProductApiSteps {
      * @returns Product if found, undefined otherwise
      */
     @step('API: Find product by ID in list')
-    async getProductByIdViaApi(products: Product[], productId: number): Promise<Product | undefined> {
+    async getProductById(products: Product[], productId: number): Promise<Product | undefined> {
         return products.find(product => product.id === productId);
     }
 
@@ -119,7 +122,7 @@ export class ProductApiSteps {
      * @returns Product if found, undefined otherwise
      */
     @step('API: Find product by name in list')
-    async getProductByNameViaApi(products: Product[], productName: string): Promise<Product | undefined> {
+    async getProductByName(products: Product[], productName: string): Promise<Product | undefined> {
         const normalize = (value: string) =>
             value
                 .replace(/\u00a0/g, " ") // NBSP → space
@@ -143,17 +146,7 @@ export class ProductApiSteps {
      */
     @step('API: Verify UI price matches API price')
     async verifyProductPricesMatch(apiProduct: Product, uiPrice: string): Promise<boolean> {
-        const extract = (value: string): number => {
-            const normalized = value.replace(/\u00a0/g, " ");
-            const match = normalized.match(/(\d+(?:\.\d+)?)/);
-            return match ? parseFloat(match[1]) : Number.NaN;
-        };
-
-        const apiPriceNum = extract(apiProduct.price);
-        const uiPriceNum = extract(uiPrice);
-
-        // Compare prices (allow small floating point differences)
-        return Math.abs(apiPriceNum - uiPriceNum) < 0.01;
+        return pricesMatch(apiProduct.price, uiPrice);
     }
 
     /**
@@ -163,12 +156,7 @@ export class ProductApiSteps {
      */
     @step('API: Parse price string to number')
     async parsePriceToNumber(priceString: string): Promise<number> {
-        const normalized = priceString.replace(/\u00a0/g, " ");
-        const match = normalized.match(/(\d+(?:\.\d+)?)/);
-        if (!match) {
-            throw new Error(`Could not parse numeric price from: "${priceString}"`);
-        }
-        return parseFloat(match[1]);
+        return parsePrice(priceString);
     }
 }
 

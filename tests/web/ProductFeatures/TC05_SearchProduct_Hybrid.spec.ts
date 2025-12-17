@@ -16,7 +16,7 @@ test.describe("TC05-Hybrid: Search Product with API Validation", () => {
 
         // Step 1: Search products via API first
         await test.step("Search products via API and get expected results", async () => {
-            const apiProducts = await productApiSteps.searchProductsViaApi(searchKeyword);
+            const apiProducts = await productApiSteps.searchProducts(searchKeyword);
             expect(
                 apiProducts.length,
                 `API should return products for "${searchKeyword}"`
@@ -38,7 +38,7 @@ test.describe("TC05-Hybrid: Search Product with API Validation", () => {
 
         // Step 4: Get search results from both API and UI
         await test.step("Compare UI search results with API results", async () => {
-            const apiProducts = await productApiSteps.searchProductsViaApi(searchKeyword);
+            const apiProducts = await productApiSteps.searchProducts(searchKeyword);
             const uiProductNames = await productsPage.getProductNames();
 
             expect(
@@ -77,8 +77,8 @@ test.describe("TC05-Hybrid: Search Product with API Validation", () => {
             const uiProductPrice = await productDetailPage.getProductPrice();
 
             // Get product from API
-            const apiProducts = await productApiSteps.searchProductsViaApi(searchKeyword);
-            const apiProduct = await productApiSteps.getProductByNameViaApi(apiProducts, uiProductName);
+            const apiProducts = await productApiSteps.searchProducts(searchKeyword);
+            const apiProduct = await productApiSteps.getProductByName(apiProducts, uiProductName);
 
             expect(
                 apiProduct,
@@ -110,7 +110,7 @@ test.describe("TC05-Hybrid: Search Product with API Validation", () => {
         // Step 1: Verify API also returns no results for invalid search
         await test.step("Verify API returns no results for invalid search", async () => {
             // The API should return empty array for invalid search term
-            const apiProducts = await productApiSteps.searchProductsViaApi(invalidKeyword);
+            const apiProducts = await productApiSteps.searchProducts(invalidKeyword);
             expect(
                 apiProducts.length,
                 `API should return no products for invalid search term "${invalidKeyword}"`
