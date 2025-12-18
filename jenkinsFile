@@ -20,7 +20,6 @@ pipeline {
             steps {
                 script {
                     // Install pnpm if not already available
-                    // You can also install it globally on Jenkins agents or use a Node.js tool installer
                     bat '''
                         @echo off
                         where pnpm >nul 2>&1
@@ -30,39 +29,23 @@ pipeline {
                         )
                     '''
                     
-                    // Get pnpm store path for caching
-                    def pnpmStorePath = bat(
-                        script: '@echo off && pnpm store path',
+                    // Install dependencies with pnpm
+                    // pnpm has built-in caching - it will reuse packages from its store
+                    // The store persists in the Jenkins workspace, providing automatic caching
+                    echo 'Installing dependencies with pnpm...'
+                    bat 'pnpm install --frozen-lockfile'
+                    
+                    // Check if Playwright browsers are already installed
+                    // This provides caching by skipping re-installation if browsers exist
+                    def browserCheck = bat(
+                        script: '@echo off && dir /b "%LOCALAPPDATA%\\ms-playwright" 2>nul | findstr /i "chromium" >nul && echo EXISTS || echo NOT_EXISTS',
                         returnStdout: true
                     ).trim()
                     
-                    // Cache pnpm store (speeds up dependency installation significantly)
-                    // Cache key based on package.json + pnpm-lock.yaml (if exists) hash
-                    // Invalidates automatically when dependencies change
-                    cache(maxCacheSize: 250, caches: [
-                        arbitraryFileCache(
-                            path: pnpmStorePath,
-                            fingerprint: [
-                                includes: 'package.json, pnpm-lock.yaml'
-                            ]
-                        )
-                    ]) {
-                        echo 'Installing dependencies with pnpm...'
-                        bat 'pnpm install --frozen-lockfile'
-                    }
-                    
-                    // Cache Playwright browsers (large downloads, ~500MB+)
-                    // Cache key based on package.json - invalidates when Playwright version changes
-                    def playwrightCachePath = '%LOCALAPPDATA%\\ms-playwright'
-                    cache(maxCacheSize: 1000, caches: [
-                        arbitraryFileCache(
-                            path: playwrightCachePath,
-                            fingerprint: [
-                                includes: 'package.json'
-                            ]
-                        )
-                    ]) {
-                        echo 'Installing Playwright browsers...'
+                    if (browserCheck.contains('EXISTS')) {
+                        echo 'Playwright browsers already installed, skipping download...'
+                    } else {
+                        echo 'Installing Playwright browsers (this may take a few minutes on first run)...'
                         bat 'pnpm exec playwright install --with-deps'
                     }
                     
