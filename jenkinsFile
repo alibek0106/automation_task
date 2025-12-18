@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(
+            name: 'BROWSER',
+            choices: ['chromium', 'firefox', 'webkit', 'all'],
+            description: 'Select browser to run tests on'
+        )
+    }
+
     stages {
         // stage('Checkout') {
         //     steps {
@@ -8,36 +16,78 @@ pipeline {
         //         git branch: 'main', url: 'https://github.com/Lukameladz3/Jenkins-Playwright-TS.git'
         //     }
         // }
-
         stage('Install Dependencies') {
             steps {
-                echo 'Installing dependencies...'
-                bat 'npm ci'
-                bat 'npx playwright install'
-                echo 'Dependencies installed'
+                script {
+                    // Install pnpm if not already available
+                    // You can also install it globally on Jenkins agents or use a Node.js tool installer
+                    bat '''
+                        @echo off
+                        where pnpm >nul 2>&1
+                        if %ERRORLEVEL% NEQ 0 (
+                            echo Installing pnpm...
+                            npm install -g pnpm@10.23.0
+                        )
+                    '''
+                    
+                    // Get pnpm store path for caching
+                    def pnpmStorePath = bat(
+                        script: '@echo off && pnpm store path',
+                        returnStdout: true
+                    ).trim()
+                    
+                    // Cache pnpm store (speeds up dependency installation significantly)
+                    // Cache key based on package.json + pnpm-lock.yaml (if exists) hash
+                    // Invalidates automatically when dependencies change
+                    cache(maxCacheSize: 250, caches: [
+                        arbitraryFileCache(
+                            path: pnpmStorePath,
+                            fingerprint: [
+                                includes: 'package.json, pnpm-lock.yaml'
+                            ]
+                        )
+                    ]) {
+                        echo 'Installing dependencies with pnpm...'
+                        bat 'pnpm install --frozen-lockfile'
+                    }
+                    
+                    // Cache Playwright browsers (large downloads, ~500MB+)
+                    // Cache key based on package.json - invalidates when Playwright version changes
+                    def playwrightCachePath = '%LOCALAPPDATA%\\ms-playwright'
+                    cache(maxCacheSize: 1000, caches: [
+                        arbitraryFileCache(
+                            path: playwrightCachePath,
+                            fingerprint: [
+                                includes: 'package.json'
+                            ]
+                        )
+                    ]) {
+                        echo 'Installing Playwright browsers...'
+                        bat 'pnpm exec playwright install --with-deps'
+                    }
+                    
+                    echo 'Dependencies installed'
+                }
             }
         }
 
-        stage('Run Tests in Parallel') {
-            parallel {
-                stage('Chromium') {
-                    steps {
-                        echo 'Running tests on Chromium...'
-                        bat 'npx playwright test --workers=4'
-                        echo 'Chromium tests finished'
+        stage('Run Tests') {
+            steps {
+                script {
+                    def browser = params.BROWSER
+                    def testCommand = 'pnpm exec playwright test --workers=4'
+                    
+                    if (browser == 'all') {
+                        echo "Running tests on all browsers..."
+                        bat testCommand
+                    } else {
+                        echo "Running tests on ${browser}..."
+                        // Playwright project names are lowercase: chromium, firefox, webkit
+                        bat "${testCommand} --project=${browser}"
                     }
+                    
+                    echo "${browser} tests finished"
                 }
-                // Optional: run other browsers too
-                // stage('Firefox') {
-                //     steps {
-                //         bat 'npx playwright test --project=Firefox'
-                //     }
-                // }
-                // stage('WebKit') {
-                //     steps {
-                //         bat 'npx playwright test --project=WebKit'
-                //     }
-                // }
             }
         }
         stage('Publish HTML Report') {
