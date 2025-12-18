@@ -10,7 +10,7 @@ test.describe("TC03-Hybrid: Add Multiple Products to Cart (API Setup)", () => {
         // Step 1: Create user via API (faster than UI registration)
         const workerIndex = test.info().workerIndex;
         testUser = DataFactory.generateUser({ workerIndex });
-        await userApiSteps.createUser(testUser);
+        await userApiSteps.createAndVerifyUser(testUser);
         userCreated = true;
 
         // Step 2: Login via UI (validates login flow)
@@ -56,7 +56,7 @@ test.describe("TC03-Hybrid: Add Multiple Products to Cart (API Setup)", () => {
 
         // Step 1: Get all products via API for price validation
         await test.step("Get all products via API", async () => {
-            const apiProducts = await productApiSteps.getAllProducts();
+            const apiProducts = await productApiSteps.verifyAndGetAllProducts();
             expect(
                 apiProducts.length,
                 "API should return products"
@@ -78,7 +78,7 @@ test.describe("TC03-Hybrid: Add Multiple Products to Cart (API Setup)", () => {
             firstProductName = await productDetailPage.getProductName();
 
             // Get product details from API
-            const apiProducts = await productApiSteps.getAllProducts();
+            const apiProducts = await productApiSteps.verifyAndGetAllProducts();
             const apiProduct = await productApiSteps.getProductByName(apiProducts, firstProductName);
             expect(
                 apiProduct,
@@ -108,7 +108,7 @@ test.describe("TC03-Hybrid: Add Multiple Products to Cart (API Setup)", () => {
             secondProductName = await productDetailPage.getProductName();
 
             // Get second product details from API
-            const apiProducts = await productApiSteps.getAllProducts();
+            const apiProducts = await productApiSteps.verifyAndGetAllProducts();
             const apiProduct = await productApiSteps.getProductByName(apiProducts, secondProductName);
             expect(
                 apiProduct,

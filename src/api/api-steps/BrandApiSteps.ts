@@ -12,11 +12,11 @@ export class BrandApiSteps {
     constructor(private brandService: BrandService) {}
 
     /**
-     * Get all brands via API
+     * Verify and get all brands via API
      * @returns Array of brands
      */
-    @step('API: Get all brands')
-    async getAllBrands(): Promise<Brand[]> {
+    @step('API: Verify and get all brands')
+    async verifyAndGetAllBrands(): Promise<Brand[]> {
         const response = await this.brandService.getAllBrands();
 
         // Assert HTTP status
@@ -67,7 +67,7 @@ export class BrandApiSteps {
      */
     @step('API: Check if brand exists')
     async isBrandExists(brandName: string): Promise<boolean> {
-        const brands = await this.getAllBrands();
+        const brands = await this.verifyAndGetAllBrands();
         const brand = await this.getBrandByName(brands, brandName);
         return brand !== undefined;
     }

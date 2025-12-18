@@ -10,7 +10,7 @@ test.describe("TC06-Hybrid: Complete End-to-End Purchase Flow (API Setup + Full 
         // Create user via API for faster setup
         const workerIndex = test.info().workerIndex;
         testUser = DataFactory.generateUser({ workerIndex });
-        await userApiSteps.createUser(testUser);
+        await userApiSteps.createAndVerifyUser(testUser);
         userCreated = true;
 
         // Login via UI
@@ -59,7 +59,7 @@ test.describe("TC06-Hybrid: Complete End-to-End Purchase Flow (API Setup + Full 
 
         // Step 1: Get user details via API for address validation
         await test.step("Get user details via API for validation", async () => {
-            const userDetail = await userApiSteps.getUserDetailByEmail(testUser.email);
+            const userDetail = await userApiSteps.verifyAndGetUserDetailByEmail(testUser.email);
             expect(
                 userDetail.user.email,
                 "API user email should match created user"
@@ -68,7 +68,7 @@ test.describe("TC06-Hybrid: Complete End-to-End Purchase Flow (API Setup + Full 
 
         // Step 2: Get products list via API for price validation
         await test.step("Get all products via API for price validation", async () => {
-            const apiProducts = await productApiSteps.getAllProducts();
+            const apiProducts = await productApiSteps.verifyAndGetAllProducts();
             expect(apiProducts.length, "API should return products").toBeGreaterThan(0);
         });
 
@@ -80,7 +80,7 @@ test.describe("TC06-Hybrid: Complete End-to-End Purchase Flow (API Setup + Full 
             firstProductName = await productDetailPage.getProductName();
 
             // Get first product price from API
-            const apiProducts = await productApiSteps.getAllProducts();
+            const apiProducts = await productApiSteps.verifyAndGetAllProducts();
             const apiProduct = await productApiSteps.getProductByName(apiProducts, firstProductName);
             expect(
                 apiProduct,
@@ -99,7 +99,7 @@ test.describe("TC06-Hybrid: Complete End-to-End Purchase Flow (API Setup + Full 
             secondProductName = await productDetailPage.getProductName();
 
             // Get second product price from API
-            const apiProducts = await productApiSteps.getAllProducts();
+            const apiProducts = await productApiSteps.verifyAndGetAllProducts();
             const apiProduct = await productApiSteps.getProductByName(apiProducts, secondProductName);
             expect(
                 apiProduct,
@@ -166,7 +166,7 @@ test.describe("TC06-Hybrid: Complete End-to-End Purchase Flow (API Setup + Full 
 
         // Step 7: Verify delivery address matches API user address details
         await test.step("Verify delivery address matches API user details", async () => {
-            const userDetail = await userApiSteps.getUserDetailByEmail(testUser.email);
+            const userDetail = await userApiSteps.verifyAndGetUserDetailByEmail(testUser.email);
             await checkoutPage.verifyDeliveryAddress({
                 name: userDetail.user.name,
                 firstName: userDetail.user.first_name,
@@ -190,7 +190,7 @@ test.describe("TC06-Hybrid: Complete End-to-End Purchase Flow (API Setup + Full 
 
         // Step 8: Verify billing address matches API user address details
         await test.step("Verify billing address matches API user details", async () => {
-            const userDetail = await userApiSteps.getUserDetailByEmail(testUser.email);
+            const userDetail = await userApiSteps.verifyAndGetUserDetailByEmail(testUser.email);
             await checkoutPage.verifyBillingAddress({
                 name: userDetail.user.name,
                 firstName: userDetail.user.first_name,

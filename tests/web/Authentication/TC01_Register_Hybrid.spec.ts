@@ -9,7 +9,7 @@ test.describe("TC01-Hybrid: User Registration with API Setup & Validation", () =
         // Create user via API for faster setup
         const workerIndex = test.info().workerIndex;
         testUser = DataFactory.generateUser({ workerIndex });
-        await userApiSteps.createUser(testUser);
+        await userApiSteps.createAndVerifyUser(testUser);
     });
 
     test.afterEach(async ({ userApiSteps }) => {
@@ -24,7 +24,7 @@ test.describe("TC01-Hybrid: User Registration with API Setup & Validation", () =
     }) => {
         // Step 1: Get user details via API for validation
         await test.step("Get user details via API", async () => {
-            const userDetail = await userApiSteps.getUserDetailByEmail(testUser.email);
+            const userDetail = await userApiSteps.verifyAndGetUserDetailByEmail(testUser.email);
             expect(
                 userDetail.user.email,
                 "API user email should match created user email"
@@ -61,7 +61,7 @@ test.describe("TC01-Hybrid: User Registration with API Setup & Validation", () =
 
         // Step 5: Verify user details via API match what we created
         await test.step("Verify user details in UI match API data", async () => {
-            const userDetail = await userApiSteps.getUserDetailByEmail(testUser.email);
+            const userDetail = await userApiSteps.verifyAndGetUserDetailByEmail(testUser.email);
 
             // Verify key user details match
             expect(

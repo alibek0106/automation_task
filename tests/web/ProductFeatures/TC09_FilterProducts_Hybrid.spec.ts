@@ -64,7 +64,7 @@ test.describe("TC09-Hybrid: Product Category and Brand Filtering with API Valida
 
         // Step 1: Get all brands via API
         await test.step("Get all brands via API", async () => {
-            const apiBrands = await brandApiSteps.getAllBrands();
+            const apiBrands = await brandApiSteps.verifyAndGetAllBrands();
             expect(apiBrands.length, "API should return brands").toBeGreaterThan(0);
         });
 
@@ -77,7 +77,7 @@ test.describe("TC09-Hybrid: Product Category and Brand Filtering with API Valida
 
         // Step 3: Verify brands sidebar contains brands from API
         await test.step("Verify brands sidebar contains brands from API", async () => {
-            const apiBrands = await brandApiSteps.getAllBrands();
+            const apiBrands = await brandApiSteps.verifyAndGetAllBrands();
             const apiBrandNames = await brandApiSteps.getBrandNames(apiBrands);
 
             // Verify brands sidebar is visible
@@ -113,7 +113,7 @@ test.describe("TC09-Hybrid: Product Category and Brand Filtering with API Valida
             expect(productCount, "Brand should have at least one product").toBeGreaterThan(0);
 
             // Get all products from API to verify brand filtering
-            const allApiProducts = await productApiSteps.getAllProducts();
+            const allApiProducts = await productApiSteps.verifyAndGetAllProducts();
             const poloProducts = allApiProducts.filter(p => 
                 p.brand.toLowerCase() === poloBrand.name.toLowerCase()
             );
@@ -142,7 +142,7 @@ test.describe("TC09-Hybrid: Product Category and Brand Filtering with API Valida
             expect(productCount, "Brand should have at least one product").toBeGreaterThan(0);
 
             // Get H&M products from API
-            const allApiProducts = await productApiSteps.getAllProducts();
+            const allApiProducts = await productApiSteps.verifyAndGetAllProducts();
             const hmProducts = allApiProducts.filter(p => 
                 p.brand.toLowerCase().includes(hmBrand.name.toLowerCase()) ||
                 p.brand.toLowerCase().includes(hmBrand.name.toLowerCase().replace("&", " "))

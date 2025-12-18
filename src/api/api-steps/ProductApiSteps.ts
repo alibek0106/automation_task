@@ -18,11 +18,11 @@ export class ProductApiSteps {
     ) {}
 
     /**
-     * Get all products via API
+     * Verify and get all products via API
      * @returns Array of products
      */
-    @step('API: Get all products')
-    async getAllProducts(): Promise<Product[]> {
+    @step('API: Verify and get all products')
+    async verifyAndGetAllProducts(): Promise<Product[]> {
         const response = await retry(async (attempt) => {
             const res = await this.productService.getAllProducts();
             const status = res.status();

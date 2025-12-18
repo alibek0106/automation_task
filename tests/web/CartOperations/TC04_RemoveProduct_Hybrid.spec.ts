@@ -10,7 +10,7 @@ test.describe("TC04-Hybrid: Remove Product from Cart (API Setup)", () => {
         // Create user via API for faster setup
         const workerIndex = test.info().workerIndex;
         testUser = DataFactory.generateUser({ workerIndex });
-        await userApiSteps.createUser(testUser);
+        await userApiSteps.createAndVerifyUser(testUser);
         userCreated = true;
 
         // Login via UI

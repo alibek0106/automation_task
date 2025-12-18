@@ -10,7 +10,7 @@ test.describe("TC08-Hybrid: Update Product Quantity in Cart (API Setup)", () => 
         // Create user via API for faster setup
         const workerIndex = test.info().workerIndex;
         testUser = DataFactory.generateUser({ workerIndex });
-        await userApiSteps.createUser(testUser);
+        await userApiSteps.createAndVerifyUser(testUser);
         userCreated = true;
 
         // Login via UI
@@ -49,7 +49,7 @@ test.describe("TC08-Hybrid: Update Product Quantity in Cart (API Setup)", () => 
 
         // Step 1: Get product from API for price validation
         await test.step("Get product details from API", async () => {
-            const apiProducts = await productApiSteps.getAllProducts();
+            const apiProducts = await productApiSteps.verifyAndGetAllProducts();
             expect(apiProducts.length, "API should return products").toBeGreaterThan(0);
         });
 
@@ -62,7 +62,7 @@ test.describe("TC08-Hybrid: Update Product Quantity in Cart (API Setup)", () => 
             productPrice = await productDetailPage.getProductPrice();
 
             // Get product price from API
-            const apiProducts = await productApiSteps.getAllProducts();
+            const apiProducts = await productApiSteps.verifyAndGetAllProducts();
             const apiProduct = await productApiSteps.getProductByName(apiProducts, productName);
             expect(
                 apiProduct,

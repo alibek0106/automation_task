@@ -4,6 +4,7 @@ import { User, ApiResponseSchema, UserDetailResponseSchema, UserDetailResponse }
 import { StatusCode } from '../../constants/StatusCode';
 import { step } from '../../utils/StepDecorator';
 import { retry, RetryableError } from '../../utils/Retry';
+import { TestData } from '../../constants/TestData';
 
 /**
  * UserApiSteps - API operations for user management
@@ -13,12 +14,12 @@ export class UserApiSteps {
     constructor(private userService: UserService) {}
 
     /**
-     * Create a user account via API
+     * Create and verify user account via API
      * @param user User data object
      * @returns Created user data (same as input)
      */
-    @step('API: Create user account')
-    async createUser(user: User): Promise<User> {
+    @step('API: Create and verify user account')
+    async createAndVerifyUser(user: User): Promise<User> {
         const response = await retry(async (attempt) => {
             const res = await this.userService.createAccount(user);
             const status = res.status();
@@ -54,8 +55,8 @@ export class UserApiSteps {
         ).toHaveStatusCode(StatusCode.CREATED);
         expect(
             parsed.data.message,
-            'User creation message should be "User created!"'
-        ).toBe('User created!');
+            'User creation message should match expected value'
+        ).toBe(TestData.API.USER_CREATED_MESSAGE);
 
         return user;
     }
@@ -86,14 +87,14 @@ export class UserApiSteps {
 
         const body = await response.json().catch(() => undefined);
         // Idempotent cleanup: API may reply "Account not found!" if already deleted.
-        if (body?.message === 'Account deleted!' || body?.message === 'Account not found!') {
+        if (body?.message === TestData.API.ACCOUNT_DELETED_MESSAGE || body?.message === TestData.API.ACCOUNT_NOT_FOUND_MESSAGE) {
             return;
         }
 
         expect(
             body?.message,
-            'Account deletion message should be "Account deleted!" (or "Account not found!" for idempotent cleanup)'
-        ).toBe('Account deleted!');
+            'Account deletion message should match expected value'
+        ).toBe(TestData.API.ACCOUNT_DELETED_MESSAGE);
     }
 
     /**
@@ -108,26 +109,26 @@ export class UserApiSteps {
 
         const body = await response.json();
         
-        if (response.status() === StatusCode.OK && body.message === 'User exists!') {
+        if (response.status() === StatusCode.OK && body.message === TestData.API.USER_EXISTS_MESSAGE) {
             return true;
         }
         return false;
     }
 
     /**
-     * Get user details via API
+     * Verify and get user details via API
      * @param email User email
      * @returns User detail response
      */
-    @step('API: Get user details by email')
-    async getUserDetailByEmail(email: string): Promise<UserDetailResponse> {
+    @step('API: Verify and get user details by email')
+    async verifyAndGetUserDetailByEmail(email: string): Promise<UserDetailResponse> {
         const response = await this.userService.getUserDetailByEmail(email);
 
         // Assert HTTP status
-        expect(
-            response.status(),
+        await expect(
+            response,
             `Get user detail API should return HTTP 200, got ${response.status()}`
-        ).toBe(StatusCode.OK);
+        ).toHaveStatusCode(StatusCode.OK);
 
         // Validate response schema
         const body = await response.json();

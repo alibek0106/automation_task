@@ -120,6 +120,8 @@ export const TestData = {
         USER_UPDATED_MESSAGE: 'User updated!',
         /** Account deleted message */
         ACCOUNT_DELETED_MESSAGE: 'Account deleted!',
+        /** Account not found message (for idempotent cleanup) */
+        ACCOUNT_NOT_FOUND_MESSAGE: 'Account not found!',
         /** Missing email or password parameter error message */
         MISSING_EMAIL_PASSWORD_MESSAGE: 'Bad request, email or password parameter is missing in POST request.',
         /** Missing search_product parameter error message */
