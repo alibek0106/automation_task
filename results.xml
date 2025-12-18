@@ -1,0 +1,37 @@
+<testsuites id="" name="" tests="4" failures="0" skipped="0" errors="0" time="13.300825999999885">
+<testsuite name="hybrid\TC05_SearchProductApiValidation.spec.ts" timestamp="2025-12-18T05:42:18.244Z" hostname="chromium" tests="4" failures="0" skipped="0" time="36.082" errors="0">
+<testcase name="Search Product with API Validation › Verify UI search results match API for &quot;Dress&quot; (Standard category item)" classname="hybrid\TC05_SearchProductApiValidation.spec.ts" time="10.413">
+<system-out>
+<![CDATA[✓ Product count matches: 9 products in both API and UI
+✓ All 9 product names match between API and UI
+✓ All 9 product prices match between API and UI
+✓ All 9 product cards have valid structure (Image + View Product link)
+]]>
+</system-out>
+</testcase>
+<testcase name="Search Product with API Validation › Verify UI search results match API for &quot;Jeans&quot; (Standard category item)" classname="hybrid\TC05_SearchProductApiValidation.spec.ts" time="8.743">
+<system-out>
+<![CDATA[✓ Product count matches: 3 products in both API and UI
+✓ All 3 product names match between API and UI
+✓ All 3 product prices match between API and UI
+✓ All 3 product cards have valid structure (Image + View Product link)
+]]>
+</system-out>
+</testcase>
+<testcase name="Search Product with API Validation › Verify UI search results match API for &quot;Top&quot; (Short keyword)" classname="hybrid\TC05_SearchProductApiValidation.spec.ts" time="10.191">
+<system-out>
+<![CDATA[✓ Product count matches: 14 products in both API and UI
+✓ All 14 product names match between API and UI
+✓ All 14 product prices match between API and UI
+✓ All 14 product cards have valid structure (Image + View Product link)
+]]>
+</system-out>
+</testcase>
+<testcase name="Search Product with API Validation › Verify empty results handling via API and UI" classname="hybrid\TC05_SearchProductApiValidation.spec.ts" time="6.735">
+<system-out>
+<![CDATA[✓ Empty state correctly displayed - no product cards visible
+]]>
+</system-out>
+</testcase>
+</testsuite>
+</testsuites>
