@@ -61,5 +61,17 @@ export default defineConfig({
                 // Worker-specific storage state is loaded via auth.fixture.ts
             },
         },
+        {
+            name: 'firefox',
+            dependencies: ['setup'],
+            testMatch: /.*\/web\/.*\.spec\.ts/,
+            use: { ...devices['Desktop Firefox'] },
+        },
+        {
+            name: 'webkit',
+            dependencies: ['setup'],
+            testMatch: /.*\/web\/.*\.spec\.ts/,
+            use: { ...devices['Desktop Safari'] },
+        },
     ],
 });
