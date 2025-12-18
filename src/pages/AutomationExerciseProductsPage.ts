@@ -1,6 +1,7 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 import { TIMEOUTS, MESSAGES, PAGE_TITLES } from '../utils/Constants';
+import { Routes } from '../constants/Routes';
 
 export class AutomationExerciseProductsPage extends BasePage {
     private readonly productsList: Locator;
@@ -13,37 +14,53 @@ export class AutomationExerciseProductsPage extends BasePage {
     private readonly productCards: Locator;
     private readonly productPrices: Locator;
     private readonly emptyStateMessage: Locator;
+    private readonly categoryPanel: Locator;
+    private readonly brandsPanel: Locator;
+
+    // New Properties for inline locators
+    private readonly addToCartSelector = '.add-to-cart';
+    private readonly cartModal: Locator;
+    private readonly viewProductLinkSelector = '.choose a';
+    private readonly continueShoppingButton: Locator;
+    private readonly pageHeader: Locator;
+    private readonly productNameInfoSelector = '.productinfo p';
+    private readonly productPriceInfoSelector = '.productinfo h2';
+    private readonly productImageSelector = 'img';
+    private readonly viewProductTextLinkSelector = 'a:has-text("View Product")';
+    private readonly brandLink = (brandName: string) => this.brandsPanel.locator(`ul li a:has-text("${brandName}")`);
 
     constructor(page: Page) {
         super(page, 'ProductsPage');
-        this.productsList = this.resolveLocator('.features_items', 'Products List');
-        this.viewProductButtons = this.resolveLocator('.choose .nav-justified', 'View Product Buttons');
-        this.addToCartButtons = this.resolveLocator('.add-to-cart-overlay', 'Add to Cart Buttons');
+        this.productsList = this.page.locator('.features_items').describe('Products List');
+        this.viewProductButtons = this.page.locator('.choose .nav-justified').describe('View Product Buttons');
+        this.addToCartButtons = this.page.locator('.add-to-cart-overlay').describe('Add to Cart Buttons');
 
         // Search elements
-        this.searchInput = this.resolveLocator('#search_product', 'Search Input');
-        this.submitSearchButton = this.resolveLocator('#submit_search', 'Search Button');
-        this.searchedProductsHeader = this.resolveLocator(`h2.title:has-text("${MESSAGES.SEARCHED_PRODUCTS}")`, 'Searched Products Header');
-        this.productNames = this.resolveLocator('.productinfo p', 'Product Names');
-        this.productCards = this.resolveLocator('.product-image-wrapper', 'Product Cards');
-        this.productPrices = this.resolveLocator('.productinfo h2', 'Product Prices');
-        this.emptyStateMessage = this.resolveLocator('.col-sm-12:has-text("No product")', 'Empty State Message');
+        this.searchInput = this.page.locator('#search_product').describe('Search Input');
+        this.submitSearchButton = this.page.locator('#submit_search').describe('Search Button');
+        this.searchedProductsHeader = this.page.locator(`h2.title:has-text("${MESSAGES.SEARCHED_PRODUCTS}")`).describe('Searched Products Header');
+        this.productNames = this.page.locator('.productinfo p').describe('Product Names');
+        this.productCards = this.page.locator('.product-image-wrapper').describe('Product Cards');
+        this.productPrices = this.page.locator('.productinfo h2').describe('Product Prices');
+        this.emptyStateMessage = this.page.getByText('No product').describe('Empty State Message');
 
         // Sidebar elements
-        this.categoryPanel = this.resolveLocator('#accordian', 'Category Sidebar');
-        this.brandsPanel = this.resolveLocator('.brands_products', 'Brands Sidebar');
+        this.categoryPanel = this.page.locator('#accordian').describe('Category Sidebar');
+        this.brandsPanel = this.page.locator('.brands_products').describe('Brands Sidebar');
+
+        // Other locators
+        this.cartModal = this.page.locator('#cartModal').describe('Cart Modal');
+        this.continueShoppingButton = this.page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping Button');
+        this.pageHeader = this.page.locator('h2.title').describe('Page Header');
     }
 
-    private categoryPanel: Locator;
-    private brandsPanel: Locator;
-
     async navigate() {
-        await this.page.goto('/products');
+        await this.page.goto(Routes.PRODUCTS);
     }
 
     async verifyPageOpened() {
-        await expect(this.page).toHaveTitle(PAGE_TITLES.ALL_PRODUCTS);
-        await expect(this.productsList).toBeVisible();
+        await expect(this.page, 'Products Page should be opened').toHaveTitle(PAGE_TITLES.ALL_PRODUCTS);
+        await expect(this.productsList, 'Products List should be visible').toBeVisible();
     }
 
     async searchProduct(term: string) {
@@ -52,7 +69,7 @@ export class AutomationExerciseProductsPage extends BasePage {
     }
 
     async verifySearchedProductsHeader() {
-        await expect(this.searchedProductsHeader).toBeVisible({ timeout: TIMEOUTS.VISIBILITY });
+        await expect(this.searchedProductsHeader, 'Searched Products Header should be visible').toBeVisible({ timeout: TIMEOUTS.VISIBILITY });
     }
 
     async getProductNames(): Promise<string[]> {
@@ -69,20 +86,19 @@ export class AutomationExerciseProductsPage extends BasePage {
     }
 
     async addProductToCart(index: number) {
-        await this.getProductCard(index).locator('.add-to-cart').first().click();
+        await this.getProductCard(index).locator(this.addToCartSelector).first().click();
     }
 
     async addProductToCartByName(productName: string) {
         const product = this.productCards.filter({ hasText: productName }).first();
         await product.hover();
-        await product.locator('.add-to-cart').first().click();
+        await product.locator(this.addToCartSelector).first().click();
     }
 
     async verifySuccessMessage() {
         // The modal appears after adding a product to cart
         // Based on the automation exercise website structure
-        const modal = this.page.locator('#cartModal');
-        await expect(modal).toBeVisible({ timeout: TIMEOUTS.DEFAULT });
+        await expect(this.cartModal, 'Cart Modal should be visible').toBeVisible({ timeout: TIMEOUTS.DEFAULT });
     }
 
     async viewProductDetailsByName(productName: string) {
@@ -94,11 +110,11 @@ export class AutomationExerciseProductsPage extends BasePage {
         // Product Card: .product-image-wrapper.
         // Inside wrapper: .choose .nav-justified a
         const productCard = this.productCards.filter({ hasText: productName }).first();
-        await productCard.locator('.choose a').click();
+        await productCard.locator(this.viewProductLinkSelector).click();
     }
 
     async clickContinueShopping() {
-        await this.page.getByRole('button', { name: 'Continue Shopping' }).click();
+        await this.continueShoppingButton.click();
     }
 
     async clickCategory(category: string) {
@@ -117,12 +133,12 @@ export class AutomationExerciseProductsPage extends BasePage {
         // Brands: .brands_products ul li a:has-text("Polo")
         // Brand locator often has count like "Polo (6)". We should match strictly? 
         // Or partial match "Polo".
-        await this.brandsPanel.locator(`ul li a:has-text("${brandName}")`).click();
+        await this.brandLink(brandName).click();
     }
 
     async verifyPageHeader(expectedTitle: string) {
         // Header usually h2.title
-        await expect(this.page.locator('h2.title')).toHaveText(expectedTitle, { ignoreCase: true });
+        await expect(this.pageHeader, 'Page Header should have expected title').toHaveText(expectedTitle, { ignoreCase: true });
     }
 
     async verifyProductsContainName(namePart: string) {
@@ -157,8 +173,8 @@ export class AutomationExerciseProductsPage extends BasePage {
 
         for (let i = 0; i < count; i++) {
             const card = this.productCards.nth(i);
-            const name = await card.locator('.productinfo p').innerText();
-            const price = await card.locator('.productinfo h2').innerText();
+            const name = await card.locator(this.productNameInfoSelector).innerText();
+            const price = await card.locator(this.productPriceInfoSelector).innerText();
             products.push({ name: name.trim(), price: price.trim() });
         }
 
@@ -173,12 +189,12 @@ export class AutomationExerciseProductsPage extends BasePage {
         const card = this.getProductCard(index);
 
         // Verify image exists
-        const image = card.locator('img');
-        await expect(image).toBeVisible();
+        const image = card.locator(this.productImageSelector);
+        await expect(image, 'Product Image should be visible').toBeVisible();
 
         // Verify "View Product" link exists
-        const viewProductLink = card.locator('a:has-text("View Product")');
-        await expect(viewProductLink).toBeVisible();
+        const viewProductLink = card.locator(this.viewProductTextLinkSelector);
+        await expect(viewProductLink, 'View Product Link should be visible').toBeVisible();
     }
 
     /**

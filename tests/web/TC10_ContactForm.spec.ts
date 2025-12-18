@@ -19,7 +19,7 @@ test.describe('TC10: Contact Form Submission', () => {
     });
 
     test('Scenario: Successful form submission with file attachment', async ({ automationExerciseContactUsSteps }) => {
-        const filePath = path.join(__dirname, 'testData', 'sample-invoice.txt');
+        const filePath = path.join(process.cwd(), 'tests', 'testData', 'sample-invoice.txt');
         const formData = DataFactory.generateContactFormData();
 
         await automationExerciseContactUsSteps.fillContactForm(

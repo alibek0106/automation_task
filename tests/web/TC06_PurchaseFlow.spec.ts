@@ -1,8 +1,7 @@
 import { test } from '../../src/fixtures';
 import { DataFactory, User } from '../../src/utils/DataFactory';
-import { PAYMENT_INFO } from '../../src/utils/Constants';
 import { AutomationExerciseApi } from '../../src/api/AutomationExerciseApi';
-import { PRODUCT_DETAILS, PRODUCTS } from '../../src/constants/Products';
+import { PRODUCTS } from '../../src/constants/Products';
 
 /**
  * TC06: End-to-End Purchase Flow
@@ -51,10 +50,7 @@ test.describe('End-to-End Purchase Flow', () => {
 
         // 4-5. Cart Verification
         await automationExerciseNavigationSteps.clickCart();
-        await automationExerciseCartSteps.verifyCartContent([
-            PRODUCT_DETAILS.BLUE_TOP,
-            PRODUCT_DETAILS.MEN_TSHIRT
-        ]);
+        await automationExerciseCartSteps.verifyCartContent(DataFactory.generateCartProducts());
 
         // 6-10. Checkout & Address Verification
         await automationExerciseCartSteps.proceedToCheckout();
@@ -63,13 +59,7 @@ test.describe('End-to-End Purchase Flow', () => {
         // 11-12. Payment
         await automationExerciseCheckoutSteps.enterCommentAndPlaceOrder('Test Order Comment');
 
-        await automationExercisePaymentSteps.enterPaymentDetails(
-            PAYMENT_INFO.NAME_ON_CARD,
-            PAYMENT_INFO.CARD_NUMBER,
-            PAYMENT_INFO.CVC,
-            PAYMENT_INFO.EXPIRY_MONTH,
-            PAYMENT_INFO.EXPIRY_YEAR
-        );
+        await automationExercisePaymentSteps.enterPaymentDetails(DataFactory.generatePaymentDetails());
         await automationExercisePaymentSteps.confirmOrder();
 
         // 13-15. Confirmation

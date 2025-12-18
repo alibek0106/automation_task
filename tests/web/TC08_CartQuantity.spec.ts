@@ -22,7 +22,7 @@ test.describe('TC08: Cart Quantity Update', () => {
         const account = DataFactory.generateAccountDetails();
         const address = DataFactory.generateAddressInfo();
 
-        await userApiSteps.createAccount(user, account, address);
+        await userApiSteps.registerUser(user, account, address);
 
         await automationExerciseLandingSteps.navigateToHomepage();
         await automationExerciseNavigationSteps.clickSignupLogin();
@@ -32,7 +32,7 @@ test.describe('TC08: Cart Quantity Update', () => {
 
     test.afterEach(async ({ userApiSteps }) => {
         if (user) {
-            await userApiSteps.deleteAccount(user.email, user.password);
+            await userApiSteps.deleteUser(user.email, user.password);
         }
     });
 

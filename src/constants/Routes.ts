@@ -1,5 +1,5 @@
 export const Routes = {
-    BASE_URL: 'https://automationexercise.com',
+    BASE_URL: 'https://www.automationexercise.com',
     LOGIN: '/login',
     SIGNUP: '/signup',
     ACCOUNT_CREATED: '/account_created',
@@ -11,4 +11,5 @@ export const Routes = {
     PAYMENT: '/payment',
     VIDEO_TUTORIALS: 'https://www.youtube.com/c/AutomationExercise',
     CONTACT_US: '/contact_us',
+    TITLE: /Automation Exercise/
 } as const;

@@ -12,13 +12,13 @@ export class AutomationExerciseNavigationMenu extends BasePage {
 
     constructor(page: Page) {
         super(page, 'NavigationMenu');
-        this.homeLink = this.resolveLocator('a[href="/"]', 'Home Link').filter({ hasText: 'Home' }).first(); // Refined locator
-        this.productsLink = this.resolveLocator('a[href="/products"]', 'Products Link');
-        this.cartLink = this.resolveLocator('a[href="/view_cart"]', 'Cart Link').first();
-        this.signupLoginLink = this.resolveLocator('a[href="/login"]', 'Signup/Login Link');
-        this.deleteAccountLink = this.resolveLocator('a[href="/delete_account"]', 'Delete Account Link');
-        this.logoutLink = this.resolveLocator('a[href="/logout"]', 'Logout Link');
-        this.loggedInAsText = this.resolveLocator('//a[contains(text(), "Logged in as")]', 'Logged In User');
+        this.homeLink = this.page.locator('a[href="/"]').describe('Home Link').filter({ hasText: 'Home' }).first(); // Refined locator
+        this.productsLink = this.page.locator('a[href="/products"]').describe('Products Link');
+        this.cartLink = this.page.locator('a[href="/view_cart"]').describe('Cart Link').first();
+        this.signupLoginLink = this.page.locator('a[href="/login"]').describe('Signup/Login Link');
+        this.deleteAccountLink = this.page.locator('a[href="/delete_account"]').describe('Delete Account Link');
+        this.logoutLink = this.page.locator('a[href="/logout"]').describe('Logout Link');
+        this.loggedInAsText = this.page.locator('//a[contains(text(), "Logged in as")]').describe('Logged In User');
     }
 
     async clickSignupLogin() {
@@ -34,12 +34,12 @@ export class AutomationExerciseNavigationMenu extends BasePage {
     }
 
     async verifyUserLoggedIn(username: string) {
-        await expect(this.loggedInAsText).toBeVisible();
-        await expect(this.page.getByText(username)).toBeVisible();
+        await expect(this.loggedInAsText, 'Should be logged in').toBeVisible();
+        await expect(this.page.getByText(username), 'Username should be visible').toBeVisible();
     }
 
     async verifyUserNotLoggedIn() {
-        await expect(this.loggedInAsText).not.toBeVisible();
+        await expect(this.loggedInAsText, 'Should not be logged in').not.toBeVisible();
     }
 
     async clickHome() {

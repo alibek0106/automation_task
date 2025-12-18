@@ -120,8 +120,6 @@ export class AutomationExerciseProductsSteps {
         if (uiCount !== apiCount) {
             throw new Error(`Product count mismatch: API returned ${apiCount} products, but UI displays ${uiCount} products`);
         }
-
-        console.log(`✓ Product count matches: ${uiCount} products in both API and UI`);
     }
 
     @step('Verify UI product names match API response')
@@ -146,8 +144,6 @@ export class AutomationExerciseProductsSteps {
         if (mismatches.length > 0) {
             throw new Error(`Product names mismatch:\n${mismatches.join('\n')}`);
         }
-
-        console.log(`✓ All ${sortedApiProducts.length} product names match between API and UI`);
     }
 
     @step('Verify UI product prices match API response')
@@ -175,8 +171,6 @@ export class AutomationExerciseProductsSteps {
         if (mismatches.length > 0) {
             throw new Error(`Product prices mismatch:\n${mismatches.join('\n')}`);
         }
-
-        console.log(`✓ All ${sortedApiProducts.length} product prices match between API and UI`);
     }
 
     @step('Verify product card structure at index {0}')
@@ -191,13 +185,10 @@ export class AutomationExerciseProductsSteps {
         for (let i = 0; i < count; i++) {
             await this.productsPage.verifyProductCardStructure(i);
         }
-
-        console.log(`✓ All ${count} product cards have valid structure (Image + View Product link)`);
     }
 
     @step('Verify empty search results are displayed')
     async verifyEmptySearchResults() {
         await this.productsPage.verifyEmptyState();
-        console.log('✓ Empty state correctly displayed - no product cards visible');
     }
 }

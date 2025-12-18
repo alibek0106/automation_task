@@ -16,41 +16,41 @@ export class AutomationExercisePaymentPage extends BasePage {
 
     constructor(page: Page) {
         super(page, 'PaymentPage');
-        this.nameOnCardInput = this.resolveLocator('input[name="name_on_card"]', 'Name on Card Input');
-        this.cardNumberInput = this.resolveLocator('input[name="card_number"]', 'Card Number Input');
-        this.cvcInput = this.resolveLocator('input[name="cvc"]', 'CVC Input');
-        this.expirationInput = this.resolveLocator('input[name="expiry_date"]', 'Expiration Input'); // Fallback if single field
-        this.expirationMonthInput = this.resolveLocator('input[name="expiry_month"]', 'Expiration Month Input');
-        this.expirationYearInput = this.resolveLocator('input[name="expiry_year"]', 'Expiration Year Input');
-        this.payButton = this.resolveLocator('[data-qa="pay-button"]', 'Pay and Confirm Order Button');
+        this.nameOnCardInput = this.page.locator('input[name="name_on_card"]').describe('Name on Card Input');
+        this.cardNumberInput = this.page.locator('input[name="card_number"]').describe('Card Number Input');
+        this.cvcInput = this.page.locator('input[name="cvc"]').describe('CVC Input');
+        this.expirationInput = this.page.locator('input[name="expiry_date"]').describe('Expiration Input'); // Fallback if single field
+        this.expirationMonthInput = this.page.locator('input[name="expiry_month"]').describe('Expiration Month Input');
+        this.expirationYearInput = this.page.locator('input[name="expiry_year"]').describe('Expiration Year Input');
+        this.payButton = this.page.locator('[data-qa="pay-button"]').describe('Pay and Confirm Order Button');
         // Success message is usually on a subsequent page or dynamic state, but let's assume it transitions
-        this.successMessage = this.resolveLocator('.alert-success', 'Success Message'); // Common boostrap class, or text match
-        this.downloadInvoiceButton = this.resolveLocator('a.check_out', 'Download Invoice Button'); // Updated to potentially correct locator
-        this.continueButton = this.resolveLocator('[data-qa="continue-button"]', 'Continue Button');
+        this.successMessage = this.page.locator('.alert-success').describe('Success Message'); // Common boostrap class, or text match
+        this.downloadInvoiceButton = this.page.locator('a.check_out').describe('Download Invoice Button'); // Updated to potentially correct locator
+        this.continueButton = this.page.locator('[data-qa="continue-button"]').describe('Continue Button');
     }
 
     async verifyPageLoaded(): Promise<void> {
-        await expect(this.page).toHaveTitle(PAGE_TITLES.PAYMENT);
+        await expect(this.page, 'Payment Page should be loaded').toHaveTitle(PAGE_TITLES.PAYMENT);
     }
 
-    async enterPaymentDetails(name: string, number: string, cvc: string, month: string, year: string): Promise<void> {
+    async enterNameOnCard(name: string): Promise<void> {
         await this.nameOnCardInput.fill(name);
-        await this.cardNumberInput.fill(number);
-        await this.cvcInput.fill(cvc);
-        await this.expirationMonthInput.fill(month);
-        await this.expirationYearInput.fill(year);
     }
 
-    async fillPaymentDetails(): Promise<void> {
-        // Uses constants for default payment flow
-        const { PAYMENT_INFO } = require('../utils/Constants');
-        await this.enterPaymentDetails(
-            PAYMENT_INFO.NAME_ON_CARD,
-            PAYMENT_INFO.CARD_NUMBER,
-            PAYMENT_INFO.CVC,
-            PAYMENT_INFO.EXPIRY_MONTH,
-            PAYMENT_INFO.EXPIRY_YEAR
-        );
+    async enterCardNumber(number: string): Promise<void> {
+        await this.cardNumberInput.fill(number);
+    }
+
+    async enterCVC(cvc: string): Promise<void> {
+        await this.cvcInput.fill(cvc);
+    }
+
+    async enterExpirationMonth(month: string): Promise<void> {
+        await this.expirationMonthInput.fill(month);
+    }
+
+    async enterExpirationYear(year: string): Promise<void> {
+        await this.expirationYearInput.fill(year);
     }
 
 

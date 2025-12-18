@@ -10,8 +10,8 @@ export class AutomationExerciseOrderConfirmationPage extends BasePage {
     constructor(page: Page) {
         super(page, 'OrderConfirmationPage');
         this.orderPlacedMessage = page.getByText(MESSAGES.ORDER_PLACED); // getByText is okay
-        this.downloadInvoiceButton = this.resolveLocator('a.check_out', 'Download Invoice Button');
-        this.continueButton = this.resolveLocator('[data-qa="continue-button"]', 'Continue Button');
+        this.downloadInvoiceButton = this.page.locator('a.check_out').describe('Download Invoice Button');
+        this.continueButton = this.page.locator('[data-qa="continue-button"]').describe('Continue Button');
     }
 
     async verifyPageLoaded(): Promise<void> {
@@ -28,7 +28,7 @@ export class AutomationExerciseOrderConfirmationPage extends BasePage {
     }
 
     async verifyDownloadInvoiceVisible(): Promise<void> {
-        await expect(this.downloadInvoiceButton).toBeVisible();
+        await expect(this.downloadInvoiceButton, 'Download Invoice Button should be visible').toBeVisible();
     }
 
     async clickContinue(): Promise<void> {

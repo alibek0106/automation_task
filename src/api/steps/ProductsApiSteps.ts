@@ -26,9 +26,6 @@ export class ProductsApiSteps {
         const products = responseBody[API_RESPONSE_KEYS.PRODUCTS];
         expect(Array.isArray(products), 'Products should be an array').toBeTruthy();
         expect(products.length).toBeGreaterThan(0);
-
-        // Optional: Log count
-        console.log(`Verified ${products.length} products retrieved from API.`);
     }
 
     @step('Verify POST to products list is not supported')
@@ -62,7 +59,6 @@ export class ProductsApiSteps {
 
         // Store and return products
         this.storedApiProducts = responseBody.products;
-        console.log(`API returned ${this.storedApiProducts.length} products for search term: ${searchTerm}`);
         return this.storedApiProducts;
     }
 
@@ -90,8 +86,6 @@ export class ProductsApiSteps {
         const products = responseBody.products;
         expect(Array.isArray(products), 'Products should be an array').toBeTruthy();
         expect(products.length, `Expected no products for search term "${searchTerm}"`).toBe(0);
-
-        console.log(`API correctly returned empty list for search term: ${searchTerm}`);
     }
 
     @step('Get all brands via API')
@@ -121,7 +115,6 @@ export class ProductsApiSteps {
             p.brand && p.brand.toLowerCase() === brandName.toLowerCase()
         );
 
-        console.log(`API Found ${filtered.length} products for Brand: ${brandName}`);
         return filtered;
     }
 
@@ -141,7 +134,6 @@ export class ProductsApiSteps {
                 pSubCat && pSubCat.toLowerCase() === subCategory.toLowerCase();
         });
 
-        console.log(`API Found ${filtered.length} products for Category: ${mainCategory} > ${subCategory}`);
         return filtered;
     }
 }

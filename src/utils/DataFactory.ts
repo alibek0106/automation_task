@@ -1,5 +1,7 @@
 import { faker } from '@faker-js/faker';
 import { USER_CONSTANTS } from '../constants/UserConstants';
+import { PAYMENT_INFO } from './Constants';
+import { PRODUCT_DETAILS } from '../constants/Products';
 
 export interface User {
     name: string;
@@ -23,6 +25,7 @@ export interface User {
 
 export type AccountDetails = ReturnType<typeof DataFactory.generateAccountDetails>;
 export type AddressInfo = ReturnType<typeof DataFactory.generateAddressInfo>;
+export type PaymentDetails = ReturnType<typeof DataFactory.generatePaymentDetails>;
 
 export class DataFactory {
     static generateUser() {
@@ -84,5 +87,22 @@ export class DataFactory {
             subject: faker.lorem.sentence(3),
             message: faker.lorem.paragraph(1) // Ensure it meets length requirements if any
         };
+    }
+
+    static generatePaymentDetails() {
+        return {
+            nameOnCard: PAYMENT_INFO.NAME_ON_CARD,
+            cardNumber: PAYMENT_INFO.CARD_NUMBER,
+            cvc: PAYMENT_INFO.CVC,
+            expiryMonth: PAYMENT_INFO.EXPIRY_MONTH,
+            expiryYear: PAYMENT_INFO.EXPIRY_YEAR
+        };
+    }
+
+    static generateCartProducts() {
+        return [
+            PRODUCT_DETAILS.BLUE_TOP,
+            PRODUCT_DETAILS.MEN_TSHIRT
+        ];
     }
 }

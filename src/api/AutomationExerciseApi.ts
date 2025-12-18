@@ -59,4 +59,19 @@ export class AutomationExerciseApi {
         const responseBody = await response.text();
         expect(responseBody).toContain('Account deleted!');
     }
+
+    /**
+     * Gets user details via API
+     * @param email Email of the user to retrieve
+     */
+    async getUserDetails(email: string): Promise<any> {
+        const response = await this.request.get(`${API_ENDPOINTS.GET_USER_DETAILS}?email=${email}`, {
+            timeout: TIMEOUTS.API_TIMEOUT
+        });
+
+        expect(response.status(), `Failed to get user details via API: ${response.statusText()}`).toBe(API_STATUS_CODES.OK);
+        const responseBody = await response.json();
+        // The API returns { responseCode: 200, user: { ... } }
+        return responseBody.user;
+    }
 }

@@ -9,3 +9,4 @@ dist/
 .auth
 tests/testData/user-data.json
 .env
+results.xml

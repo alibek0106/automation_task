@@ -35,39 +35,35 @@ export class AutomationExerciseSignupPage extends BasePage {
 
         this.accountInfoHeader = page.getByText(MESSSAGES.ENTER_ACCOUNT_INFO);
 
-        this.titleMr = this.resolveLocator('#id_gender1', 'Title Mr');
-        this.titleMrs = this.resolveLocator('#id_gender2', 'Title Mrs');
-        this.passwordInput = this.resolveLocator('[data-qa="password"]', 'Password Input');
-        this.daysDropdown = this.resolveLocator('[data-qa="days"]', 'Days Dropdown');
-        this.monthsDropdown = this.resolveLocator('[data-qa="months"]', 'Months Dropdown');
-        this.yearsDropdown = this.resolveLocator('[data-qa="years"]', 'Years Dropdown');
-        this.newsletterCheckbox = this.resolveLocator('#newsletter', 'Newsletter Checkbox');
-        this.specialOffersCheckbox = this.resolveLocator('#optin', 'Special Offers Checkbox');
+        this.titleMr = this.page.locator('#id_gender1').describe('Title Mr');
+        this.titleMrs = this.page.locator('#id_gender2').describe('Title Mrs');
+        this.passwordInput = this.page.locator('[data-qa="password"]').describe('Password Input');
+        this.daysDropdown = this.page.locator('[data-qa="days"]').describe('Days Dropdown');
+        this.monthsDropdown = this.page.locator('[data-qa="months"]').describe('Months Dropdown');
+        this.yearsDropdown = this.page.locator('[data-qa="years"]').describe('Years Dropdown');
+        this.newsletterCheckbox = this.page.locator('#newsletter').describe('Newsletter Checkbox');
+        this.specialOffersCheckbox = this.page.locator('#optin').describe('Special Offers Checkbox');
 
-        this.firstNameInput = this.resolveLocator('[data-qa="first_name"]', 'First Name Input');
-        this.lastNameInput = this.resolveLocator('[data-qa="last_name"]', 'Last Name Input');
-        this.companyInput = this.resolveLocator('[data-qa="company"]', 'Company Input');
-        this.addressInput = this.resolveLocator('[data-qa="address"]', 'Address Input');
-        this.address2Input = this.resolveLocator('[data-qa="address2"]', 'Address2 Input');
-        this.countryDropdown = this.resolveLocator('[data-qa="country"]', 'Country Dropdown');
-        this.stateInput = this.resolveLocator('[data-qa="state"]', 'State Input');
-        this.cityInput = this.resolveLocator('[data-qa="city"]', 'City Input');
-        this.zipcodeInput = this.resolveLocator('[data-qa="zipcode"]', 'Zipcode Input');
-        this.mobileNumberInput = this.resolveLocator('[data-qa="mobile_number"]', 'Mobile Number Input');
+        this.firstNameInput = this.page.locator('[data-qa="first_name"]').describe('First Name Input');
+        this.lastNameInput = this.page.locator('[data-qa="last_name"]').describe('Last Name Input');
+        this.companyInput = this.page.locator('[data-qa="company"]').describe('Company Input');
+        this.addressInput = this.page.locator('[data-qa="address"]').describe('Address Input');
+        this.address2Input = this.page.locator('[data-qa="address2"]').describe('Address2 Input');
+        this.countryDropdown = this.page.locator('[data-qa="country"]').describe('Country Dropdown');
+        this.stateInput = this.page.locator('[data-qa="state"]').describe('State Input');
+        this.cityInput = this.page.locator('[data-qa="city"]').describe('City Input');
+        this.zipcodeInput = this.page.locator('[data-qa="zipcode"]').describe('Zipcode Input');
+        this.mobileNumberInput = this.page.locator('[data-qa="mobile_number"]').describe('Mobile Number Input');
 
-        this.createAccountButton = this.resolveLocator('[data-qa="create-account"]', 'Create Account Button');
+        this.createAccountButton = this.page.locator('[data-qa="create-account"]').describe('Create Account Button');
     }
 
     async verifyAccountInfoPageOpened() {
-        await expect(this.accountInfoHeader).toBeVisible();
+        await expect(this.accountInfoHeader, 'Account Info Header should be visible').toBeVisible();
     }
 
     async selectTitle(title: 'Mr.' | 'Mrs.') {
-        if (title === 'Mr.') {
-            await this.titleMr.check();
-        } else {
-            await this.titleMrs.check();
-        }
+        await (title === 'Mr.' ? this.titleMr : this.titleMrs).check();
     }
 
     async enterPassword(password: string) {

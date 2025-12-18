@@ -1,5 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { Routes } from '../constants/Routes';
 
 export class AutomationExerciseContactUsPage extends BasePage {
     private readonly nameInput: Locator;
@@ -14,23 +15,23 @@ export class AutomationExerciseContactUsPage extends BasePage {
 
     constructor(page: Page) {
         super(page, 'ContactUsPage');
-        this.heading = this.resolveLocator('h2.title:has-text("Get In Touch")', 'Contact Us Heading');
-        this.nameInput = this.resolveLocator('[data-qa="name"]', 'Contact Name Input');
-        this.emailInput = this.resolveLocator('[data-qa="email"]', 'Contact Email Input');
-        this.subjectInput = this.resolveLocator('[data-qa="subject"]', 'Contact Subject Input');
-        this.messageInput = this.resolveLocator('[data-qa="message"]', 'Contact Message Input');
-        this.uploadFileInput = this.resolveLocator('input[name="upload_file"]', 'Upload File Input');
-        this.submitButton = this.resolveLocator('[data-qa="submit-button"]', 'Submit Button');
-        this.successMessage = this.resolveLocator('.status.alert-success', 'Success Message');
-        this.homeButton = this.resolveLocator('.btn-success', 'Home Button'); // Assuming class .btn-success or generic locator
+        this.heading = this.page.locator('h2.title:has-text("Get In Touch")').describe('Contact Us Heading');
+        this.nameInput = this.page.locator('[data-qa="name"]').describe('Contact Name Input');
+        this.emailInput = this.page.locator('[data-qa="email"]').describe('Contact Email Input');
+        this.subjectInput = this.page.locator('[data-qa="subject"]').describe('Contact Subject Input');
+        this.messageInput = this.page.locator('[data-qa="message"]').describe('Contact Message Input');
+        this.uploadFileInput = this.page.locator('input[name="upload_file"]').describe('Upload File Input');
+        this.submitButton = this.page.locator('[data-qa="submit-button"]').describe('Submit Button');
+        this.successMessage = this.page.locator('.status.alert-success').describe('Success Message');
+        this.homeButton = this.page.locator('.btn-success').describe('Home Button'); // Assuming class .btn-success or generic locator
     }
 
     async navigate() {
-        await this.page.goto('/contact_us');
+        await this.page.goto(Routes.CONTACT_US);
     }
 
     async verifyPageOpened() {
-        await expect(this.heading).toBeVisible();
+        await expect(this.heading, 'Contact Us page should be opened').toBeVisible();
     }
 
     async fillContactForm(name: string, email: string, subject: string, message: string) {
@@ -60,8 +61,8 @@ export class AutomationExerciseContactUsPage extends BasePage {
     }
 
     async verifySuccessMessage(text: string) {
-        await expect(this.successMessage).toBeVisible();
-        await expect(this.successMessage).toHaveText(text);
+        await expect(this.successMessage, 'Success message should be visible').toBeVisible();
+        await expect(this.successMessage, 'Success message should have expected text').toHaveText(text);
     }
 
     async clickHome() {
@@ -69,6 +70,6 @@ export class AutomationExerciseContactUsPage extends BasePage {
     }
 
     async verifyStillOnPageAfterValidation(): Promise<void> {
-        await expect(this.page).toHaveURL(/contact_us/);
+        await expect(this.page, 'Should still be on Contact Us page').toHaveURL(Routes.BASE_URL + Routes.CONTACT_US);
     }
 }

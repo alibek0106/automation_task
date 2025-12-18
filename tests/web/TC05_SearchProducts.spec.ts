@@ -10,11 +10,9 @@ import { test } from '../../src/fixtures';
 test.describe('Product Search Functionality', () => {
 
     test.beforeEach(async ({ automationExerciseLandingSteps, automationExerciseNavigationSteps }) => {
-        await test.step('Navigate to Products page', async () => {
-            await automationExerciseLandingSteps.navigateToHomepage();
-            await automationExerciseLandingSteps.verifyPageOpened();
-            await automationExerciseNavigationSteps.clickProducts();
-        });
+        await automationExerciseLandingSteps.navigateToHomepage();
+        await automationExerciseLandingSteps.verifyPageOpened();
+        await automationExerciseNavigationSteps.clickProducts();
     });
 
     const searchTerms = [
@@ -26,39 +24,31 @@ test.describe('Product Search Functionality', () => {
 
     for (const { term, description } of searchTerms) {
         test(`Search for valid products: ${term} (${description})`, async ({ automationExerciseProductsSteps }) => {
-            await test.step(`Search for "${term}"`, async () => {
-                await automationExerciseProductsSteps.verifyProductsPageVisible();
-                await automationExerciseProductsSteps.searchForProduct(term);
-                await automationExerciseProductsSteps.verifySearchedProductsHeader();
-                await automationExerciseProductsSteps.verifySearchResultsContain(term);
-            });
+            await automationExerciseProductsSteps.verifyProductsPageVisible();
+            await automationExerciseProductsSteps.searchForProduct(term);
+            await automationExerciseProductsSteps.verifySearchedProductsHeader();
+            await automationExerciseProductsSteps.verifySearchResultsContain(term);
         });
     }
 
     test('Navigate to product details from search results', async ({ automationExerciseProductsSteps, automationExerciseProductDetailSteps }) => {
         const term = 'Jeans'; // Changed from 'Dress' to 'Jeans' for stability
 
-        await test.step(`Search for "${term}"`, async () => {
-            await automationExerciseProductsSteps.verifyProductsPageVisible();
-            await automationExerciseProductsSteps.searchForProduct(term);
-            await automationExerciseProductsSteps.verifySearchedProductsHeader();
-        });
+        await automationExerciseProductsSteps.verifyProductsPageVisible();
+        await automationExerciseProductsSteps.searchForProduct(term);
+        await automationExerciseProductsSteps.verifySearchedProductsHeader();
 
-        await test.step('View product details', async () => {
-            await automationExerciseProductsSteps.verifySearchResultsContain(term);
-            await automationExerciseProductsSteps.viewFirstProductDetails();
-            await automationExerciseProductDetailSteps.verifyProductDetailVisible();
-        });
+        await automationExerciseProductsSteps.verifySearchResultsContain(term);
+        await automationExerciseProductsSteps.viewFirstProductDetails();
+        await automationExerciseProductDetailSteps.verifyProductDetailVisible();
     });
 
     test('Search for non-existent product', async ({ automationExerciseProductsSteps }) => {
         const term = 'XYZ123NOTFOUND';
 
-        await test.step(`Search for "${term}"`, async () => {
-            await automationExerciseProductsSteps.verifyProductsPageVisible();
-            await automationExerciseProductsSteps.searchForProduct(term);
-            await automationExerciseProductsSteps.verifySearchedProductsHeader();
-            await automationExerciseProductsSteps.verifyNoProductsDisplayed();
-        });
+        await automationExerciseProductsSteps.verifyProductsPageVisible();
+        await automationExerciseProductsSteps.searchForProduct(term);
+        await automationExerciseProductsSteps.verifySearchedProductsHeader();
+        await automationExerciseProductsSteps.verifyNoProductsDisplayed();
     });
 });

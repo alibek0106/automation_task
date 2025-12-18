@@ -19,14 +19,14 @@ export class AutomationExerciseLoginPage extends BasePage {
     constructor(page: Page) {
         super(page, 'LoginPage');
 
-        this.loginEmailInput = this.resolveLocator('[data-qa="login-email"]', 'Login Email Input');
-        this.loginPasswordInput = this.resolveLocator('[data-qa="login-password"]', 'Login Password Input');
-        this.loginButton = this.resolveLocator('[data-qa="login-button"]', 'Login Button');
+        this.loginEmailInput = this.page.locator('[data-qa="login-email"]').describe('Login Email Input');
+        this.loginPasswordInput = this.page.locator('[data-qa="login-password"]').describe('Login Password Input');
+        this.loginButton = this.page.locator('[data-qa="login-button"]').describe('Login Button');
         this.loginHeader = page.getByRole('heading', { name: MESSSAGES.LOGIN_HEADER }); // getByRole is self-describing enough usually
 
-        this.signupNameInput = this.resolveLocator('[data-qa="signup-name"]', 'Signup Name Input');
-        this.signupEmailInput = this.resolveLocator('[data-qa="signup-email"]', 'Signup Email Input');
-        this.signupButton = this.resolveLocator('[data-qa="signup-button"]', 'Signup Button');
+        this.signupNameInput = this.page.locator('[data-qa="signup-name"]').describe('Signup Name Input');
+        this.signupEmailInput = this.page.locator('[data-qa="signup-email"]').describe('Signup Email Input');
+        this.signupButton = this.page.locator('[data-qa="signup-button"]').describe('Signup Button');
         this.newUserSignupHeader = page.getByRole('heading', { name: MESSSAGES.NEW_USER_SIGNUP });
     }
 
@@ -35,11 +35,11 @@ export class AutomationExerciseLoginPage extends BasePage {
     }
 
     async verifyNewUserSignupVisible() {
-        await expect(this.newUserSignupHeader).toBeVisible();
+        await expect(this.newUserSignupHeader, 'New User Signup Header should be visible').toBeVisible();
     }
 
     async verifyLoginHeaderVisible() {
-        await expect(this.loginHeader).toBeVisible();
+        await expect(this.loginHeader, 'Login Header should be visible').toBeVisible();
     }
 
     async enterSignupName(name: string) {

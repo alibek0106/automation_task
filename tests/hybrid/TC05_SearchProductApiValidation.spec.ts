@@ -11,12 +11,10 @@ import { Product } from '../../src/api/models/SearchProduct';
 test.describe('Search Product with API Validation', { tag: '@functional @search @hybrid @api_ui_sync' }, () => {
 
     test.beforeEach(async ({ automationExerciseLandingSteps, automationExerciseNavigationSteps, automationExerciseProductsSteps }) => {
-        await test.step('Navigate to Products page', async () => {
-            await automationExerciseLandingSteps.navigateToHomepage();
-            await automationExerciseLandingSteps.verifyPageOpened();
-            await automationExerciseNavigationSteps.clickProducts();
-            await automationExerciseProductsSteps.verifyProductsPageVisible();
-        });
+        await automationExerciseLandingSteps.navigateToHomepage();
+        await automationExerciseLandingSteps.verifyPageOpened();
+        await automationExerciseNavigationSteps.clickProducts();
+        await automationExerciseProductsSteps.verifyProductsPageVisible();
     });
 
     const searchScenarios = [
@@ -32,28 +30,20 @@ test.describe('Search Product with API Validation', { tag: '@functional @search 
         }) => {
             let apiProducts: Product[];
 
-            await test.step(`Get API search results for "${searchTerm}"`, async () => {
-                // --- API Step: Get the "Truth" ---
-                apiProducts = await productsApiSteps.searchProductViaApi(searchTerm);
-            });
+            // --- API Step: Get the "Truth" ---
+            apiProducts = await productsApiSteps.searchProductViaApi(searchTerm);
 
-            await test.step(`Perform UI search for "${searchTerm}"`, async () => {
-                // --- UI Step: Perform the Action ---
-                await automationExerciseProductsSteps.searchForProduct(searchTerm);
-            });
+            // --- UI Step: Perform the Action ---
+            await automationExerciseProductsSteps.searchForProduct(searchTerm);
 
-            await test.step('Verify UI matches API response', async () => {
-                // --- Verification: UI vs API Comparison ---
-                await automationExerciseProductsSteps.verifySearchedProductsHeader();
-                await automationExerciseProductsSteps.verifyProductCountMatchesApi(apiProducts);
-                await automationExerciseProductsSteps.verifyProductNamesMatchApi(apiProducts);
-                await automationExerciseProductsSteps.verifyProductPricesMatchApi(apiProducts);
-            });
+            // --- Verification: UI vs API Comparison ---
+            await automationExerciseProductsSteps.verifySearchedProductsHeader();
+            await automationExerciseProductsSteps.verifyProductCountMatchesApi(apiProducts);
+            await automationExerciseProductsSteps.verifyProductNamesMatchApi(apiProducts);
+            await automationExerciseProductsSteps.verifyProductPricesMatchApi(apiProducts);
 
-            await test.step('Verify product card structure', async () => {
-                // --- Standard UI Structure Checks ---
-                await automationExerciseProductsSteps.verifyAllProductCardsStructure();
-            });
+            // --- Standard UI Structure Checks ---
+            await automationExerciseProductsSteps.verifyAllProductCardsStructure();
         });
     }
 
@@ -63,20 +53,14 @@ test.describe('Search Product with API Validation', { tag: '@functional @search 
     }) => {
         const searchTerm = 'XYZ123NOTFOUND';
 
-        await test.step(`Verify API returns empty for "${searchTerm}"`, async () => {
-            // --- API Step ---
-            await productsApiSteps.verifyApiSearchReturnsEmptyOrNotFound(searchTerm);
-        });
+        // --- API Step ---
+        await productsApiSteps.verifyApiSearchReturnsEmptyOrNotFound(searchTerm);
 
-        await test.step(`Perform UI search for "${searchTerm}"`, async () => {
-            // --- UI Step ---
-            await automationExerciseProductsSteps.searchForProduct(searchTerm);
-        });
+        // --- UI Step ---
+        await automationExerciseProductsSteps.searchForProduct(searchTerm);
 
-        await test.step('Verify UI displays empty state', async () => {
-            // --- Verification ---
-            await automationExerciseProductsSteps.verifySearchedProductsHeader();
-            await automationExerciseProductsSteps.verifyEmptySearchResults();
-        });
+        // --- Verification ---
+        await automationExerciseProductsSteps.verifySearchedProductsHeader();
+        await automationExerciseProductsSteps.verifyEmptySearchResults();
     });
 });

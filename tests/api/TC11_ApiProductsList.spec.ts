@@ -9,8 +9,6 @@ import { test } from '../../src/fixtures';
 
 test.describe('API - Products List', () => {
     test('TC11: Get all products list successfully', async ({ productsApiSteps }) => {
-        await test.step('Verify products list API returns valid response', async () => {
-            await productsApiSteps.verifyAllProductsList();
-        });
+        await productsApiSteps.verifyAllProductsList();
     });
 });

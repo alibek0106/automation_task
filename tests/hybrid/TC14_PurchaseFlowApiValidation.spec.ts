@@ -7,12 +7,12 @@ test.describe('TC14: End-to-End Purchase Flow with API Data Validation', () => {
     let apiProductPrices: { [key: string]: string } = {};
 
     test.beforeEach(async ({ automationExerciseLandingSteps, userApiSteps }) => {
-        await userApiSteps.createAccount(user, user, user);
+        await userApiSteps.registerUser(user, user, user);
         await automationExerciseLandingSteps.navigateToHomepage();
     });
 
     test.afterEach(async ({ userApiSteps }) => {
-        await userApiSteps.deleteAccount(user.email, user.password);
+        await userApiSteps.deleteUser(user.email, user.password);
     });
 
     test('Scenario: Registered user completes purchase with API validation of Price and Address', async ({
@@ -31,65 +31,58 @@ test.describe('TC14: End-to-End Purchase Flow with API Data Validation', () => {
             ORDER_COMMENT: 'Test Order - API Validation',
         };
 
-        await test.step('Login as registered user', async () => {
-            await automationExerciseNavigationSteps.clickSignupLogin();
-            await automationExerciseLoginSteps.login(user.email, user.password);
-            await automationExerciseNavigationSteps.verifyUserLoggedIn(user.name);
-        });
+        // Login as registered user
+        await automationExerciseNavigationSteps.clickSignupLogin();
+        await automationExerciseLoginSteps.login(user.email, user.password);
+        await automationExerciseNavigationSteps.verifyUserLoggedIn(user.name);
 
-        await test.step('Fetch product prices from API', async () => {
-            for (const productName of TEST_DATA.PRODUCTS) {
-                const products = await productsApiSteps.searchProductViaApi(productName);
-                const match = products.find(p => p.name === productName);
+        // Fetch product prices from API
+        for (const productName of TEST_DATA.PRODUCTS) {
+            const products = await productsApiSteps.searchProductViaApi(productName);
+            const match = products.find(p => p.name === productName);
 
-                if (!match) {
-                    throw new Error(`Product ${productName} not found via API`);
-                }
-
-                apiProductPrices[productName] = match.price;
+            if (!match) {
+                throw new Error(`Product ${productName} not found via API`);
             }
-        });
 
-        await test.step('Add products to cart via UI', async () => {
-            await automationExerciseNavigationSteps.clickProducts();
+            apiProductPrices[productName] = match.price;
+        }
 
-            for (const productName of TEST_DATA.PRODUCTS) {
-                await automationExerciseProductsSteps.addProductToCart(productName);
-                await automationExerciseProductsSteps.verifySuccessMessage();
-                await automationExerciseProductsSteps.clickContinueShopping();
-            }
-        });
+        // Add products to cart via UI
+        await automationExerciseNavigationSteps.clickProducts();
 
-        await test.step('Validate cart prices match API data', async () => {
-            await automationExerciseNavigationSteps.clickCart();
-            const cartItems = await automationExerciseCartSteps.getCartItemsDetails();
+        for (const productName of TEST_DATA.PRODUCTS) {
+            await automationExerciseProductsSteps.addProductToCart(productName);
+            await automationExerciseProductsSteps.verifySuccessMessage();
+            await automationExerciseProductsSteps.clickContinueShopping();
+        }
 
-            for (const item of cartItems) {
-                const expectedPrice = apiProductPrices[item.name];
-                expect(item.price, `Cart price for ${item.name} should match API price`).toContain(expectedPrice);
-            }
-        });
+        // Validate cart prices match API data
+        await automationExerciseNavigationSteps.clickCart();
+        const cartItems = await automationExerciseCartSteps.getCartItemsDetails();
 
-        await test.step('Fetch user address from API and proceed to checkout', async () => {
-            const apiUserDetails = await userApiSteps.getUserDetails(user.email);
-            await automationExerciseCartSteps.proceedToCheckout();
-            await automationExerciseCheckoutSteps.verifyAddressFieldsInPage(
-                apiUserDetails.address1,
-                apiUserDetails.city,
-                apiUserDetails.zipcode,
-                page
-            );
-        });
+        for (const item of cartItems) {
+            const expectedPrice = apiProductPrices[item.name];
+            expect(item.price, `Cart price for ${item.name} should match API price`).toContain(expectedPrice);
+        }
 
-        await test.step('Complete payment and verify order', async () => {
-            await automationExerciseCheckoutSteps.enterCommentAndPlaceOrder(TEST_DATA.ORDER_COMMENT);
-            await automationExercisePaymentSteps.fillPaymentDetailsAndConfirm();
-            await automationExercisePaymentSteps.verifyOrderPlaced();
-        });
+        // Fetch user address from API and proceed to checkout
+        const apiUserDetails = await userApiSteps.getUserDetails(user.email);
+        await automationExerciseCartSteps.proceedToCheckout();
+        await automationExerciseCheckoutSteps.verifyAddressFieldsInPage(
+            apiUserDetails.address1,
+            apiUserDetails.city,
+            apiUserDetails.zipcode,
+            page
+        );
 
-        await test.step('Verify cart is empty after order completion', async () => {
-            await automationExerciseNavigationSteps.clickCart();
-            await automationExerciseCartSteps.verifyCartEmpty();
-        });
+        // Complete payment and verify order
+        await automationExerciseCheckoutSteps.enterCommentAndPlaceOrder(TEST_DATA.ORDER_COMMENT);
+        await automationExercisePaymentSteps.fillPaymentDetailsAndConfirm();
+        await automationExercisePaymentSteps.verifyOrderPlaced();
+
+        // Verify cart is empty after order completion
+        await automationExerciseNavigationSteps.clickCart();
+        await automationExerciseCartSteps.verifyCartEmpty();
     });
 });

@@ -9,11 +9,11 @@ export class AccountCreatedPage extends BasePage {
     constructor(page: Page) {
         super(page, 'AccountCreatedPage');
         this.accountCreatedHeader = page.getByText(MESSSAGES.ACCOUNT_CREATED);
-        this.continueButton = this.resolveLocator('[data-qa="continue-button"]', 'Continue Button');
+        this.continueButton = this.page.locator('[data-qa="continue-button"]').describe('Continue Button');
     }
 
     async verifyAccountCreatedMessage() {
-        await expect(this.accountCreatedHeader).toBeVisible();
+        await expect(this.accountCreatedHeader, 'Account created message should be visible').toBeVisible();
     }
 
     async clickContinue() {

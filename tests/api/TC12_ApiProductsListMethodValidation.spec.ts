@@ -9,8 +9,6 @@ import { test } from '../../src/fixtures';
 
 test.describe('API - Products List Method Validation', () => {
     test('TC12: Verify POST method is not supported for products list', async ({ productsApiSteps }) => {
-        await test.step('Verify POST request returns method not supported error', async () => {
-            await productsApiSteps.verifyPostToProductsListNotSupported();
-        });
+        await productsApiSteps.verifyPostToProductsListNotSupported();
     });
 });

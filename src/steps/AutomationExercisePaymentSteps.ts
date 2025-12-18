@@ -2,6 +2,7 @@ import { Page, expect } from '@playwright/test';
 import { AutomationExercisePaymentPage } from '../pages/AutomationExercisePaymentPage';
 import { AutomationExerciseOrderConfirmationPage } from '../pages/AutomationExerciseOrderConfirmationPage';
 import { step } from '../utils/Decorators';
+import { PaymentDetails } from '../utils/DataFactory';
 
 export class AutomationExercisePaymentSteps {
     constructor(
@@ -9,9 +10,13 @@ export class AutomationExercisePaymentSteps {
         private confirmationPage: AutomationExerciseOrderConfirmationPage
     ) { }
 
-    @step('Enter payment details: {0}, {1}, {2}, {3}/{4}')
-    async enterPaymentDetails(name: string, number: string, cvc: string, month: string, year: string): Promise<void> {
-        await this.paymentPage.enterPaymentDetails(name, number, cvc, month, year);
+    @step('Enter payment details: {0}')
+    async enterPaymentDetails(paymentDetails: PaymentDetails): Promise<void> {
+        await this.paymentPage.enterNameOnCard(paymentDetails.nameOnCard);
+        await this.paymentPage.enterCardNumber(paymentDetails.cardNumber);
+        await this.paymentPage.enterCVC(paymentDetails.cvc);
+        await this.paymentPage.enterExpirationMonth(paymentDetails.expiryMonth);
+        await this.paymentPage.enterExpirationYear(paymentDetails.expiryYear);
     }
 
     @step('Confirm order')
@@ -40,7 +45,10 @@ export class AutomationExercisePaymentSteps {
 
     @step('Fill payment details and confirm order')
     async fillPaymentDetailsAndConfirm(): Promise<void> {
-        await this.paymentPage.fillPaymentDetails();
+        // Uses constants for default payment flow
+        const { DataFactory } = require('../utils/DataFactory');
+        const paymentDetails = DataFactory.generatePaymentDetails();
+        await this.enterPaymentDetails(paymentDetails);
         await this.paymentPage.clickPayAndConfirm();
     }
 }
