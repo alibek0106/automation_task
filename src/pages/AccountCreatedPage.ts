@@ -8,7 +8,7 @@ export class AccountCreatedPage extends BasePage {
 
     constructor(page: Page) {
         super(page, 'AccountCreatedPage');
-        this.accountCreatedHeader = page.getByText(MESSSAGES.ACCOUNT_CREATED);
+        this.accountCreatedHeader = page.getByText(MESSSAGES.ACCOUNT_CREATED).describe('Account Created Header');
         this.continueButton = this.page.locator('[data-qa="continue-button"]').describe('Continue Button');
     }
 

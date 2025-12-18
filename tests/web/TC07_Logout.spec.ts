@@ -53,7 +53,7 @@ test.describe('TC07: User Logout Logic', () => {
         await automationExerciseNavigationSteps.clickLogout();
 
         // Then the user should be redirected to the "Login" page
-        await expect(page).toHaveURL(new RegExp(Routes.LOGIN));
+        await expect(page, 'Page should have URL matching login route').toHaveURL(new RegExp(Routes.LOGIN));
         await automationExerciseLoginSteps.verifyLoginHeaderVisible();
 
         // And the text "Logged in as" should not be visible
@@ -66,7 +66,7 @@ test.describe('TC07: User Logout Logic', () => {
     }) => {
         // Given the user clicks the "Logout" link
         await automationExerciseNavigationSteps.clickLogout();
-        await expect(page).toHaveURL(new RegExp(Routes.LOGIN));
+        await expect(page, 'Page should have URL matching login route').toHaveURL(new RegExp(Routes.LOGIN));
 
         // When the user attempts to navigate directly to the "Account" page (using delete_account as protected route)
         // Note: We use DELETE_ACCOUNT because /payment does not strictly redirect to login on this specific site.

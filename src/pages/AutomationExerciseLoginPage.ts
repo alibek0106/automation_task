@@ -22,12 +22,12 @@ export class AutomationExerciseLoginPage extends BasePage {
         this.loginEmailInput = this.page.locator('[data-qa="login-email"]').describe('Login Email Input');
         this.loginPasswordInput = this.page.locator('[data-qa="login-password"]').describe('Login Password Input');
         this.loginButton = this.page.locator('[data-qa="login-button"]').describe('Login Button');
-        this.loginHeader = page.getByRole('heading', { name: MESSSAGES.LOGIN_HEADER }); // getByRole is self-describing enough usually
+        this.loginHeader = page.getByRole('heading', { name: MESSSAGES.LOGIN_HEADER }).describe('Login Header');
 
         this.signupNameInput = this.page.locator('[data-qa="signup-name"]').describe('Signup Name Input');
         this.signupEmailInput = this.page.locator('[data-qa="signup-email"]').describe('Signup Email Input');
         this.signupButton = this.page.locator('[data-qa="signup-button"]').describe('Signup Button');
-        this.newUserSignupHeader = page.getByRole('heading', { name: MESSSAGES.NEW_USER_SIGNUP });
+        this.newUserSignupHeader = page.getByRole('heading', { name: MESSSAGES.NEW_USER_SIGNUP }).describe('New User Signup Header');
     }
 
     async navigate() {

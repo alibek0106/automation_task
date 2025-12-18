@@ -73,7 +73,7 @@ export class AutomationExerciseProductsPage extends BasePage {
     }
 
     async getProductNames(): Promise<string[]> {
-        return await this.productNames.allInnerTexts();
+        return this.productNames.allInnerTexts();
     }
 
     getProductCard(index: number): Locator {
@@ -152,15 +152,15 @@ export class AutomationExerciseProductsPage extends BasePage {
         // We can verify URL or just trust the filtering returns results.
         // "Total count > 0" is good.
         const count = await this.productCards.count();
-        expect(count).toBeGreaterThan(0);
+        expect(count, 'Product count should be greater than 0').toBeGreaterThan(0);
     }
 
     async getProductCount(): Promise<number> {
-        return await this.productCards.count();
+        return this.productCards.count();
     }
 
     async getProductPrices(): Promise<string[]> {
-        return await this.productPrices.allInnerTexts();
+        return this.productPrices.allInnerTexts();
     }
 
     /**

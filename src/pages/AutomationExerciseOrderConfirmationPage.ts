@@ -9,14 +9,14 @@ export class AutomationExerciseOrderConfirmationPage extends BasePage {
 
     constructor(page: Page) {
         super(page, 'OrderConfirmationPage');
-        this.orderPlacedMessage = page.getByText(MESSAGES.ORDER_PLACED); // getByText is okay
+        this.orderPlacedMessage = page.getByText(MESSAGES.ORDER_PLACED).describe('Order Placed Message');
         this.downloadInvoiceButton = this.page.locator('a.check_out').describe('Download Invoice Button');
         this.continueButton = this.page.locator('[data-qa="continue-button"]').describe('Continue Button');
     }
 
     async verifyPageLoaded(): Promise<void> {
         // Title might share with Payment or be generic, checking header is safer
-        await expect(this.orderPlacedMessage).toBeVisible();
+        await expect(this.orderPlacedMessage, 'Order Placed Message should be visible').toBeVisible();
     }
 
     async verifyOrderConfirmed(): Promise<void> {

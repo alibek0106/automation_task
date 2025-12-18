@@ -40,6 +40,6 @@ export class AutomationExerciseCartSteps {
 
     @step('Get cart items details')
     async getCartItemsDetails(): Promise<{ name: string, price: string, quantity: string, total: string }[]> {
-        return await this.cartPage.getCartItemsDetails();
+        return this.cartPage.getCartItemsDetails();
     }
 }

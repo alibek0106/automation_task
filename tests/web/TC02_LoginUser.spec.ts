@@ -41,9 +41,5 @@ test.describe('User Authentication', () => {
 
         // 7. Verify that 'Logged in as username' is visible
         await automationExerciseNavigationSteps.verifyUserLoggedIn(user.name);
-
-        // 8. Delete Account (Optional cleanup)
-        // await automationExerciseNavigationSteps.clickDeleteAccount();
-        // await automationExerciseNavigationSteps.verifyAccountDeleted();
     });
 });

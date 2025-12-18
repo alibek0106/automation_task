@@ -34,6 +34,6 @@ export class UserApiSteps {
     }
 
     async getUserDetails(email: string): Promise<any> {
-        return await this.automationExerciseApi.getUserDetails(email);
+        return this.automationExerciseApi.getUserDetails(email);
     }
 }

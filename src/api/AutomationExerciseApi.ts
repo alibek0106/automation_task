@@ -38,7 +38,7 @@ export class AutomationExerciseApi {
         expect(response.status(), `Failed to register user via API: ${response.statusText()}`).toBe(API_STATUS_CODES.OK);
 
         const responseBody = await response.text();
-        expect(responseBody).toContain('User created!');
+        expect(responseBody, 'Body should contain "User created!"').toContain('User created!');
     }
 
     /**
@@ -57,7 +57,7 @@ export class AutomationExerciseApi {
 
         expect(response.status(), `Failed to delete user via API: ${response.statusText()}`).toBe(API_STATUS_CODES.OK);
         const responseBody = await response.text();
-        expect(responseBody).toContain('Account deleted!');
+        expect(responseBody, 'Body should contain "Account deleted!"').toContain('Account deleted!');
     }
 
     /**
