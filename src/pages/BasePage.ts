@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 
 export class BasePage {
     readonly page: Page;
@@ -7,5 +7,9 @@ export class BasePage {
     constructor(page: Page, name: string) {
         this.page = page;
         this.name = name;
+    }
+
+    async verifyPageOpened(locator: Locator) {
+        await expect(locator, `${this.name} should be opened`).toBeVisible();
     }
 }

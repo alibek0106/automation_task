@@ -43,4 +43,9 @@ export class AutomationExerciseNavigationSteps {
     async clickCart() {
         await this.navigationMenu.clickCart();
     }
+
+    @step('Verify account deleted')
+    async verifyAccountDeleted() {
+        await this.navigationMenu.verifyAccountDeleted();
+    }
 }

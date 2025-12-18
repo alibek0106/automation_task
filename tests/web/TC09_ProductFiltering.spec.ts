@@ -1,4 +1,5 @@
 import { test } from '../../src/fixtures';
+import { PRODUCT_FILTER_DATA } from '../../src/utils/Constants';
 
 /**
  * TC09: Product Category and Brand Filtering
@@ -19,14 +20,7 @@ test.describe('TC09: Product Category and Brand Filtering', () => {
         await automationExerciseProductsSteps.navigateToProductsPage();
     });
 
-    const categories = [
-        { main: 'Women', sub: 'Dress', expected: 'Women - Dress Products' },
-        { main: 'Men', sub: 'Jeans', expected: 'Men - Jeans Products' },
-        // Kids Tops page title includes '& Shirts'
-        { main: 'Kids', sub: 'Tops', expected: 'Kids - Tops & Shirts Products' }
-    ];
-
-    for (const data of categories) {
+    for (const data of PRODUCT_FILTER_DATA.CATEGORIES) {
         test(`Filter by Category: ${data.main} > ${data.sub}`, async ({ automationExerciseProductsSteps }) => {
             await automationExerciseProductsSteps.filterByCategory(data.main, data.sub);
             await automationExerciseProductsSteps.verifyPageHeader(data.expected);
@@ -34,14 +28,7 @@ test.describe('TC09: Product Category and Brand Filtering', () => {
         });
     }
 
-    const brands = [
-        'Polo',
-        'H&M',
-        'Madame',
-        'Mast & Harbour'
-    ];
-
-    for (const brand of brands) {
+    for (const brand of PRODUCT_FILTER_DATA.BRANDS) {
         test(`Filter by Brand: ${brand}`, async ({ automationExerciseProductsSteps }) => {
             await automationExerciseProductsSteps.filterByBrand(brand);
             // Title usually "Brand - BrandName Products"
@@ -54,14 +41,16 @@ test.describe('TC09: Product Category and Brand Filtering', () => {
         automationExerciseProductsSteps
     }) => {
         // Given user has filtered by Women > Dress
-        await automationExerciseProductsSteps.filterByCategory('Women', 'Dress');
-        await automationExerciseProductsSteps.verifyPageHeader('Women - Dress Products');
+        const womanCategory = PRODUCT_FILTER_DATA.CATEGORIES[0];
+        await automationExerciseProductsSteps.filterByCategory(womanCategory.main, womanCategory.sub);
+        await automationExerciseProductsSteps.verifyPageHeader(womanCategory.expected);
 
         // When user switches to Men > Jeans
-        await automationExerciseProductsSteps.filterByCategory('Men', 'Jeans');
+        const menCategory = PRODUCT_FILTER_DATA.CATEGORIES[1];
+        await automationExerciseProductsSteps.filterByCategory(menCategory.main, menCategory.sub);
 
         // Then results should update
-        await automationExerciseProductsSteps.verifyPageHeader('Men - Jeans Products');
+        await automationExerciseProductsSteps.verifyPageHeader(menCategory.expected);
         await automationExerciseProductsSteps.verifyProductCountGreaterThan(0);
 
         // We assume Products Page logic correctly clears previous filter. 

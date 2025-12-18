@@ -69,3 +69,31 @@ export const API_RESPONSE_KEYS = {
     RESPONSE_CODE: 'responseCode',
     MESSAGE: 'message',
 };
+
+export const TEST_DATA = {
+    CONTACT_US: {
+        NAME: 'Test',
+        SUBJECT: 'Sub',
+        MESSAGE: 'Msg'
+    },
+    INVALID_EMAILS: [
+        { email: 'invalidemail', desc: 'No domain' },
+        { email: 'test@', desc: 'Missing domain' },
+        { email: '@test.com', desc: 'Missing username' },
+        { email: 'test@.com', desc: 'Missing domain name' }
+    ]
+};
+
+export const PRODUCT_FILTER_DATA = {
+    CATEGORIES: [
+        { main: 'Women', sub: 'Dress', expected: 'Women - Dress Products' },
+        { main: 'Men', sub: 'Jeans', expected: 'Men - Jeans Products' },
+        { main: 'Kids', sub: 'Tops', expected: 'Kids - Tops & Shirts Products' }
+    ],
+    BRANDS: [
+        'Polo',
+        'H&M',
+        'Madame',
+        'Mast & Harbour'
+    ]
+};

@@ -14,9 +14,12 @@ export class AutomationExerciseContactUsSteps {
         await this.contactUsPage.verifyPageOpened();
     }
 
-    @step('Fill contact form: Name={0}, Email={1}, Subject={2}')
-    async fillContactForm(name: string, email: string, subject: string, message: string) {
-        await this.contactUsPage.fillContactForm(name, email, subject, message);
+    @step('Fill contact form')
+    async fillContactForm(data: { name: string, email: string, subject: string, message: string }) {
+        await this.contactUsPage.enterName(data.name);
+        await this.contactUsPage.enterEmail(data.email);
+        await this.contactUsPage.enterSubject(data.subject);
+        await this.contactUsPage.enterMessage(data.message);
     }
 
     @step('Upload file: {0}')

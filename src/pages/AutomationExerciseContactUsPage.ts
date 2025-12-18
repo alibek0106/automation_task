@@ -16,12 +16,12 @@ export class AutomationExerciseContactUsPage extends BasePage {
     constructor(page: Page) {
         super(page, 'ContactUsPage');
         this.heading = this.page.locator('h2.title:has-text("Get In Touch")').describe('Contact Us Heading');
-        this.nameInput = this.page.locator('[data-qa="name"]').describe('Contact Name Input');
-        this.emailInput = this.page.locator('[data-qa="email"]').describe('Contact Email Input');
-        this.subjectInput = this.page.locator('[data-qa="subject"]').describe('Contact Subject Input');
-        this.messageInput = this.page.locator('[data-qa="message"]').describe('Contact Message Input');
+        this.nameInput = this.page.getByTestId('name').describe('Contact Name Input');
+        this.emailInput = this.page.getByTestId('email').describe('Contact Email Input');
+        this.subjectInput = this.page.getByTestId('subject').describe('Contact Subject Input');
+        this.messageInput = this.page.getByTestId('message').describe('Contact Message Input');
         this.uploadFileInput = this.page.locator('input[name="upload_file"]').describe('Upload File Input');
-        this.submitButton = this.page.locator('[data-qa="submit-button"]').describe('Submit Button');
+        this.submitButton = this.page.getByTestId('submit-button').describe('Submit Button');
         this.successMessage = this.page.locator('.status.alert-success').describe('Success Message');
         this.homeButton = this.page.locator('.btn-success').describe('Home Button'); // Assuming class .btn-success or generic locator
     }
@@ -31,13 +31,22 @@ export class AutomationExerciseContactUsPage extends BasePage {
     }
 
     async verifyPageOpened() {
-        await expect(this.heading, 'Contact Us page should be opened').toBeVisible();
+        await super.verifyPageOpened(this.heading);
     }
 
-    async fillContactForm(name: string, email: string, subject: string, message: string) {
+    async enterName(name: string) {
         await this.nameInput.fill(name);
+    }
+
+    async enterEmail(email: string) {
         await this.emailInput.fill(email);
+    }
+
+    async enterSubject(subject: string) {
         await this.subjectInput.fill(subject);
+    }
+
+    async enterMessage(message: string) {
         await this.messageInput.fill(message);
     }
 

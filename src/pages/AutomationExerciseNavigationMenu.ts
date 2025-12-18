@@ -1,5 +1,6 @@
 import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
+import { MESSSAGES } from '../constants/Messages';
 
 export class AutomationExerciseNavigationMenu extends BasePage {
     private readonly homeLink: Locator;
@@ -9,6 +10,7 @@ export class AutomationExerciseNavigationMenu extends BasePage {
     private readonly deleteAccountLink: Locator;
     private readonly logoutLink: Locator;
     private readonly loggedInAsText: Locator;
+    private readonly accountDeletedMessage: Locator;
 
     constructor(page: Page) {
         super(page, 'NavigationMenu');
@@ -19,6 +21,7 @@ export class AutomationExerciseNavigationMenu extends BasePage {
         this.deleteAccountLink = this.page.locator('a[href="/delete_account"]').describe('Delete Account Link');
         this.logoutLink = this.page.locator('a[href="/logout"]').describe('Logout Link');
         this.loggedInAsText = this.page.locator('//a[contains(text(), "Logged in as")]').describe('Logged In User');
+        this.accountDeletedMessage = this.page.getByTestId('account-deleted').describe('Account Deleted message');
     }
 
     async clickSignupLogin() {
@@ -40,6 +43,10 @@ export class AutomationExerciseNavigationMenu extends BasePage {
 
     async verifyUserNotLoggedIn() {
         await expect(this.loggedInAsText, 'Should not be logged in').not.toBeVisible();
+    }
+
+    async verifyAccountDeleted() {
+        await expect(this.accountDeletedMessage).toContainText(MESSSAGES.ACCOUNT_DELETED);
     }
 
     async clickHome() {

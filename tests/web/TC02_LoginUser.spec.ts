@@ -1,6 +1,6 @@
 import { test } from '../../src/fixtures';
+import { TestDataProvider } from '../../src/utils/TestDataProvider';
 import * as fs from 'fs';
-import * as path from 'path';
 
 /**
  * TC02: User Login
@@ -16,9 +16,9 @@ test.describe('User Authentication', () => {
         automationExerciseLoginSteps,
     }) => {
         // Arrange: Read test data from user-data.json
-        const userDataPath = path.resolve('tests/testData/user-data.json');
+        const userDataPath = TestDataProvider.getTestFilePath('user-data.json');
         if (!fs.existsSync(userDataPath)) {
-            throw new Error(`user-data.json not found at ${userDataPath}. Please run TC01 first to generate a user.`);
+            throw new Error(`User data file not found at ${userDataPath}. Please ensure the file exists with valid credentials.`);
         }
         const user = JSON.parse(fs.readFileSync(userDataPath, 'utf8'));
 

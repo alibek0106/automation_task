@@ -1,7 +1,7 @@
 import { test } from '../../src/fixtures';
-import path from 'path';
+import { TestDataProvider } from '../../src/utils/TestDataProvider';
 import { DataFactory } from '../../src/utils/DataFactory';
-import { MESSAGES } from '../../src/utils/Constants';
+import { MESSAGES, TEST_DATA } from '../../src/utils/Constants';
 
 /**
  * TC10: Contact Form Submission
@@ -19,15 +19,15 @@ test.describe('TC10: Contact Form Submission', () => {
     });
 
     test('Scenario: Successful form submission with file attachment', async ({ automationExerciseContactUsSteps }) => {
-        const filePath = path.join(process.cwd(), 'tests', 'testData', 'sample-invoice.txt');
+        const filePath = TestDataProvider.getTestFilePath('sample-invoice.txt');
         const formData = DataFactory.generateContactFormData();
 
-        await automationExerciseContactUsSteps.fillContactForm(
-            formData.name,
-            formData.email,
-            formData.subject,
-            formData.message
-        );
+        await automationExerciseContactUsSteps.fillContactForm({
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject,
+            message: formData.message
+        });
         await automationExerciseContactUsSteps.uploadFile(filePath);
         await automationExerciseContactUsSteps.submitForm();
 
@@ -40,16 +40,16 @@ test.describe('TC10: Contact Form Submission', () => {
         await automationExerciseContactUsSteps.verifyStillOnContactUsPage();
     });
 
-    const invalidEmails = [
-        { email: 'invalidemail', desc: 'No domain' },
-        { email: 'test@', desc: 'Missing domain' },
-        { email: '@test.com', desc: 'Missing username' },
-        { email: 'test@.com', desc: 'Missing domain name' }
-    ];
+    const invalidEmails = TEST_DATA.INVALID_EMAILS;
 
     for (const data of invalidEmails) {
         test(`Scenario: Verify email format validation - ${data.desc}`, async ({ automationExerciseContactUsSteps }) => {
-            await automationExerciseContactUsSteps.fillContactForm('Test', data.email, 'Sub', 'Msg');
+            await automationExerciseContactUsSteps.fillContactForm({
+                name: TEST_DATA.CONTACT_US.NAME,
+                email: data.email,
+                subject: TEST_DATA.CONTACT_US.SUBJECT,
+                message: TEST_DATA.CONTACT_US.MESSAGE
+            });
             await automationExerciseContactUsSteps.submitForm();
             await automationExerciseContactUsSteps.verifyStillOnContactUsPage();
         });

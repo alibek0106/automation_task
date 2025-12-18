@@ -53,8 +53,8 @@ export class AutomationExerciseCartPage extends BasePage {
     }
 
     async verifyTotalPrice(productName: string, total: string) {
-        const row = this.cartRows.filter({ hasText: productName });
-        const totalElement = row.locator(this.totalSelector);
+        const productNameRow = this.cartRows.filter({ hasText: productName });
+        const totalElement = productNameRow.locator(this.totalSelector);
         await expect(totalElement, 'Total price should match').toHaveText(total);
     }
 
@@ -63,7 +63,8 @@ export class AutomationExerciseCartPage extends BasePage {
     }
 
     async verifyProductRemoved(productName: string) {
-        await expect(this.cartRows.filter({ hasText: productName }), 'Product should be removed').not.toBeVisible();
+        const productNameRow = this.cartRows.filter({ hasText: productName });
+        await expect(productNameRow, 'Product should be removed').not.toBeVisible();
     }
 
     async getCartItemsDetails(): Promise<{ name: string, price: string, quantity: string, total: string }[]> {
