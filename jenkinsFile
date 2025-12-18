@@ -33,7 +33,15 @@ pipeline {
                     // pnpm has built-in caching - it will reuse packages from its store
                     // The store persists in the Jenkins workspace, providing automatic caching
                     echo 'Installing dependencies with pnpm...'
-                    bat 'pnpm install --frozen-lockfile'
+                    
+                    // Check if lockfile exists, use frozen-lockfile if available for reproducibility
+                    def lockfileExists = fileExists('pnpm-lock.yaml')
+                    if (lockfileExists) {
+                        bat 'pnpm install --frozen-lockfile'
+                    } else {
+                        echo 'No pnpm-lock.yaml found, installing without frozen-lockfile...'
+                        bat 'pnpm install'
+                    }
                     
                     // Check if Playwright browsers are already installed
                     // This provides caching by skipping re-installation if browsers exist
