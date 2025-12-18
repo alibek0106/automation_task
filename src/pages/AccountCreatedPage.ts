@@ -7,11 +7,14 @@ export class AccountCreatedPage extends BasePage {
     private getByDataQa = (name: string, description: string): Locator =>
         this.page.getByTestId(name).describe(description);
 
-    readonly successMessage: Locator = this.page.getByText('Account Created!').describe('Success message');
-    readonly continueBtn: Locator = this.getByDataQa('continue-button', 'Continue button');
+    readonly successMessage: Locator;
+    readonly continueBtn: Locator;
 
     constructor(page: Page) {
         super(page);
+
+        this.successMessage = this.page.getByText('Account Created!').describe('Success message');
+        this.continueBtn = this.getByDataQa('continue-button', 'Continue button');
     }
 
     async clickContinue() {

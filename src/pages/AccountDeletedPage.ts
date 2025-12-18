@@ -2,18 +2,20 @@ import { Page, Locator, expect } from "@playwright/test";
 import { BasePage } from "./BasePage";
 
 export class AccountDeletedPage extends BasePage {
-    readonly accountDeletedHeading: Locator = this.page
-        .getByRole("heading", { name: /account deleted/i })
-        .describe("Account deleted heading");
-    readonly continueButton: Locator = this.page
-        .getByRole("link", { name: /continue/i })
-        .describe("Continue button");
+    readonly accountDeletedHeading: Locator;
+    readonly continueButton: Locator;
 
     constructor(page: Page) {
         super(
             page,
             page.getByRole("heading", { name: /account deleted/i }).describe("Account deleted heading")
         );
+        this.accountDeletedHeading = this.page
+            .getByRole("heading", { name: /account deleted/i })
+            .describe("Account deleted heading");
+        this.continueButton = this.page
+            .getByRole("link", { name: /continue/i })
+            .describe("Continue button");
     }
 
     /**

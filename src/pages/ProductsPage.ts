@@ -3,30 +3,16 @@ import { Routes } from "../constants/Routes";
 import { BasePage } from "./BasePage";
 
 export class ProductsPage extends BasePage {
-    readonly pageHeading: Locator = this.page
-        .getByRole("heading", { name: /all products/i })
-        .describe("All Products heading");
-    readonly searchInput: Locator = this.page
-        .locator("#search_product")
-        .describe("Search product input");
-    readonly searchButton: Locator = this.page
-        .locator("#submit_search")
-        .describe("Search submit button");
-    readonly searchedProductsHeading: Locator = this.page
-        .getByRole("heading", { name: /searched products/i })
-        .describe("Searched Products heading");
-    readonly productsList: Locator = this.page
-        .locator(".features_items")
-        .describe("Products list container");
-    readonly productItems: Locator = this.productsList
-        .locator(".col-sm-4")
-        .describe("Individual product items");
-    readonly categorySidebar: Locator = this.page
-        .locator(".left-sidebar .panel-group")
-        .describe("Category sidebar");
-    readonly brandsSidebar: Locator = this.page
-        .locator(".brands_products")
-        .describe("Brands sidebar");
+    readonly searchInput: Locator;
+    readonly searchButton: Locator;
+    readonly searchedProductsHeading: Locator;
+    readonly productsList: Locator;
+    readonly productItems: Locator;
+    readonly categorySidebar: Locator;
+    readonly brandsSidebar: Locator;
+    readonly viewCartModal: Locator;
+    readonly continueShoppingButton: Locator;
+    readonly viewCartButton: Locator;
     readonly categoryTitleHeading = (expectedTitle: string): Locator =>
         this.page
             .getByRole("heading", { name: new RegExp(expectedTitle, "i") })
@@ -35,12 +21,50 @@ export class ProductsPage extends BasePage {
         this.page
             .getByRole("heading", { name: new RegExp(`brand.*${brandName}`, "i") })
             .describe(`Brand title heading contains: "${brandName}"`);
+    
+    // Selectors for dynamic locators used in methods
+    private readonly addToCartSelector = ".add-to-cart";
+    private readonly modalContentSelector = ".modal-content";
+    private readonly productInfoNameSelector = ".productinfo p";
+    private readonly productInfoPriceSelector = ".productinfo h2";
+    private readonly categoryProductsLinkSelector = "a[href*='category_products']";
 
     constructor(page: Page) {
         super(
             page,
             page.getByRole("heading", { name: /all products/i }).describe("All Products heading")
         );
+
+        this.searchInput = this.page
+            .locator("#search_product")
+            .describe("Search product input");
+        this.searchButton = this.page
+            .locator("#submit_search")
+            .describe("Search submit button");
+        this.searchedProductsHeading = this.page
+            .getByRole("heading", { name: /searched products/i })
+            .describe("Searched Products heading");
+        this.productsList = this.page
+            .locator(".features_items")
+            .describe("Products list container");
+        this.productItems = this.productsList
+            .locator(".col-sm-4")
+            .describe("Individual product items");
+        this.categorySidebar = this.page
+            .locator(".left-sidebar .panel-group")
+            .describe("Category sidebar");
+        this.brandsSidebar = this.page
+            .locator(".brands_products")
+            .describe("Brands sidebar");
+        this.viewCartModal = this.page
+            .locator(this.modalContentSelector)
+            .describe("View cart modal");
+        this.continueShoppingButton = this.viewCartModal
+            .getByRole("button", { name: /continue shopping/i })
+            .describe("Continue shopping button");
+        this.viewCartButton = this.viewCartModal
+            .getByRole("link", { name: /view cart/i })
+            .describe("View cart button in modal");
     }
 
     async goto() {
@@ -75,7 +99,7 @@ export class ProductsPage extends BasePage {
         for (let i = 0; i < count; i++) {
             const productName = await this.productItems
                 .nth(i)
-                .locator(".productinfo p")
+                .locator(this.productInfoNameSelector)
                 .textContent();
             if (productName) {
                 names.push(productName.trim());
@@ -96,14 +120,13 @@ export class ProductsPage extends BasePage {
      * Click on "View Product" for a specific product by index
      */
     async clickViewProduct(index: number): Promise<void> {
-        const link = this.productItems
-            .nth(index)
-            .getByRole("link", { name: /view product/i });
-
-        await Promise.all([
-            this.page.waitForURL(/\/product_details\//),
-            link.click(),
-        ]);
+        await this.clickAndWaitForURL(
+            /\/product_details\//,
+            () => this.productItems
+                .nth(index)
+                .getByRole("link", { name: /view product/i })
+                .click()
+        );
     }
 
     /**
@@ -112,28 +135,25 @@ export class ProductsPage extends BasePage {
     async addProductToCart(index: number): Promise<void> {
         const product = this.productItems.nth(index);
         await product.hover();
-        await product.locator(".add-to-cart").first().click();
-
-        // Wait for "Added!" modal to appear so follow-up actions (continue/view cart) are stable.
-        await this.page.locator(".modal-content").waitFor({ state: "visible" });
+        await product.locator(this.addToCartSelector).first().click();
+        // Modal visibility is automatically ensured by Playwright's auto-waiting
+        // when interacting with modal buttons in follow-up actions
     }
 
     /**
      * Click Continue Shopping button from modal
      */
     async clickContinueShopping(): Promise<void> {
-        const modal = this.page.locator(".modal-content");
-        await modal.waitFor({ state: "visible" });
-        await modal.getByRole("button", { name: /continue shopping/i }).click();
+        // Playwright auto-waits for button visibility (including parent modal)
+        await this.continueShoppingButton.click();
     }
 
     /**
      * Click View Cart button from modal
      */
     async clickViewCart(): Promise<void> {
-        const modal = this.page.locator(".modal-content");
-        await modal.waitFor({ state: "visible" });
-        await modal.getByRole("link", { name: /view cart/i }).click();
+        // Playwright auto-waits for button visibility (including parent modal)
+        await this.viewCartButton.click();
     }
 
     /**
@@ -152,7 +172,7 @@ export class ProductsPage extends BasePage {
         // Click subcategory
         // Scope to the left sidebar category links to avoid strict-mode collisions with ads/popups.
         const subCategoryLink = this.categorySidebar
-            .locator("a[href*='category_products']")
+            .locator(this.categoryProductsLinkSelector)
             .filter({ hasText: new RegExp(subCategory, "i") })
             .first();
         await subCategoryLink.click();
@@ -184,7 +204,7 @@ export class ProductsPage extends BasePage {
     async getProductPrice(index: number): Promise<string> {
         const priceText = await this.productItems
             .nth(index)
-            .locator(".productinfo h2")
+            .locator(this.productInfoPriceSelector)
             .textContent();
         return priceText?.trim() || "";
     }

@@ -3,33 +3,41 @@ import { BasePage } from "./BasePage";
 import { PaymentDetails } from "../models/PaymentModels";
 
 export class PaymentPage extends BasePage {
-    readonly nameOnCardInput: Locator = this.page
-        .locator("[data-qa='name-on-card']")
-        .describe("Name on card input");
-    readonly cardNumberInput: Locator = this.page
-        .locator("[data-qa='card-number']")
-        .describe("Card number input");
-    readonly cvcInput: Locator = this.page
-        .locator("[data-qa='cvc']")
-        .describe("CVC input");
-    readonly expiryMonthInput: Locator = this.page
-        .locator("[data-qa='expiry-month']")
-        .describe("Expiry month input");
-    readonly expiryYearInput: Locator = this.page
-        .locator("[data-qa='expiry-year']")
-        .describe("Expiry year input");
-    readonly payAndConfirmButton: Locator = this.page
-        .locator("[data-qa='pay-button']")
-        .describe("Pay and confirm order button");
-    readonly paymentFormSection: Locator = this.page
-        .locator("#payment-form")
-        .describe("Payment form section");
+    readonly nameOnCardInput: Locator;
+    readonly cardNumberInput: Locator;
+    readonly cvcInput: Locator;
+    readonly expiryMonthInput: Locator;
+    readonly expiryYearInput: Locator;
+    readonly payAndConfirmButton: Locator;
+    readonly paymentFormSection: Locator;
 
     constructor(page: Page) {
         super(
             page,
             page.locator("#payment-form").describe("Payment form section")
         );
+
+        this.nameOnCardInput = this.page
+            .locator("[data-qa='name-on-card']")
+            .describe("Name on card input");
+        this.cardNumberInput = this.page
+            .locator("[data-qa='card-number']")
+            .describe("Card number input");
+        this.cvcInput = this.page
+            .locator("[data-qa='cvc']")
+            .describe("CVC input");
+        this.expiryMonthInput = this.page
+            .locator("[data-qa='expiry-month']")
+            .describe("Expiry month input");
+        this.expiryYearInput = this.page
+            .locator("[data-qa='expiry-year']")
+            .describe("Expiry year input");
+        this.payAndConfirmButton = this.page
+            .locator("[data-qa='pay-button']")
+            .describe("Pay and confirm order button");
+        this.paymentFormSection = this.page
+            .locator("#payment-form")
+            .describe("Payment form section");
     }
 
     /**

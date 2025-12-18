@@ -1,6 +1,7 @@
 import { test, expect } from '../../src/fixtures';
 import { StatusCode } from '../../src/constants/StatusCode';
 import { SearchProductResponseSchema } from '../../src/models/ProductModels';
+import { TestData } from '../../src/constants/TestData';
 
 test.describe('Search Product API', () => {
     test('API 5: POST To Search Product with search_product parameter', async ({ searchService }) => {
@@ -11,10 +12,10 @@ test.describe('Search Product API', () => {
                 const response = await searchService.searchProduct(searchTerm);
 
                 // Assert status code
-                expect(
-                    response.status(),
+                await expect(
+                    response,
                     `POST /api/searchProduct with search_product="${searchTerm}" should return 200 OK`
-                ).toBe(StatusCode.OK);
+                ).toHaveStatusCode(StatusCode.OK);
 
                 // Validate response schema
                 const body = await response.json();
@@ -37,10 +38,10 @@ test.describe('Search Product API', () => {
         const response = await searchService.searchProductWithoutParameter();
 
         // API returns HTTP 200 and uses responseCode in body for actual status
-        expect(
-            response.status(),
+        await expect(
+            response,
             'POST /api/searchProduct without search_product parameter should return 200 OK (error encoded in body.responseCode)'
-        ).toBe(StatusCode.OK);
+        ).toHaveStatusCode(StatusCode.OK);
 
         // Validate response message
         const body = await response.json();
@@ -51,7 +52,7 @@ test.describe('Search Product API', () => {
         expect(
             body.message,
             'Response message should indicate missing search_product parameter'
-        ).toBe('Bad request, search_product parameter is missing in POST request.');
+        ).toBe(TestData.API.MISSING_SEARCH_PRODUCT_MESSAGE);
     });
 });
 

@@ -2,43 +2,17 @@ import { Page, Locator, expect } from "@playwright/test";
 import { BasePage } from "./BasePage";
 
 export class ProductDetailPage extends BasePage {
-    readonly productName: Locator = this.page
-        .locator(".product-information h2")
-        .describe("Product name");
-    readonly productPrice: Locator = this.page
-        .locator(".product-information span span")
-        .describe("Product price");
-    readonly productCategory: Locator = this.page
-        .locator(".product-information p")
-        .filter({ hasText: /category/i })
-        .describe("Product category");
-    readonly productAvailability: Locator = this.page
-        .locator(".product-information p")
-        .filter({ hasText: /availability/i })
-        .describe("Product availability");
-    readonly productCondition: Locator = this.page
-        .locator(".product-information p")
-        .filter({ hasText: /condition/i })
-        .describe("Product condition");
-    readonly productBrand: Locator = this.page
-        .locator(".product-information p")
-        .filter({ hasText: /brand/i })
-        .describe("Product brand");
-    readonly quantityInput: Locator = this.page
-        .locator("#quantity")
-        .describe("Quantity input");
-    readonly addToCartButton: Locator = this.page
-        .locator("button.cart")
-        .describe("Add to cart button");
-    readonly viewCartModal: Locator = this.page
-        .locator(".modal-content")
-        .describe("View cart modal");
-    readonly continueShoppingButton: Locator = this.viewCartModal
-        .getByRole("button", { name: /continue shopping/i })
-        .describe("Continue shopping button");
-    readonly viewCartButton: Locator = this.viewCartModal
-        .getByRole("link", { name: /view cart/i })
-        .describe("View cart button in modal");
+    readonly productName: Locator;
+    readonly productPrice: Locator;
+    readonly productCategory: Locator;
+    readonly productAvailability: Locator;
+    readonly productCondition: Locator;
+    readonly productBrand: Locator;
+    readonly quantityInput: Locator;
+    readonly addToCartButton: Locator;
+    readonly viewCartModal: Locator;
+    readonly continueShoppingButton: Locator;
+    readonly viewCartButton: Locator;
     readonly reviewSection: Locator;
     readonly reviewNameInput: Locator;
     readonly reviewEmailInput: Locator;
@@ -46,8 +20,50 @@ export class ProductDetailPage extends BasePage {
     readonly reviewSubmitButton: Locator;
     readonly reviewSuccessMessage: Locator;
 
+    // Selectors for dynamic locators used in methods
+    private readonly reviewsLinkSelector = "a[href='#reviews']";
+
     constructor(page: Page) {
         super(page, page.locator(".product-information h2"));
+
+        this.productName = this.page
+            .locator(".product-information h2")
+            .describe("Product name");
+        this.productPrice = this.page
+            .locator(".product-information span span")
+            .describe("Product price");
+        this.productCategory = this.page
+            .locator(".product-information p")
+            .filter({ hasText: /category/i })
+            .describe("Product category");
+        this.productAvailability = this.page
+            .locator(".product-information p")
+            .filter({ hasText: /availability/i })
+            .describe("Product availability");
+        this.productCondition = this.page
+            .locator(".product-information p")
+            .filter({ hasText: /condition/i })
+            .describe("Product condition");
+        this.productBrand = this.page
+            .locator(".product-information p")
+            .filter({ hasText: /brand/i })
+            .describe("Product brand");
+        this.quantityInput = this.page
+            .locator("#quantity")
+            .describe("Quantity input");
+        this.addToCartButton = this.page
+            .locator("button.cart")
+            .describe("Add to cart button");
+        this.viewCartModal = this.page
+            .locator(".modal-content")
+            .describe("View cart modal");
+        this.continueShoppingButton = this.viewCartModal
+            .getByRole("button", { name: /continue shopping/i })
+            .describe("Continue shopping button");
+        this.viewCartButton = this.viewCartModal
+            .getByRole("link", { name: /view cart/i })
+            .describe("View cart button in modal");
+
         // Initialize review section locators
         this.reviewSection = page.locator(".category-tab");
         this.reviewNameInput = page.locator("#name");
@@ -93,7 +109,7 @@ export class ProductDetailPage extends BasePage {
      */
     async verifyReviewSectionVisible(): Promise<void> {
         await expect(
-            this.page.locator("a[href='#reviews']"),
+            this.page.locator(this.reviewsLinkSelector),
             "Write Your Review link should be visible"
         ).toBeVisible();
     }
@@ -138,6 +154,22 @@ export class ProductDetailPage extends BasePage {
     }
 
     /**
+     * Get product category text
+     */
+    async getProductCategory(): Promise<string> {
+        const category = await this.productCategory.textContent();
+        return category?.trim() || "";
+    }
+
+    /**
+     * Get product availability text
+     */
+    async getProductAvailability(): Promise<string> {
+        const availability = await this.productAvailability.textContent();
+        return availability?.trim() || "";
+    }
+
+    /**
      * Verify product detail page is opened
      */
     async verifyProductDetailVisible(): Promise<void> {
@@ -163,8 +195,8 @@ export class ProductDetailPage extends BasePage {
         return {
             name: await this.getProductName(),
             price: await this.getProductPrice(),
-            category: (await this.productCategory.textContent()) || "",
-            availability: (await this.productAvailability.textContent()) || "",
+            category: await this.getProductCategory(),
+            availability: await this.getProductAvailability(),
         };
     }
 }

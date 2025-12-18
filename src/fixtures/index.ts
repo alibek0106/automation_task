@@ -3,6 +3,7 @@ import { ApiFixtures, apiFixtures } from './api.fixture';
 import { PageFixtures, pageFixtures } from './pages.fixture';
 import { StepsFixtures, stepsFixtures } from './steps.fixture';
 import { AuthFixtures, authFixture, workerAuthContext } from './auth.fixture';
+import '../utils/ApiMatchers';
 
 // Base fixtures without authentication (for isolated tests)
 const baseTest = base.extend<ApiFixtures & PageFixtures & StepsFixtures & AuthFixtures>({

@@ -35,10 +35,10 @@ export class ProductApiSteps {
             return res;
         });
 
-        expect(
-            response.status(),
+        await expect(
+            response,
             `Get all products API should return HTTP 200, got ${response.status()}`
-        ).toBe(StatusCode.OK);
+        ).toHaveStatusCode(StatusCode.OK);
 
         const body = await response.json();
         const parsed = ProductsListResponseSchema.safeParse(body);
@@ -52,10 +52,10 @@ export class ProductApiSteps {
             throw parsed.error;
         }
 
-        expect(
+        await expect(
             parsed.data.responseCode,
             `Response code should be 200, got ${parsed.data.responseCode}`
-        ).toBe(StatusCode.OK);
+        ).toHaveStatusCode(StatusCode.OK);
 
         return parsed.data.products;
     }
@@ -79,10 +79,10 @@ export class ProductApiSteps {
             return res;
         });
 
-        expect(
-            response.status(),
+        await expect(
+            response,
             `Search products API should return HTTP 200 for "${searchTerm}", got ${response.status()}`
-        ).toBe(StatusCode.OK);
+        ).toHaveStatusCode(StatusCode.OK);
 
         const body = await response.json();
         const parsed = SearchProductResponseSchema.safeParse(body);
@@ -96,10 +96,10 @@ export class ProductApiSteps {
             throw parsed.error;
         }
 
-        expect(
+        await expect(
             parsed.data.responseCode,
             `Search response code should be 200, got ${parsed.data.responseCode}`
-        ).toBe(StatusCode.OK);
+        ).toHaveStatusCode(StatusCode.OK);
 
         return parsed.data.products;
     }

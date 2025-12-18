@@ -31,10 +31,10 @@ export class UserApiSteps {
             return res;
         });
 
-        expect(
-            response.status(),
+        await expect(
+            response,
             `Create user API should return HTTP 200, got ${response.status()}`
-        ).toBe(StatusCode.OK);
+        ).toHaveStatusCode(StatusCode.OK);
 
         const body = await response.json();
         const parsed = ApiResponseSchema.safeParse(body);
@@ -48,10 +48,10 @@ export class UserApiSteps {
             throw parsed.error;
         }
 
-        expect(
+        await expect(
             parsed.data.responseCode,
             `User creation should return responseCode 201, got ${parsed.data.responseCode}`
-        ).toBe(StatusCode.CREATED);
+        ).toHaveStatusCode(StatusCode.CREATED);
         expect(
             parsed.data.message,
             'User creation message should be "User created!"'
@@ -79,10 +79,10 @@ export class UserApiSteps {
             return res;
         });
 
-        expect(
-            response.status(),
+        await expect(
+            response,
             `Delete user API should return HTTP 200, got ${response.status()}`
-        ).toBe(StatusCode.OK);
+        ).toHaveStatusCode(StatusCode.OK);
 
         const body = await response.json().catch(() => undefined);
         // Idempotent cleanup: API may reply "Account not found!" if already deleted.

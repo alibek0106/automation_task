@@ -10,40 +10,50 @@ export interface ContactFormData {
 }
 
 export class ContactUsPage extends BasePage {
-    readonly getInTouchHeading: Locator = this.page
-        .getByRole("heading", { name: /get in touch/i })
-        .describe("Get in touch heading");
-    readonly nameInput: Locator = this.page
-        .locator("[data-qa='name']")
-        .describe("Name input");
-    readonly emailInput: Locator = this.page
-        .locator("[data-qa='email']")
-        .describe("Email input");
-    readonly subjectInput: Locator = this.page
-        .locator("[data-qa='subject']")
-        .describe("Subject input");
-    readonly messageTextarea: Locator = this.page
-        .locator("[data-qa='message']")
-        .describe("Message textarea");
-    readonly fileUploadInput: Locator = this.page
-        .locator("input[name='upload_file']")
-        .describe("File upload input");
-    readonly submitButton: Locator = this.page
-        .locator("[data-qa='submit-button']")
-        .describe("Submit button");
-    readonly successMessage: Locator = this.page
-        .locator(".status.alert.alert-success")
-        .describe("Success message");
-    readonly homeButton: Locator = this.page
-        .locator(".btn.btn-success")
-        .filter({ hasText: /home/i })
-        .describe("Home button");
+    readonly getInTouchHeading: Locator;
+    readonly nameInput: Locator;
+    readonly emailInput: Locator;
+    readonly subjectInput: Locator;
+    readonly messageTextarea: Locator;
+    readonly fileUploadInput: Locator;
+    readonly submitButton: Locator;
+    readonly successMessage: Locator;
+    readonly homeButton: Locator;
 
     constructor(page: Page) {
         super(
             page,
             page.getByRole("heading", { name: /get in touch/i }).describe("Get in touch heading")
         );
+
+        this.getInTouchHeading = this.page
+            .getByRole("heading", { name: /get in touch/i })
+            .describe("Get in touch heading");
+        this.nameInput = this.page
+            .locator("[data-qa='name']")
+            .describe("Name input");
+        this.emailInput = this.page
+            .locator("[data-qa='email']")
+            .describe("Email input");
+        this.subjectInput = this.page
+            .locator("[data-qa='subject']")
+            .describe("Subject input");
+        this.messageTextarea = this.page
+            .locator("[data-qa='message']")
+            .describe("Message textarea");
+        this.fileUploadInput = this.page
+            .locator("input[name='upload_file']")
+            .describe("File upload input");
+        this.submitButton = this.page
+            .locator("[data-qa='submit-button']")
+            .describe("Submit button");
+        this.successMessage = this.page
+            .locator(".status.alert.alert-success")
+            .describe("Success message");
+        this.homeButton = this.page
+            .locator(".btn.btn-success")
+            .filter({ hasText: /home/i })
+            .describe("Home button");
     }
 
     async goto() {

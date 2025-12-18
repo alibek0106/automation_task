@@ -103,4 +103,26 @@ export const TestData = {
             password: 'invalidpassword',
         },
     },
+
+    /**
+     * API response messages for assertions
+     */
+    API: {
+        /** Method not allowed error message */
+        METHOD_NOT_ALLOWED_MESSAGE: 'This request method is not supported.',
+        /** User exists message */
+        USER_EXISTS_MESSAGE: 'User exists!',
+        /** User not found message */
+        USER_NOT_FOUND_MESSAGE: 'User not found!',
+        /** User created message */
+        USER_CREATED_MESSAGE: 'User created!',
+        /** User updated message */
+        USER_UPDATED_MESSAGE: 'User updated!',
+        /** Account deleted message */
+        ACCOUNT_DELETED_MESSAGE: 'Account deleted!',
+        /** Missing email or password parameter error message */
+        MISSING_EMAIL_PASSWORD_MESSAGE: 'Bad request, email or password parameter is missing in POST request.',
+        /** Missing search_product parameter error message */
+        MISSING_SEARCH_PRODUCT_MESSAGE: 'Bad request, search_product parameter is missing in POST request.',
+    },
 } as const;

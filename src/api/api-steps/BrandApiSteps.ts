@@ -20,10 +20,10 @@ export class BrandApiSteps {
         const response = await this.brandService.getAllBrands();
 
         // Assert HTTP status
-        expect(
-            response.status(),
+        await expect(
+            response,
             `Get all brands API should return HTTP 200, got ${response.status()}`
-        ).toBe(StatusCode.OK);
+        ).toHaveStatusCode(StatusCode.OK);
 
         // Validate response schema
         const body = await response.json();
@@ -39,10 +39,10 @@ export class BrandApiSteps {
         }
 
         // Assert response code
-        expect(
+        await expect(
             parsed.data.responseCode,
             `Response code should be 200, got ${parsed.data.responseCode}`
-        ).toBe(StatusCode.OK);
+        ).toHaveStatusCode(StatusCode.OK);
 
         return parsed.data.brands;
     }

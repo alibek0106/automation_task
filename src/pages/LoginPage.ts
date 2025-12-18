@@ -6,17 +6,26 @@ export class LoginPage extends BasePage {
     private getByDataQa = (name: string, description: string): Locator =>
         this.page.getByTestId(name).describe(description);
 
-    readonly signupNameInput: Locator = this.getByDataQa('signup-name', 'Signup name input');
-    readonly signupEmailInput: Locator = this.getByDataQa('signup-email', 'Signup email input');
-    readonly signupBtn: Locator = this.getByDataQa('signup-button', 'Signup button');
-    readonly newUserHeader: Locator = this.page.getByRole('heading', { name: 'New User Signup!' }).describe('New User Header');
-    readonly loginEmailInput: Locator = this.getByDataQa('login-email', 'Login email input');
-    readonly loginPasswordInput: Locator = this.getByDataQa('login-password', 'Login password input');
-    readonly loginBtn: Locator = this.getByDataQa('login-button', 'Login button');
-    readonly loginHeader: Locator = this.page.getByRole('heading', { name: 'Login to your account' }).describe('Login Header');
+    readonly signupNameInput: Locator;
+    readonly signupEmailInput: Locator;
+    readonly signupBtn: Locator;
+    readonly newUserHeader: Locator;
+    readonly loginEmailInput: Locator;
+    readonly loginPasswordInput: Locator;
+    readonly loginBtn: Locator;
+    readonly loginHeader: Locator;
 
     constructor(page: Page) {
         super(page);
+
+        this.signupNameInput = this.getByDataQa('signup-name', 'Signup name input');
+        this.signupEmailInput = this.getByDataQa('signup-email', 'Signup email input');
+        this.signupBtn = this.getByDataQa('signup-button', 'Signup button');
+        this.newUserHeader = this.page.getByRole('heading', { name: 'New User Signup!' }).describe('New User Header');
+        this.loginEmailInput = this.getByDataQa('login-email', 'Login email input');
+        this.loginPasswordInput = this.getByDataQa('login-password', 'Login password input');
+        this.loginBtn = this.getByDataQa('login-button', 'Login button');
+        this.loginHeader = this.page.getByRole('heading', { name: 'Login to your account' }).describe('Login Header');
     }
 
     async signup(name: string, email: string) {

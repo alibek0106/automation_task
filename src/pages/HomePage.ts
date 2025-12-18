@@ -15,6 +15,10 @@ export class HomePage extends BasePage {
   readonly viewCartModal: Locator;
   readonly viewCartButton: Locator;
 
+  // Selectors for dynamic locators used in methods
+  private readonly productInfoNameSelector = ".productinfo p";
+  private readonly productInfoAddToCartSelector = ".productinfo a.add-to-cart";
+
   constructor(page: Page, navigation: NavigationMenu) {
     super(page, page.locator("h1, h2").first());
     this.navigation = navigation;
@@ -120,7 +124,7 @@ export class HomePage extends BasePage {
    */
   async getRecommendedProductName(index: number): Promise<string> {
     const product = this.recommendedProductItems.nth(index);
-    const name = await product.locator(".productinfo p").textContent();
+    const name = await product.locator(this.productInfoNameSelector).textContent();
     return name?.trim() || "";
   }
 
@@ -153,7 +157,7 @@ export class HomePage extends BasePage {
     }
 
     await product.hover();
-    await product.locator(".productinfo a.add-to-cart").click();
+    await product.locator(this.productInfoAddToCartSelector).click();
   }
 
   /**

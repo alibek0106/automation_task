@@ -3,40 +3,50 @@ import { BasePage } from "./BasePage";
 import { User } from "../models/UserModels";
 
 export class CheckoutPage extends BasePage {
-    readonly deliveryAddressSection: Locator = this.page
-        .locator("#address_delivery")
-        .describe("Delivery address section");
-    readonly billingAddressSection: Locator = this.page
-        .locator("#address_invoice")
-        .describe("Billing address section");
-    readonly orderReviewTable: Locator = this.page
-        .locator("#cart_info")
-        .describe("Order review table");
-    readonly orderCommentTextarea: Locator = this.page
-        .locator("textarea.form-control")
-        .describe("Order comment textarea");
-    readonly placeOrderButton: Locator = this.page
-        .getByRole("link", { name: /place order/i })
-        .describe("Place order button");
-    readonly checkoutHeading: Locator = this.page
-        .getByRole("heading", { name: /review your order/i })
-        .describe("Checkout heading");
-    readonly orderReviewRows: Locator = this.orderReviewTable
-        .locator("tr")
-        .describe("Order review rows");
-    readonly orderReviewTotalRow: Locator = this.orderReviewRows
-        .last()
-        .describe("Order review total row");
-    readonly totalAmountText: Locator = this.orderReviewTotalRow
-        .locator("p")
-        .last()
-        .describe("Total amount text");
+    readonly deliveryAddressSection: Locator;
+    readonly billingAddressSection: Locator;
+    readonly orderReviewTable: Locator;
+    readonly orderCommentTextarea: Locator;
+    readonly placeOrderButton: Locator;
+    readonly checkoutHeading: Locator;
+    readonly orderReviewRows: Locator;
+    readonly orderReviewTotalRow: Locator;
+    readonly totalAmountText: Locator;
 
     constructor(page: Page) {
         super(
             page,
             page.locator("#cart_info").describe("Order review table")
         );
+
+        this.deliveryAddressSection = this.page
+            .locator("#address_delivery")
+            .describe("Delivery address section");
+        this.billingAddressSection = this.page
+            .locator("#address_invoice")
+            .describe("Billing address section");
+        this.orderReviewTable = this.page
+            .locator("#cart_info")
+            .describe("Order review table");
+        this.orderCommentTextarea = this.page
+            .locator("textarea.form-control")
+            .describe("Order comment textarea");
+        this.placeOrderButton = this.page
+            .getByRole("link", { name: /place order/i })
+            .describe("Place order button");
+        this.checkoutHeading = this.page
+            .getByRole("heading", { name: /review your order/i })
+            .describe("Checkout heading");
+        this.orderReviewRows = this.orderReviewTable
+            .locator("tr")
+            .describe("Order review rows");
+        this.orderReviewTotalRow = this.orderReviewRows
+            .last()
+            .describe("Order review total row");
+        this.totalAmountText = this.orderReviewTotalRow
+            .locator("p")
+            .last()
+            .describe("Total amount text");
     }
 
     /**

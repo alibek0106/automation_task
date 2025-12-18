@@ -10,31 +10,22 @@ export interface CartItem {
 }
 
 export class CartPage extends BasePage {
-    readonly cartTable: Locator = this.page
-        .locator("#cart_info_table")
-        .describe("Cart info table");
-    readonly cartTableRows: Locator = this.cartTable
-        .locator("tbody tr")
-        .describe("Cart table rows");
-    readonly proceedToCheckoutButton: Locator = this.page
-        .getByText("Proceed To Checkout")
-        .describe("Proceed to checkout button");
-    readonly emptyCartMessage: Locator = this.page
-        .locator("#empty_cart")
-        .describe("Empty cart message");
+    readonly cartTable: Locator;
+    readonly cartTableRows: Locator;
+    readonly proceedToCheckoutButton: Locator;
+    readonly emptyCartMessage: Locator;
     // Subscription elements
-    readonly subscriptionHeading: Locator = this.page
-        .getByRole("heading", { name: /subscription/i })
-        .describe("Subscription heading");
-    readonly subscriptionEmailInput: Locator = this.page
-        .locator("#susbscribe_email")
-        .describe("Subscription email input");
-    readonly subscriptionButton: Locator = this.page
-        .locator("#subscribe")
-        .describe("Subscription submit button");
-    readonly subscriptionSuccessMessage: Locator = this.page
-        .locator(".alert-success.alert")
-        .describe("Subscription success message");
+    readonly subscriptionHeading: Locator;
+    readonly subscriptionEmailInput: Locator;
+    readonly subscriptionButton: Locator;
+    readonly subscriptionSuccessMessage: Locator;
+
+    // Selectors for dynamic locators used in methods
+    private readonly cartItemNameSelector = ".cart_description h4 a";
+    private readonly cartItemPriceSelector = ".cart_price p";
+    private readonly cartItemQuantitySelector = ".cart_quantity button";
+    private readonly cartItemTotalSelector = ".cart_total_price";
+    private readonly cartDeleteButtonSelector = ".cart_delete a";
 
     private escapeRegExp(value: string): string {
         return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -62,6 +53,32 @@ export class CartPage extends BasePage {
             page,
             page.locator("#cart_info_table").describe("Cart info table")
         );
+
+        this.cartTable = this.page
+            .locator("#cart_info_table")
+            .describe("Cart info table");
+        this.cartTableRows = this.cartTable
+            .locator("tbody tr")
+            .describe("Cart table rows");
+        this.proceedToCheckoutButton = this.page
+            .getByText("Proceed To Checkout")
+            .describe("Proceed to checkout button");
+        this.emptyCartMessage = this.page
+            .locator("#empty_cart")
+            .describe("Empty cart message");
+        // Subscription elements
+        this.subscriptionHeading = this.page
+            .getByRole("heading", { name: /subscription/i })
+            .describe("Subscription heading");
+        this.subscriptionEmailInput = this.page
+            .locator("#susbscribe_email")
+            .describe("Subscription email input");
+        this.subscriptionButton = this.page
+            .locator("#subscribe")
+            .describe("Subscription submit button");
+        this.subscriptionSuccessMessage = this.page
+            .locator(".alert-success.alert")
+            .describe("Subscription success message");
     }
 
     async goto() {
@@ -78,10 +95,10 @@ export class CartPage extends BasePage {
         for (let i = 0; i < count; i++) {
             const row = this.cartTableRows.nth(i);
 
-            const name = await row.locator(".cart_description h4 a").textContent();
-            const price = await row.locator(".cart_price p").textContent();
-            const quantity = await row.locator(".cart_quantity button").textContent();
-            const total = await row.locator(".cart_total_price").textContent();
+            const name = await row.locator(this.cartItemNameSelector).textContent();
+            const price = await row.locator(this.cartItemPriceSelector).textContent();
+            const quantity = await row.locator(this.cartItemQuantitySelector).textContent();
+            const total = await row.locator(this.cartItemTotalSelector).textContent();
 
             items.push({
                 name: name?.trim() || "",
@@ -106,7 +123,7 @@ export class CartPage extends BasePage {
      */
     async removeProduct(index: number): Promise<void> {
         const initialCount = await this.cartTableRows.count();
-        await this.cartTableRows.nth(index).locator(".cart_delete a").click();
+        await this.cartTableRows.nth(index).locator(this.cartDeleteButtonSelector).click();
 
         // Wait for the cart rows count to decrease (no hard waits)
         await expect(
@@ -121,7 +138,7 @@ export class CartPage extends BasePage {
     async removeProductByName(productName: string): Promise<void> {
         const row = this.cartRowByProductName(productName);
         await expect(row, `Product "${productName}" should exist in cart before removal`).toHaveCount(1);
-        await row.locator(".cart_delete a").click();
+        await row.locator(this.cartDeleteButtonSelector).click();
         await expect(row, `Product "${productName}" should be removed from cart`).toHaveCount(0);
     }
 
@@ -187,7 +204,7 @@ export class CartPage extends BasePage {
     async getProductQuantity(productName: string): Promise<number> {
         const row = this.cartRowByProductName(productName);
 
-        const quantityText = await row.locator(".cart_quantity button").textContent();
+        const quantityText = await row.locator(this.cartItemQuantitySelector).textContent();
         return parseInt(quantityText?.trim() || "0", 10);
     }
 
@@ -197,7 +214,7 @@ export class CartPage extends BasePage {
     async getProductTotal(productName: string): Promise<string> {
         const row = this.cartRowByProductName(productName);
 
-        const total = await row.locator(".cart_total_price").textContent();
+        const total = await row.locator(this.cartItemTotalSelector).textContent();
         return total?.trim() || "";
     }
 

@@ -3,10 +3,6 @@ import { User } from '../models/UserModels';
 import { BasePage } from './BasePage';
 
 export class SignupPage extends BasePage {
-    // Helper arrow function to reduce duplication for test ID locators
-    private getByDataQa = (name: string, description: string): Locator =>
-        this.page.getByTestId(name).describe(description);
-
     readonly accountInfoHeading: Locator;
     readonly titleMr: Locator;
     readonly titleMrs: Locator;
@@ -37,32 +33,35 @@ export class SignupPage extends BasePage {
             .describe('Account Info Heading');
         this.titleMr = this.page.getByLabel('Mr.').describe('Title Mr');
         this.titleMrs = this.page.getByLabel('Mrs.').describe('Title Mrs');
-        this.password = this.getByDataQa('password', 'Password input');
-        this.daySelect = this.getByDataQa('days', 'Day select');
-        this.monthSelect = this.getByDataQa('months', 'Month select');
-        this.yearSelect = this.getByDataQa('years', 'Year select');
+        this.password = this.page.getByTestId('password').describe('Password input');
+        this.daySelect = this.page.getByTestId('days').describe('Day select');
+        this.monthSelect = this.page.getByTestId('months').describe('Month select');
+        this.yearSelect = this.page.getByTestId('years').describe('Year select');
         this.newsletterCheck = this.page
             .getByLabel('Sign up for our newsletter!')
             .describe('Newsletter check');
         this.offersCheck = this.page
             .getByLabel('Receive special offers from our partners!')
             .describe('Offers check');
-        this.firstName = this.getByDataQa('first_name', 'First name input');
-        this.lastName = this.getByDataQa('last_name', 'Last name input');
-        this.company = this.getByDataQa('company', 'Company input');
-        this.address1 = this.getByDataQa('address', 'Address input');
-        this.address2 = this.getByDataQa('address2', 'Secondary Address input');
-        this.country = this.getByDataQa('country', 'Country select');
-        this.state = this.getByDataQa('state', 'State input');
-        this.city = this.getByDataQa('city', 'City input');
-        this.zipcode = this.getByDataQa('zipcode', 'Zipcode input');
-        this.mobile = this.getByDataQa('mobile_number', 'Mobile input');
-        this.createAccountBtn = this.getByDataQa('create-account', 'Create account button');
+        this.firstName = this.page.getByTestId('first_name').describe('First name input');
+        this.lastName = this.page.getByTestId('last_name').describe('Last name input');
+        this.company = this.page.getByTestId('company').describe('Company input');
+        this.address1 = this.page.getByTestId('address').describe('Address input');
+        this.address2 = this.page.getByTestId('address2').describe('Secondary Address input');
+        this.country = this.page.getByTestId('country').describe('Country select');
+        this.state = this.page.getByTestId('state').describe('State input');
+        this.city = this.page.getByTestId('city').describe('City input');
+        this.zipcode = this.page.getByTestId('zipcode').describe('Zipcode input');
+        this.mobile = this.page.getByTestId('mobile_number').describe('Mobile input');
+        this.createAccountBtn = this.page.getByTestId('create-account').describe('Create account button');
     }
 
     async fillAccountDetails(user: User) {
-        if (user.title === 'Mr') await this.titleMr.check();
-        else await this.titleMrs.check();
+        if (user.title === 'Mr') {
+            await this.titleMr.check();
+        } else {
+            await this.titleMrs.check();
+        }
 
         await this.password.fill(user.password);
         await this.daySelect.selectOption(user.birthDay);
@@ -74,7 +73,9 @@ export class SignupPage extends BasePage {
         await this.lastName.fill(user.lastName);
         await this.company.fill(user.company);
         await this.address1.fill(user.address1);
-        if (user.address2) await this.address2.fill(user.address2);
+        if (user.address2) {
+            await this.address2.fill(user.address2);
+        }
         await this.country.selectOption(user.country);
         await this.state.fill(user.state);
         await this.city.fill(user.city);

@@ -2,27 +2,27 @@ import { test, expect } from '../../src/fixtures';
 import { StatusCode } from '../../src/constants/StatusCode';
 import { ProductsListResponseSchema } from '../../src/models/ProductModels';
 import { Routes } from '../../src/constants/Routes';
+import { TestData } from '../../src/constants/TestData';
 
 test.describe('Products API', () => {
     test('API 1: Get All Products List', async ({ productService }) => {
         const response = await productService.getAllProducts();
 
         // Assert HTTP status code
-        const httpStatus = response.status();
-        expect(
-            httpStatus,
+        await expect(
+            response,
             `GET ${Routes.API.PRODUCTS_LIST} HTTP status should be ${StatusCode.OK}`
-        ).toBe(StatusCode.OK);
+        ).toHaveStatusCode(StatusCode.OK);
 
         // Validate response schema
         const body = await response.json();
         const parsed = ProductsListResponseSchema.parse(body);
 
         // Assert response structure (responseCode in body should match HTTP status)
-        expect(
+        await expect(
             parsed.responseCode,
             `Response code in body should be ${StatusCode.OK}`
-        ).toBe(StatusCode.OK);
+        ).toHaveStatusCode(StatusCode.OK);
         expect(
             parsed.products,
             'Products list should be an array'
@@ -37,10 +37,10 @@ test.describe('Products API', () => {
         const response = await productService.postToProductsList();
 
         // API returns HTTP 200 and uses responseCode in body for actual status
-        expect(
-            response.status(),
+        await expect(
+            response,
             `POST ${Routes.API.PRODUCTS_LIST} HTTP status should be 200 OK (error encoded in body.responseCode)`
-        ).toBe(StatusCode.OK);
+        ).toHaveStatusCode(StatusCode.OK);
 
         // Validate response message
         const body = await response.json();
@@ -51,7 +51,7 @@ test.describe('Products API', () => {
         expect(
             body.message,
             `Response message should indicate method not supported`
-        ).toBe('This request method is not supported.');
+        ).toBe(TestData.API.METHOD_NOT_ALLOWED_MESSAGE);
     });
 });
 

@@ -2,24 +2,29 @@ import { Page, Locator, expect } from "@playwright/test";
 import { BasePage } from "./BasePage";
 
 export class PaymentDonePage extends BasePage {
-    readonly successMessage: Locator = this.page
-        .locator("[data-qa='order-placed'] b")
-        .describe("Order placed success message");
-    readonly orderConfirmationText: Locator = this.page
-        .locator(".col-sm-9 p")
-        .describe("Order confirmation text");
-    readonly downloadInvoiceButton: Locator = this.page
-        .getByRole("link", { name: /download invoice/i })
-        .describe("Download invoice button");
-    readonly continueButton: Locator = this.page
-        .locator("[data-qa='continue-button']")
-        .describe("Continue button");
+    readonly successMessage: Locator;
+    readonly orderConfirmationText: Locator;
+    readonly downloadInvoiceButton: Locator;
+    readonly continueButton: Locator;
 
     constructor(page: Page) {
         super(
             page,
             page.locator("[data-qa='order-placed']").describe("Order placed message")
         );
+
+        this.successMessage = this.page
+            .locator("[data-qa='order-placed'] b")
+            .describe("Order placed success message");
+        this.orderConfirmationText = this.page
+            .locator(".col-sm-9 p")
+            .describe("Order confirmation text");
+        this.downloadInvoiceButton = this.page
+            .getByRole("link", { name: /download invoice/i })
+            .describe("Download invoice button");
+        this.continueButton = this.page
+            .locator("[data-qa='continue-button']")
+            .describe("Continue button");
     }
 
     /**
