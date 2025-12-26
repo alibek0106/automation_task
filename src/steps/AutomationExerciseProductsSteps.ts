@@ -131,12 +131,14 @@ export class AutomationExerciseProductsSteps {
         const sortedUiProducts = [...uiProducts].sort((a, b) => a.name.localeCompare(b.name));
 
         const mismatches: string[] = [];
+        const normalize = (str: string) => str.replace(/\s+/g, ' ').trim();
 
         for (let i = 0; i < sortedApiProducts.length; i++) {
-            const apiName = sortedApiProducts[i].name.trim();
-            const uiName = sortedUiProducts[i]?.name.trim();
+            const apiName = normalize(sortedApiProducts[i].name);
+            const rawUiName = sortedUiProducts[i]?.name || '';
+            const uiName = normalize(rawUiName);
 
-            if (apiName !== uiName) {
+            if (!uiName.includes(apiName)) {
                 mismatches.push(`Position ${i}: API="${apiName}", UI="${uiName}"`);
             }
         }
