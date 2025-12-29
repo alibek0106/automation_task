@@ -8,7 +8,7 @@ import { DataFactory } from '../../src/utils/DataFactory';
  * profile information submission, and successful login verification.
  */
 
-test.describe('User Registration', () => {
+test.describe('User Registration', { tag: '@login @web' }, () => {
     test('TC01: Register User with Complete Profile', async ({
         automationExerciseLandingSteps,
         automationExerciseNavigationSteps,

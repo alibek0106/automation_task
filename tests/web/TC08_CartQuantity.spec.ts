@@ -9,7 +9,7 @@ import { PRODUCTS, PRODUCT_DETAILS } from '../../src/constants/Products';
  * multiple products, quantity changes, and invalid quantity handling.
  */
 
-test.describe('TC08: Cart Quantity Update', () => {
+test.describe('TC08: Cart Quantity Update', { tag: '@cart @web' }, () => {
     let user: ReturnType<typeof DataFactory.generateUser>;
 
     test.beforeEach(async ({

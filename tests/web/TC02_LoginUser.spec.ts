@@ -9,7 +9,7 @@ import * as fs from 'fs';
  * successful login state in the UI.
  */
 
-test.describe('User Authentication', () => {
+test.describe('User Authentication', { tag: '@login @web' }, () => {
     test('TC02: Login User with correct email and password', async ({
         automationExerciseLandingSteps,
         automationExerciseNavigationSteps,

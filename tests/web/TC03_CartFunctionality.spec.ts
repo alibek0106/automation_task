@@ -7,7 +7,7 @@ import { test } from '../../src/fixtures';
  * and total price calculations.
  */
 
-test.describe('Shopping Cart Functionality', () => {
+test.describe('Shopping Cart Functionality', { tag: '@cart @web' }, () => {
     test('TC03: Add Multiple Products to Cart and Verify Quantities and Totals', async ({
         automationExerciseLandingSteps,
         automationExerciseProductsSteps,

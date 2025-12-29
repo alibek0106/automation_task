@@ -9,7 +9,7 @@ import { PRODUCTS } from '../../src/constants/Products';
  * and cart empty state verification.
  */
 
-test.describe('Cart Management', () => {
+test.describe('Cart Management', { tag: '@cart @web' }, () => {
     test('TC04: Remove products from cart and verify empty state', async ({
         automationExerciseLandingSteps,
         automationExerciseNavigationSteps,

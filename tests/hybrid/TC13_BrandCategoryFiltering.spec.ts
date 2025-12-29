@@ -7,7 +7,7 @@ import { test } from '../../src/fixtures';
  * Ensures data consistency between backend (API) and frontend (UI) for filtering operations.
  */
 
-test.describe('TC13: Hybrid Filtering Validation', () => {
+test.describe('TC13: Hybrid Filtering Validation', { tag: '@filter @hybrid' }, () => {
 
     test.beforeEach(async ({ automationExerciseLandingSteps, automationExerciseProductsSteps }) => {
         await automationExerciseLandingSteps.navigateToHomepage();

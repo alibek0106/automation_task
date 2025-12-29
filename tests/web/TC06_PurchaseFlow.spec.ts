@@ -10,7 +10,7 @@ import { PRODUCTS } from '../../src/constants/Products';
  * checkout with address verification, payment processing, and order confirmation.
  */
 
-test.describe('End-to-End Purchase Flow', () => {
+test.describe('End-to-End Purchase Flow', { tag: '@purchase @web' }, () => {
     let user: User;
 
     test.beforeEach(async ({ request }) => {

@@ -5,7 +5,7 @@ import path from 'path';
 // ReportPortal configuration
 const rpConfig = {
     apiKey: 'alibekKey_zKw8O6yOTyur4ZNxBnxKwhoce7eaVvjgZsmNHiuGshOeDOdH4_7YEGFZedGq39-b',
-    endpoint: 'http://localhost:8080/api/v2',
+    endpoint: 'http://localhost:8090/api/v2',
     project: 'project-alibek',
     launch: 'Playwright SDD Tests',
     attributes: [

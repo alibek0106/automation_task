@@ -8,7 +8,7 @@ import { PRODUCT_FILTER_DATA } from '../../src/utils/Constants';
  * and results verification.
  */
 
-test.describe('TC09: Product Category and Brand Filtering', () => {
+test.describe('TC09: Product Category and Brand Filtering', { tag: '@filter @web' }, () => {
 
     test.beforeEach(async ({ automationExerciseLandingSteps, automationExerciseProductsSteps }) => {
         // Background: User is on Home page (sidebar also visible here)

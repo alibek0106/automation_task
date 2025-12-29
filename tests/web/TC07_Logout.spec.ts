@@ -9,7 +9,7 @@ import { Routes } from '../../src/constants/Routes';
  * session termination, and access restrictions to protected routes.
  */
 
-test.describe('TC07: User Logout Logic', () => {
+test.describe('TC07: User Logout Logic', { tag: '@logout @web' }, () => {
     let user: ReturnType<typeof DataFactory.generateUser>;
 
     test.beforeEach(async ({

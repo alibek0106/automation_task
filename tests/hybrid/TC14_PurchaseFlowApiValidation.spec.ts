@@ -2,7 +2,7 @@ import { test } from '../../src/fixtures';
 import { expect } from '@playwright/test';
 import { DataFactory } from '../../src/utils/DataFactory';
 
-test.describe('TC14: End-to-End Purchase Flow with API Data Validation', () => {
+test.describe('TC14: End-to-End Purchase Flow with API Data Validation', { tag: '@hybrid @purchase @validation' }, () => {
     let user = DataFactory.generateFullUser();
     let apiProductPrices: { [key: string]: string } = {};
 

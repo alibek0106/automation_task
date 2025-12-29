@@ -7,7 +7,7 @@ import { test } from '../../src/fixtures';
  * navigation to product details, and empty search results handling.
  */
 
-test.describe('Product Search Functionality', () => {
+test.describe('Product Search Functionality', { tag: '@search @web' }, () => {
 
     test.beforeEach(async ({ automationExerciseLandingSteps, automationExerciseNavigationSteps }) => {
         await automationExerciseLandingSteps.navigateToHomepage();

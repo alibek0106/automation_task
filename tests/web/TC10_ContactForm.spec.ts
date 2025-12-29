@@ -10,7 +10,7 @@ import { MESSAGES, TEST_DATA } from '../../src/utils/Constants';
  * with file attachments and form validation for mandatory fields and email format.
  */
 
-test.describe('TC10: Contact Form Submission', () => {
+test.describe('TC10: Contact Form Submission', { tag: '@form @web' }, () => {
 
     test.beforeEach(async ({ automationExerciseLandingSteps, automationExerciseContactUsSteps }) => {
         await automationExerciseLandingSteps.navigateToHomepage();
