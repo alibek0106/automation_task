@@ -1,23 +1,23 @@
-import { test as base } from '@playwright/test';
-import { ApiFixtures, apiFixtures } from './api.fixture';
-import { PageFixtures, pageFixtures } from './pages.fixture';
-import { StepsFixtures, stepsFixtures } from './steps.fixture';
-import { AuthFixtures, authFixture, workerAuthContext } from './auth.fixture';
+import { test as base, expect as baseExpect } from '@playwright/test';
+import { PagesFixture, pagesFixture } from './pages.fixture';
+import { StepsFixture, stepsFixture } from './steps.fixture';
+import { ApiFixture, apiFixture } from './api.fixture';
+import { customMatchers } from '../utils/CustomMatchers';
 
-// Base fixtures without authentication (for isolated tests)
-const baseTest = base.extend<ApiFixtures & PageFixtures & StepsFixtures & AuthFixtures>({
-    ...apiFixtures,
-    ...pageFixtures,
-    ...stepsFixtures,
-    ...authFixture, // authedUser fixture (not context)
+export type TestFixtures = PagesFixture & StepsFixture & ApiFixture;
+
+export const test = base.extend<TestFixtures>({
+    ...pagesFixture,
+    ...stepsFixture,
+    ...apiFixture,
 });
 
-// Test with worker authentication - includes context override
-export const test = baseTest.extend(workerAuthContext);
+export const expect = baseExpect.extend(customMatchers);
 
-// Isolated test - NO context override, starts with empty storage
-export const isolatedTest = baseTest.extend({
-    storageState: { cookies: [], origins: [] },
-});
-
-export { expect } from '@playwright/test';
+declare global {
+    namespace PlaywrightTest {
+        interface Matchers<R> {
+            toHaveStatusCode(expectedCode: number): Promise<R>;
+        }
+    }
+}

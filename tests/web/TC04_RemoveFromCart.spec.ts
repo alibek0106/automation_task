@@ -1,46 +1,55 @@
-import { isolatedTest as test, expect } from '../../src/fixtures';
+import { test } from '../../src/fixtures';
+import { DataFactory } from '../../src/utils/DataFactory';
+import { PRODUCTS } from '../../src/constants/Products';
 
-test.describe('TC04: Remove Product from Cart', { tag: '@Abdykarimov' }, () => {
-    test('should verify removal of products', async ({
-        cartSteps,
-        cartPage,
-        productsPage
+/**
+ * TC04: Cart Management
+ * 
+ * Validates product removal from cart including individual product removal
+ * and cart empty state verification.
+ */
+
+test.describe('Cart Management', { tag: '@cart @web' }, () => {
+    test('TC04: Remove products from cart and verify empty state', async ({
+        automationExerciseLandingSteps,
+        automationExerciseNavigationSteps,
+        automationExerciseLoginSteps,
+        automationExerciseProductsSteps,
+        automationExerciseProductDetailSteps,
+        automationExerciseCartSteps
     }) => {
-        let addedProducts: string[] = [];
-        let productToRemove: string;
-        let productToKeep: string;
+        // Arrange: Login with a user (using generic user for this test flow)
+        const user = DataFactory.generateUser();
 
-        // 1. Arrange
-        await test.step('Setup: Populate cart with products', async () => {
-            addedProducts = await cartSteps.populateCart(2);
-            productToRemove = addedProducts[0];
-            productToKeep = addedProducts[1];
+        // 1. Navigate to home
+        await automationExerciseLandingSteps.navigateToHomepage();
+        await automationExerciseLandingSteps.verifyPageOpened();
 
-            // Navigate to cart manually after population
-            await productsPage.navigateToCart();
-        });
+        // 2. Login/Register
+        await automationExerciseNavigationSteps.clickSignupLogin();
+        await automationExerciseLoginSteps.signup(user.name, user.email);
 
-        // 2. Act: Remove first product
-        await test.step('Remove product', async () => {
-            await cartPage.removeProduct(productToRemove);
-            await expect(cartPage.getProductRow(productToRemove), 'Product row should be removed').toHaveCount(0);
-        });
+        // 3. Add products to cart
+        await automationExerciseProductsSteps.navigateToProductsPage();
+        await automationExerciseProductsSteps.verifyProductsPageVisible();
+        await automationExerciseProductsSteps.addProductToCart(0); // 1st product (Blue Top)
+        await automationExerciseProductDetailSteps.clickContinueShopping();
+        await automationExerciseProductsSteps.addProductToCart(1); // 2nd product (Men Tshirt)
+        await automationExerciseProductDetailSteps.clickViewCart();
 
-        // 3. Assert: Verify remaining state
-        await test.step('Verify remaining product state', async () => {
-            expect(await cartPage.getCartCount(), 'Count should be 1').toBe(1);
+        // 4. Verify initial state
+        await automationExerciseCartSteps.verifyCartVisible();
 
-            const remainingItem = await cartPage.getProductByName(productToKeep);
-            expect(remainingItem.name, 'Remaining item name should match').toBe(productToKeep);
+        // 5. Remove first product
+        await automationExerciseCartSteps.removeProduct(PRODUCTS.BLUE_TOP);
 
-            const newTotal = await cartPage.getCalculatedTotal();
-            expect(newTotal, 'New total should match remaining item total').toBe(remainingItem.total);
-        });
+        // 6. Verify specific product removed
+        await automationExerciseCartSteps.verifyProductRemoved(PRODUCTS.BLUE_TOP);
 
-        // 4. Act: Empty Cart
-        await test.step('Empty the cart', async () => {
-            await cartPage.removeProduct(productToKeep);
-            await expect(cartPage.emptyCartMessage, 'Empty cart message should have expected text').toHaveText('Cart is empty!');
-        });
+        // 7. Remove remaining products
+        await automationExerciseCartSteps.removeProduct(PRODUCTS.MEN_TSHIRT);
+
+        // 8. Verify empty state
+        await automationExerciseCartSteps.verifyCartEmpty();
     });
 });

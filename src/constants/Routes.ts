@@ -1,17 +1,15 @@
 export const Routes = {
-    WEB: {
-        HOME: '/',
-        LOGIN: '/login',
-        SIGNUP: '/signup',
-        PRODUCTS: '/products',
-        PAYMENT: '/payment',
-        CONTACT_US: '/contact_us',
-        VIEW_CART: /\/view_cart/,
-        ACCOUNT_CREATED: '/account_created',
-        HOME_TITLE: 'Automation Exercise',
-    },
-    API: {
-        CREATE_ACCOUNT: '/api/createAccount',
-        VERIFY_LOGIN: '/api/verifyLogin',
-    },
+    BASE_URL: 'https://www.automationexercise.com',
+    LOGIN: '/login',
+    SIGNUP: '/signup',
+    ACCOUNT_CREATED: '/account_created',
+    DELETE_ACCOUNT: '/delete_account',
+    PRODUCTS: '/products',
+    CART: '/view_cart',
+    TEST_CASES: '/test_cases',
+    API_TESTING: '/api_list',
+    PAYMENT: '/payment',
+    VIDEO_TUTORIALS: 'https://www.youtube.com/c/AutomationExercise',
+    CONTACT_US: '/contact_us',
+    TITLE: /Automation Exercise/
 } as const;

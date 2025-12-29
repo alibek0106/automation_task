@@ -1,9 +1,28 @@
-import { APIRequestContext, APIResponse } from "@playwright/test";
+import { APIRequestContext, APIResponse } from '@playwright/test';
+import { Routes } from '../constants/Routes';
 
 export class ApiClient {
-    constructor(protected readonly request: APIRequestContext) { }
+    constructor(private request: APIRequestContext) { }
 
-    protected async post(url: string, data: Record<string, string | number | boolean>): Promise<APIResponse> {
-        return this.request.post(url, { form: data });
+    async post(endpoint: string, data: any): Promise<APIResponse> {
+        return this.request.post(`${Routes.BASE_URL}${endpoint}`, {
+            form: data
+        });
+    }
+
+    async delete(endpoint: string, data: any): Promise<APIResponse> {
+        return this.request.delete(`${Routes.BASE_URL}${endpoint}`, {
+            form: data
+        });
+    }
+
+    async put(endpoint: string, data: any): Promise<APIResponse> {
+        return this.request.put(`${Routes.BASE_URL}${endpoint}`, {
+            form: data
+        });
+    }
+
+    async get(endpoint: string): Promise<APIResponse> {
+        return this.request.get(`${Routes.BASE_URL}${endpoint}`);
     }
 }

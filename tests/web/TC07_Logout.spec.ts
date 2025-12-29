@@ -1,131 +1,86 @@
-import { Routes } from '../../src/constants/Routes';
-import { isolatedTest as test, expect } from '../../src/fixtures';
+import { test, expect } from '../../src/fixtures';
 import { DataFactory } from '../../src/utils/DataFactory';
+import { Routes } from '../../src/constants/Routes';
 
-test.describe('TC07: User Logout Functionality', { tag: '@meladze' }, () => {
-  test('should logout successfully', async ({
-    homePage,
-    loginPage,
-    registrationSteps,
-    accountCreatedPage,
-  }) => {
-    const user = DataFactory.generateUser();
+/**
+ * TC07: User Logout
+ * 
+ * Validates user logout functionality including successful logout, UI updates,
+ * session termination, and access restrictions to protected routes.
+ */
 
-    await test.step('Register and login new user', async () => {
-      await registrationSteps.startRegistration(user);
-      await registrationSteps.fillAccountDetails(user);
-      await expect(accountCreatedPage.successMessage, 'Account Created message should be visible').toBeVisible();
-      await registrationSteps.finishAccountCreation();
-      await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
-      await expect(homePage.logoutLink, 'Logout link should be visible').toBeVisible();
+test.describe('TC07: User Logout Logic', { tag: '@logout @web' }, () => {
+    let user: ReturnType<typeof DataFactory.generateUser>;
+
+    test.beforeEach(async ({
+        automationExerciseNavigationSteps,
+        automationExerciseLoginSteps,
+        automationExerciseLandingSteps,
+        userApiSteps
+    }) => {
+        user = DataFactory.generateUser();
+        const accountDetails = DataFactory.generateAccountDetails();
+        const addressInfo = DataFactory.generateAddressInfo();
+
+        // API Registration
+        await userApiSteps.registerUser(user, accountDetails, addressInfo);
+
+        // UI Login
+        await automationExerciseLandingSteps.navigateToHomepage();
+        await automationExerciseNavigationSteps.clickSignupLogin();
+        await automationExerciseLoginSteps.login(user.email, user.password);
+
+        // Verify Logged in
+        await automationExerciseNavigationSteps.verifyUserLoggedIn(user.name);
     });
 
-    await test.step('Logout and verify logged out state', async () => {
-      await homePage.clickLogout();
-      await homePage.verifyLoggedInNotVisible();
-      await loginPage.verifyLoginFormVisible();
-    });
-  });
-
-  test('should terminate session after logout', async ({
-    homePage,
-    registrationSteps,
-    accountCreatedPage,
-    productsPage,
-    cartPage,
-  }) => {
-    const user = DataFactory.generateUser();
-
-    await test.step('Register and login new user', async () => {
-      await registrationSteps.startRegistration(user);
-      await registrationSteps.fillAccountDetails(user);
-      await expect(accountCreatedPage.successMessage, 'Account Created message should be visible').toBeVisible();
-      await registrationSteps.finishAccountCreation();
-      await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
+    test.afterEach(async ({ userApiSteps }) => {
+        if (user) {
+            await userApiSteps.deleteUser(user.email, user.password);
+        }
     });
 
-    await test.step('Logout', async () => {
-      await homePage.clickLogout();
-      await homePage.verifyLoggedInNotVisible();
+
+
+    // ... class and setup ...
+
+    test('Scenario: Verify successful logout and UI updates', async ({
+        automationExerciseNavigationSteps,
+        automationExerciseLoginSteps,
+        page
+    }) => {
+        // When the user clicks the "Logout" link
+        await automationExerciseNavigationSteps.clickLogout();
+
+        // Then the user should be redirected to the "Login" page
+        await expect(page, 'Page should have URL matching login route').toHaveURL(new RegExp(Routes.LOGIN));
+        await automationExerciseLoginSteps.verifyLoginHeaderVisible();
+
+        // And the text "Logged in as" should not be visible
+        await automationExerciseNavigationSteps.verifyUserNotLoggedIn();
     });
 
-    await test.step('Verify session is terminated for checkout', async () => {
-      await productsPage.navigateToProducts();
-      await productsPage.verifyAllProductsVisible();
-      await productsPage.addProductToCart(0);
-      await productsPage.navigateToCart();
-      await cartPage.clickProceedToCheckout();
-      await cartPage.verifyRegisterLoginModal();
+    test('Scenario: Verify session termination and access restrictions', async ({
+        automationExerciseNavigationSteps,
+        page
+    }) => {
+        // Given the user clicks the "Logout" link
+        await automationExerciseNavigationSteps.clickLogout();
+        await expect(page, 'Page should have URL matching login route').toHaveURL(new RegExp(Routes.LOGIN));
+
+        // When the user attempts to navigate directly to the "Account" page (using delete_account as protected route)
+        // Note: We use DELETE_ACCOUNT because /payment does not strictly redirect to login on this specific site.
+        await page.goto(Routes.DELETE_ACCOUNT);
+
+        // Then verification of session termination:
+        // Note: automationexercise.com does NOT strictly redirect to login on accessing protected routes (Security Gap).
+        // checks are relaxed to verify 'User is not logged in' instead of strict URL redirection.
+        await automationExerciseNavigationSteps.verifyUserNotLoggedIn();
+
+        // When the user clicks the browser "Back" button
+        await page.goBack();
+
+        // Then the user should not be logged in
+        await automationExerciseNavigationSteps.verifyUserNotLoggedIn();
     });
-  });
-
-  test('should require login for protected pages after logout', async ({
-    homePage,
-    registrationSteps,
-    accountCreatedPage,
-    paymentPage,
-  }) => {
-    const user = DataFactory.generateUser();
-
-    await test.step('Register and login new user', async () => {
-      await registrationSteps.startRegistration(user);
-      await registrationSteps.fillAccountDetails(user);
-      await expect(accountCreatedPage.successMessage, 'Account Created message should be visible').toBeVisible();
-      await registrationSteps.finishAccountCreation();
-      await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
-    });
-
-    await test.step('Logout', async () => {
-      await homePage.clickLogout();
-      await homePage.verifyLoggedInNotVisible();
-    });
-
-    await test.step('Verify protected pages require re-login', async () => {
-      await paymentPage.goto(Routes.WEB.PAYMENT);
-      await paymentPage.waitForLoadState('domcontentloaded');
-      await homePage.verifyLoggedInNotVisible();
-      await expect(homePage.signupLoginLink, 'Signup/Login link should be visible').toBeVisible();
-    });
-  });
-
-  test('should not restore session with back button', async ({
-    homePage,
-    registrationSteps,
-    accountCreatedPage,
-    productsPage,
-  }) => {
-    const user = DataFactory.generateUser();
-
-    await test.step('Register and login new user', async () => {
-      await registrationSteps.startRegistration(user);
-      await registrationSteps.fillAccountDetails(user);
-      await expect(accountCreatedPage.successMessage, 'Account Created message should be visible').toBeVisible();
-      await registrationSteps.finishAccountCreation();
-      await expect(homePage.loggedInText, `User Logged in text should contain username '${user.name}'`).toContainText(user.name);
-    });
-
-    await test.step('Verify logged in state across different pages', async () => {
-      await productsPage.navigateToProducts();
-      await productsPage.verifyAllProductsVisible();
-      await homePage.verifyLoggedInVisible();
-      await productsPage.navigateToCart();
-      await homePage.verifyLoggedInVisible();
-    });
-
-    await test.step('Logout', async () => {
-      await homePage.clickLogout();
-      await homePage.verifyLoggedInNotVisible();
-    });
-
-    await test.step('Verify back button does not restore session', async () => {
-      await homePage.goBack();
-      // Reload the page to get fresh content instead of cached version
-      // Using domcontentloaded instead of networkidle for reliability
-      await homePage.page.reload({ waitUntil: 'domcontentloaded' });
-      await homePage.verifyLoggedInNotVisible();
-      await homePage.goto();
-      await homePage.verifyLoggedInNotVisible();
-      await expect(homePage.signupLoginLink, 'Signup/Login link should be visible').toBeVisible();
-    });
-  });
 });

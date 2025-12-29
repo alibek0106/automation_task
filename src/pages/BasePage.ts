@@ -1,61 +1,15 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 
-/**
- * BasePage - Base class for all page objects
- * Provides common page reference and navigation
- */
-export abstract class BasePage {
+export class BasePage {
     readonly page: Page;
-    readonly subscriptionHeading: Locator;
-    readonly subscriptionEmailInput: Locator;
-    readonly subscriptionSubmitBtn: Locator;
-    readonly subscriptionSuccessMsg: Locator;
+    readonly name: string;
 
-    constructor(page: Page) {
+    constructor(page: Page, name: string) {
         this.page = page;
-        this.subscriptionHeading = page.getByRole('heading', { name: 'Subscription', level: 2 }).describe('Subscribtion heading');
-        this.subscriptionEmailInput = page.getByPlaceholder('Your email address').describe('Email Input Field');
-        this.subscriptionSubmitBtn = page.locator('#subscribe').describe('Subscribe button');
-        this.subscriptionSuccessMsg = page.getByText('You have been successfully subscribed!').describe('Subscription success message');
+        this.name = name;
     }
 
-  /**
-   * Navigate to a specific URL
-   * Using 'load' with extended timeout to ensure all resources load
-   * before interactions, preventing element-not-found errors
-   */
-  async goto(url: string): Promise<void> {
-    await this.page.goto(url, {
-      waitUntil: 'load',
-      timeout: 60000 // 60 seconds timeout for slow-loading pages
-    });
-  }
-
-    /**
-     * Get current page URL
-     */
-    getUrl(): string {
-        return this.page.url();
-    }
-
-  /**
-   * Navigate back in history
-   * Waits for DOM to be ready after navigation
-   */
-  async goBack(): Promise<void> {
-    await this.page.goBack({ waitUntil: 'domcontentloaded' });
-  }
-
-    /**
-     * Wait for the page to load completely
-     */
-    async waitForLoadState(state: 'load' | 'domcontentloaded' | 'networkidle' = 'load'): Promise<void> {
-        await this.page.waitForLoadState(state);
-    }
-
-    async performSubscription(email: string) {
-        await this.subscriptionHeading.scrollIntoViewIfNeeded();
-        await this.subscriptionEmailInput.fill(email);
-        await this.subscriptionSubmitBtn.click();
+    async verifyPageOpened(locator: Locator) {
+        await expect(locator, `${this.name} should be opened`).toBeVisible();
     }
 }

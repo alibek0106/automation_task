@@ -1,41 +1,108 @@
 import { faker } from '@faker-js/faker';
-import { User } from '../models/UserModels';
-import { PaymentDetails } from '../models/PaymentModels';
+import { USER_CONSTANTS } from '../constants/UserConstants';
+import { PAYMENT_INFO } from './Constants';
+import { PRODUCT_DETAILS } from '../constants/Products';
+
+export interface User {
+    name: string;
+    email: string;
+    password: string;
+    title: 'Mr.' | 'Mrs.';
+    day: string;
+    month: string;
+    year: string;
+    firstName: string;
+    lastName: string;
+    company: string;
+    address: string;
+    address2: string;
+    country: string;
+    state: string;
+    city: string;
+    zipcode: string;
+    mobileNumber: string;
+}
+
+export type AccountDetails = ReturnType<typeof DataFactory.generateAccountDetails>;
+export type AddressInfo = ReturnType<typeof DataFactory.generateAddressInfo>;
+export type PaymentDetails = ReturnType<typeof DataFactory.generatePaymentDetails>;
 
 export class DataFactory {
-    static generateUser(): User {
+    static generateUser() {
+        // Use consistent formatting for easier debugging
         const firstName = faker.person.firstName();
         const lastName = faker.person.lastName();
-
-        const uniqueSuffix = faker.string.alphanumeric(8);
+        const email = faker.internet.email({ firstName, lastName, provider: USER_CONSTANTS.EMAIL_PROVIDER });
 
         return {
             name: `${firstName} ${lastName}`,
-            email: faker.internet.email({ firstName, lastName, provider: `test${uniqueSuffix}.com` }),
-            password: faker.internet.password({ length: 10 }),
-            title: faker.helpers.arrayElement(['Mr', 'Mrs']),
-            firstName: firstName,
-            lastName: lastName,
+            email: email.toLowerCase(),
+            password: USER_CONSTANTS.DEFAULT_PASSWORD, // Default strong password
+            firstName,
+            lastName
+        };
+    }
+
+    static generateAccountDetails() {
+        return {
+            title: faker.helpers.arrayElement([USER_CONSTANTS.TITLES.MR, USER_CONSTANTS.TITLES.MRS]) as 'Mr.' | 'Mrs.',
+            password: USER_CONSTANTS.DEFAULT_PASSWORD,
+            day: String(faker.number.int({ min: 1, max: 28 })),
+            month: faker.date.month(),
+            year: String(faker.number.int({ min: 1970, max: 2005 }))
+        };
+    }
+
+    static generateAddressInfo() {
+        return {
+            firstName: faker.person.firstName(),
+            lastName: faker.person.lastName(),
             company: faker.company.name(),
-            address1: faker.location.streetAddress(),
+            address: faker.location.streetAddress(),
             address2: faker.location.secondaryAddress(),
-            country: 'United States', // Fixed for dropdown selection
+            country: USER_CONSTANTS.COUNTRY, // Restricted list in app
             state: faker.location.state(),
             city: faker.location.city(),
             zipcode: faker.location.zipCode(),
-            mobileNumber: faker.phone.number(),
-            birthDay: String(faker.number.int({ min: 1, max: 28 })),
-            birthMonth: faker.date.month(),
-            birthYear: String(faker.number.int({ min: 1980, max: 2000 })),
+            mobileNumber: faker.phone.number()
         };
     }
-    static generatePaymentDetails(): PaymentDetails {
+
+    static generateFullUser(): User {
+        const user = this.generateUser();
+        const account = this.generateAccountDetails();
+        const address = this.generateAddressInfo();
+
         return {
-            nameOnCard: faker.person.fullName(),
-            cardNumber: faker.finance.creditCardNumber(),
-            cvc: faker.finance.creditCardCVV(),
-            expiryMonth: String(faker.number.int({ min: 1, max: 12 })).padStart(2, '0'),
-            expiryYear: String(faker.number.int({ min: 2025, max: 2030 })),
+            ...user,
+            ...account,
+            ...address
         };
+    }
+
+    static generateContactFormData() {
+        return {
+            name: faker.person.fullName(),
+            email: faker.internet.email(),
+            subject: faker.lorem.sentence(3),
+            message: faker.lorem.paragraph(1) // Ensure it meets length requirements if any
+        };
+    }
+
+    static generatePaymentDetails() {
+        return {
+            nameOnCard: PAYMENT_INFO.NAME_ON_CARD,
+            cardNumber: PAYMENT_INFO.CARD_NUMBER,
+            cvc: PAYMENT_INFO.CVC,
+            expiryMonth: PAYMENT_INFO.EXPIRY_MONTH,
+            expiryYear: PAYMENT_INFO.EXPIRY_YEAR
+        };
+    }
+
+    static generateCartProducts() {
+        return [
+            PRODUCT_DETAILS.BLUE_TOP,
+            PRODUCT_DETAILS.MEN_TSHIRT
+        ];
     }
 }

@@ -1,0 +1,4 @@
+This is a dummy invoice file for testing file upload functionality.
+Invoice ID: DESC-12345
+Amount: $500.00
+Date: 2025-12-15

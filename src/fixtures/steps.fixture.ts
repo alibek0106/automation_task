@@ -1,29 +1,57 @@
-import { Page } from '@playwright/test';
-import { AuthSteps } from '../steps/AuthSteps';
-import { PageFixtures } from './pages.fixture';
-import { RegistrationSteps } from '../steps/RegistrationSteps';
-import { CartSteps } from '../steps/CartSteps';
-import { CheckoutSteps } from '../steps/CheckoutSteps';
+import { AutomationExerciseLandingSteps } from '../steps/AutomationExerciseLandingSteps';
+import { AutomationExerciseLoginSteps } from '../steps/AutomationExerciseLoginSteps';
+import { AutomationExerciseSignupSteps } from '../steps/AutomationExerciseSignupSteps';
+import { AutomationExerciseNavigationSteps } from '../steps/AutomationExerciseNavigationSteps';
+import { AutomationExerciseProductsSteps } from '../steps/AutomationExerciseProductsSteps';
+import { AutomationExerciseProductDetailSteps } from '../steps/AutomationExerciseProductDetailSteps';
+import { AutomationExerciseCartSteps } from '../steps/AutomationExerciseCartSteps';
+import { AutomationExerciseCheckoutSteps } from '../steps/AutomationExerciseCheckoutSteps';
+import { AutomationExercisePaymentSteps } from '../steps/AutomationExercisePaymentSteps';
+import { AutomationExerciseContactUsSteps } from '../steps/AutomationExerciseContactUsSteps';
+import { PagesFixture } from './pages.fixture';
 
-export type StepsFixtures = {
-    authSteps: AuthSteps;
-    registrationSteps: RegistrationSteps;
-    cartSteps: CartSteps;
-    checkoutSteps: CheckoutSteps;
-};
+export interface StepsFixture {
+    automationExerciseLandingSteps: AutomationExerciseLandingSteps;
+    automationExerciseLoginSteps: AutomationExerciseLoginSteps;
+    automationExerciseSignupSteps: AutomationExerciseSignupSteps;
+    automationExerciseNavigationSteps: AutomationExerciseNavigationSteps;
+    automationExerciseProductsSteps: AutomationExerciseProductsSteps;
+    automationExerciseProductDetailSteps: AutomationExerciseProductDetailSteps;
+    automationExerciseCartSteps: AutomationExerciseCartSteps;
+    automationExerciseCheckoutSteps: AutomationExerciseCheckoutSteps;
+    automationExercisePaymentSteps: AutomationExercisePaymentSteps;
+    automationExerciseContactUsSteps: AutomationExerciseContactUsSteps;
+}
 
-export const stepsFixtures = {
-    authSteps: async ({ page, homePage, loginPage }: PageFixtures & { page: Page }, use: (s: AuthSteps) => Promise<void>) => {
-        await use(new AuthSteps(page, homePage, loginPage));
+export const stepsFixture = {
+    automationExerciseLandingSteps: async ({ automationExerciseLandingPage }: PagesFixture, use: (s: AutomationExerciseLandingSteps) => Promise<void>) => {
+        await use(new AutomationExerciseLandingSteps(automationExerciseLandingPage));
     },
-    registrationSteps: async ({ page, homePage, loginPage, signupPage, accountCreatedPage }:
-        PageFixtures & { page: Page }, use: (s: RegistrationSteps) => Promise<void>) => {
-        await use(new RegistrationSteps(page, homePage, loginPage, signupPage, accountCreatedPage));
+    automationExerciseLoginSteps: async ({ automationExerciseLoginPage }: PagesFixture, use: (s: AutomationExerciseLoginSteps) => Promise<void>) => {
+        await use(new AutomationExerciseLoginSteps(automationExerciseLoginPage));
     },
-    cartSteps: async ({ productsPage, productDetailsPage }: PageFixtures, use: (s: CartSteps) => Promise<void>) => {
-        await use(new CartSteps(productsPage, productDetailsPage));
+    automationExerciseSignupSteps: async ({ automationExerciseSignupPage, accountCreatedPage }: PagesFixture, use: (s: AutomationExerciseSignupSteps) => Promise<void>) => {
+        await use(new AutomationExerciseSignupSteps(automationExerciseSignupPage, accountCreatedPage));
     },
-    checkoutSteps: async ({ cartPage, checkoutPage, paymentPage }: PageFixtures, use: (s: CheckoutSteps) => Promise<void>) => {
-        await use(new CheckoutSteps(cartPage, checkoutPage, paymentPage));
+    automationExerciseNavigationSteps: async ({ automationExerciseNavigationMenu }: PagesFixture, use: (s: AutomationExerciseNavigationSteps) => Promise<void>) => {
+        await use(new AutomationExerciseNavigationSteps(automationExerciseNavigationMenu));
+    },
+    automationExerciseProductsSteps: async ({ automationExerciseProductsPage }: PagesFixture, use: (s: AutomationExerciseProductsSteps) => Promise<void>) => {
+        await use(new AutomationExerciseProductsSteps(automationExerciseProductsPage));
+    },
+    automationExerciseProductDetailSteps: async ({ automationExerciseProductDetailPage }: PagesFixture, use: (s: AutomationExerciseProductDetailSteps) => Promise<void>) => {
+        await use(new AutomationExerciseProductDetailSteps(automationExerciseProductDetailPage));
+    },
+    automationExerciseCartSteps: async ({ automationExerciseCartPage }: PagesFixture, use: (s: AutomationExerciseCartSteps) => Promise<void>) => {
+        await use(new AutomationExerciseCartSteps(automationExerciseCartPage));
+    },
+    automationExerciseCheckoutSteps: async ({ automationExerciseCheckoutPage }: PagesFixture, use: (s: AutomationExerciseCheckoutSteps) => Promise<void>) => {
+        await use(new AutomationExerciseCheckoutSteps(automationExerciseCheckoutPage));
+    },
+    automationExercisePaymentSteps: async ({ automationExercisePaymentPage, automationExerciseOrderConfirmationPage }: PagesFixture, use: (s: AutomationExercisePaymentSteps) => Promise<void>) => {
+        await use(new AutomationExercisePaymentSteps(automationExercisePaymentPage, automationExerciseOrderConfirmationPage));
+    },
+    automationExerciseContactUsSteps: async ({ automationExerciseContactUsPage }: PagesFixture, use: (s: AutomationExerciseContactUsSteps) => Promise<void>) => {
+        await use(new AutomationExerciseContactUsSteps(automationExerciseContactUsPage));
     },
 };
