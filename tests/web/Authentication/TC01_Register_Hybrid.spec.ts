@@ -1,6 +1,6 @@
-import { isolatedTest as test, expect } from "../../../src/fixtures";
-import { DataFactory } from "../../../src/utils/DataFactory";
-import { User } from "../../../src/models/UserModels";
+import { expect, isolatedTest as test } from '@fixtures/index';
+import { User } from '@models/UserModels';
+import { DataFactory } from '@utils/DataFactory';
 
 test.describe("TC01-Hybrid: User Registration with API Setup & Validation", () => {
     let testUser: User;
@@ -18,9 +18,9 @@ test.describe("TC01-Hybrid: User Registration with API Setup & Validation", () =
     });
 
     test("should create user via API and verify account details in UI match API data", async ({
-        userApiSteps,
         homePage,
         loginPage,
+        userApiSteps,
     }) => {
         // Step 1: Get user details via API for validation
         await test.step("Get user details via API", async () => {

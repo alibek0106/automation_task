@@ -1,7 +1,7 @@
-import { Page, Locator, expect } from "@playwright/test";
-import { BasePage } from "./BasePage";
+import { expect, Locator, Page } from "@playwright/test";
 import { NavigationMenu } from "../components/NavigationMenu";
 import { Routes } from "../constants/Routes";
+import { BasePage } from "./BasePage";
 
 export class HomePage extends BasePage {
   readonly navigation: NavigationMenu;
@@ -20,13 +20,13 @@ export class HomePage extends BasePage {
   private readonly productInfoAddToCartSelector = ".productinfo a.add-to-cart";
 
   constructor(page: Page, navigation: NavigationMenu) {
-    super(page, page.locator("h1, h2").first());
+    super(page, page.locator("h1, h2").first().describe("Home page heading"));
     this.navigation = navigation;
 
-    this.loggedInText = page.locator("li").filter({ hasText: "Logged in as" });
-    this.subscriptionText = page.locator("h2").filter({ hasText: "Subscription" });
-    this.fullFledgedText = page.getByText("Full-Fledged practice website for Automation Engineers").first();
-    this.scrollUpArrowButton = page.locator("#scrollUp");
+    this.loggedInText = page.locator("li").filter({ hasText: "Logged in as" }).describe("Logged in text");
+    this.subscriptionText = page.locator("h2").filter({ hasText: "Subscription" }).describe("Subscription heading");
+    this.fullFledgedText = page.getByText("Full-Fledged practice website for Automation Engineers").first().describe("Full-fledged practice text");
+    this.scrollUpArrowButton = page.locator("#scrollUp").describe("Scroll up arrow button");
 
     // Recommended items section
     this.recommendedItemsSection = page.locator(".recommended_items");

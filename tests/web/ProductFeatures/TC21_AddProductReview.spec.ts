@@ -1,11 +1,11 @@
-import { test, expect } from "../../../src/fixtures";
-import { DataFactory } from "../../../src/utils/DataFactory";
+import { test } from '@fixtures/index';
+import { DataFactory } from '@utils/DataFactory';
 
 test.describe("TC21: Add review on product", () => {
     test("should allow user to write and submit product review", async ({
         homePage,
-        productsPage,
         productDetailPage,
+        productsPage,
     }) => {
         const workerIndex = test.info().workerIndex;
         const userData = DataFactory.generateUser({ workerIndex });

@@ -1,16 +1,16 @@
-import { isolatedTest as test, expect } from "../../../src/fixtures";
-import { DataFactory } from "../../../src/utils/DataFactory";
-import { TestData } from "../../../src/constants/TestData";
+import { TestData } from '@constants/TestData';
+import { expect, isolatedTest as test } from '@fixtures/index';
+import { DataFactory } from '@utils/DataFactory';
 
 test.describe("TC20: Search Products and Verify Cart After Login", () => {
     test("should search products, add to cart, login, and verify cart persists", async ({
+        accountCreatedPage,
+        accountDeletedPage,
+        cartPage,
         homePage,
         loginPage,
-        signupPage,
-        accountCreatedPage,
         productsPage,
-        cartPage,
-        accountDeletedPage,
+        signupPage,
     }) => {
         const workerIndex = test.info().workerIndex;
         const userData = DataFactory.generateUser({ workerIndex });

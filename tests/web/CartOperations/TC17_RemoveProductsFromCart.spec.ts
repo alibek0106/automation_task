@@ -1,11 +1,11 @@
-import { test, expect } from "../../../src/fixtures";
+import { test } from '@fixtures/index';
 
 test.describe("TC17: Remove Products From Cart", () => {
     test("should add product to cart and successfully remove it", async ({
-        homePage,
-        productsPage,
-        productDetailPage,
         cartPage,
+        homePage,
+        productDetailPage,
+        productsPage,
     }) => {
         let productName: string;
 

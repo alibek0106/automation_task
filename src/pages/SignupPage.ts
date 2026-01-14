@@ -1,5 +1,5 @@
-import { Page, Locator } from '@playwright/test';
-import { User } from '../models/UserModels';
+import { Locator, Page } from '@playwright/test';
+import { User } from '@models/UserModels';
 import { BasePage } from './BasePage';
 
 export class SignupPage extends BasePage {

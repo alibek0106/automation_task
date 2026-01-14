@@ -1,4 +1,4 @@
-import { test, expect } from "../../../src/fixtures";
+import { test } from '@fixtures/index';
 
 test.describe("TC26: Verify Scroll Up without Arrow button and Scroll Down", () => {
     test("should scroll down, verify subscription, scroll up programmatically, verify hero text", async ({

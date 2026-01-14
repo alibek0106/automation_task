@@ -1,19 +1,20 @@
-import { isolatedTest as test, expect } from "../../../src/fixtures";
-import { DataFactory } from "../../../src/utils/DataFactory";
+import { expect, isolatedTest as test } from '@fixtures/index';
+import { DataFactory } from '@utils/DataFactory';
 
 test.describe("TC14: Place Order - Register while Checkout", () => {
     test("should allow registration during checkout and complete order", async ({
-        homePage,
-        loginPage,
-        signupPage,
         accountCreatedPage,
-        productsPage,
-        productDetailPage,
+        accountDeletedPage,
         cartPage,
         checkoutPage,
-        paymentPage,
+        checkoutSteps,
+        homePage,
+        loginPage,
         paymentDonePage,
-        accountDeletedPage,
+        paymentPage,
+        productDetailPage,
+        productsPage,
+        signupPage,
     }) => {
         const workerIndex = test.info().workerIndex;
         const userData = DataFactory.generateUser({ workerIndex });
@@ -86,8 +87,8 @@ test.describe("TC14: Place Order - Register while Checkout", () => {
 
         // Step 14: Verify Address Details and Review Order
         await test.step("Verify address details and review order", async () => {
-            await checkoutPage.verifyDeliveryAddress(userData);
-            await checkoutPage.verifyBillingAddress(userData);
+            await checkoutSteps.verifyDeliveryAddress(userData);
+            await checkoutSteps.verifyBillingAddress(userData);
         });
 
         // Step 15: Enter comment and click Place Order

@@ -1,12 +1,12 @@
 import { expect } from '@playwright/test';
-import { HomePage } from '../pages/HomePage';
-import { CartPage } from '../pages/CartPage';
-import { CheckoutPage } from '../pages/CheckoutPage';
-import { PaymentPage } from '../pages/PaymentPage';
-import { PaymentDonePage } from '../pages/PaymentDonePage';
-import { User } from '../models/UserModels';
-import { PaymentDetails } from '../models/PaymentModels';
-import { step } from '../utils/StepDecorator';
+import { PaymentDetails } from '@models/PaymentModels';
+import { User } from '@models/UserModels';
+import { CartPage } from '@pages/CartPage';
+import { CheckoutPage } from '@pages/CheckoutPage';
+import { HomePage } from '@pages/HomePage';
+import { PaymentDonePage } from '@pages/PaymentDonePage';
+import { PaymentPage } from '@pages/PaymentPage';
+import { step } from '@utils/StepDecorator';
 
 /**
  * Reusable steps for checkout flow
@@ -28,9 +28,9 @@ export class CheckoutSteps {
         // Go to cart and proceed to checkout
         await this.cartPage.clickProceedToCheckout();
 
-        // Verify addresses
-        await this.checkoutPage.verifyDeliveryAddress(userData);
-        await this.checkoutPage.verifyBillingAddress(userData);
+        // Verify addresses using Steps layer logic
+        await this.verifyDeliveryAddress(userData);
+        await this.verifyBillingAddress(userData);
 
         // Enter comment if provided
         if (comment) {
@@ -58,12 +58,60 @@ export class CheckoutSteps {
     }
 
     /**
+     * Verify delivery address matches user data
+     */
+    @step('Verify delivery address')
+    async verifyDeliveryAddress(userData: User): Promise<void> {
+        const addressText = await this.checkoutPage.getDeliveryAddressText();
+
+        // Verify delivery address contains all required user information
+        expect(addressText, "Delivery address should contain first name").toContain(userData.firstName);
+        expect(addressText, "Delivery address should contain last name").toContain(userData.lastName);
+        expect(addressText, "Delivery address should contain address1").toContain(userData.address1);
+        expect(addressText, "Delivery address should contain city").toContain(userData.city);
+        expect(addressText, "Delivery address should contain state").toContain(userData.state);
+        expect(addressText, "Delivery address should contain country").toContain(userData.country);
+    }
+
+    /**
+     * Verify billing address matches user data
+     */
+    @step('Verify billing address')
+    async verifyBillingAddress(userData: User): Promise<void> {
+        const addressText = await this.checkoutPage.getBillingAddressText();
+
+        // Verify billing address contains required user information
+        expect(addressText, "Billing address should contain first name").toContain(userData.firstName);
+        expect(addressText, "Billing address should contain last name").toContain(userData.lastName);
+        expect(addressText, "Billing address should contain address1").toContain(userData.address1);
+    }
+
+    /**
+     * Verify order contains expected product
+     */
+    @step('Verify order contains product')
+    async verifyOrderContainsProduct(productName: string): Promise<void> {
+        const orderText = await this.checkoutPage.getOrderReviewText();
+        const normalize = (value: string) =>
+            value.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
+
+        const normalizedOrder = normalize(orderText);
+        const normalizedName = normalize(productName);
+        
+        // Verify the order review contains the specified product name
+        expect(
+            normalizedOrder,
+            `Order should contain product: ${productName}`
+        ).toContain(normalizedName);
+    }
+
+    /**
      * Verify addresses in checkout
      */
     @step('Verify checkout addresses')
     async verifyAddresses(userData: User): Promise<void> {
-        await this.checkoutPage.verifyDeliveryAddress(userData);
-        await this.checkoutPage.verifyBillingAddress(userData);
+        await this.verifyDeliveryAddress(userData);
+        await this.verifyBillingAddress(userData);
     }
 
     /**

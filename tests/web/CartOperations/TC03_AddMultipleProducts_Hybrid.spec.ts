@@ -1,12 +1,12 @@
-import { isolatedTest as test, expect } from "../../../src/fixtures";
-import { DataFactory } from "../../../src/utils/DataFactory";
-import { User } from "../../../src/models/UserModels";
+import { expect, isolatedTest as test } from '@fixtures/index';
+import { User } from '@models/UserModels';
+import { DataFactory } from '@utils/DataFactory';
 
 test.describe("TC03-Hybrid: Add Multiple Products to Cart (API Setup)", () => {
     let testUser: User;
     let userCreated = false;
 
-    test.beforeEach(async ({ userApiSteps, homePage, loginPage }) => {
+    test.beforeEach(async ({ homePage, loginPage, userApiSteps }) => {
         // Step 1: Create user via API (faster than UI registration)
         const workerIndex = test.info().workerIndex;
         testUser = DataFactory.generateUser({ workerIndex });
@@ -30,11 +30,11 @@ test.describe("TC03-Hybrid: Add Multiple Products to Cart (API Setup)", () => {
     });
 
     test("should add multiple products with different quantities and verify cart with API price validation", async ({
-        homePage,
-        productsPage,
-        productDetailPage,
         cartPage,
+        homePage,
         productApiSteps,
+        productDetailPage,
+        productsPage,
         productSteps,
     }) => {
         let firstProductName: string;
@@ -149,7 +149,7 @@ test.describe("TC03-Hybrid: Add Multiple Products to Cart (API Setup)", () => {
             expect(firstCartItem, "First product should be in cart").toBeDefined();
             
             const pricesMatch1 = productApiSteps.verifyProductPricesMatch(
-                { name: firstProductName, price: firstProductApiPrice, id: 0, brand: "" },
+                { brand: "", id: 0, name: firstProductName, price: firstProductApiPrice },
                 firstCartItem!.price
             );
             const pricesMatch1Resolved = await pricesMatch1;
@@ -163,7 +163,7 @@ test.describe("TC03-Hybrid: Add Multiple Products to Cart (API Setup)", () => {
             expect(secondCartItem, "Second product should be in cart").toBeDefined();
             
             const pricesMatch2 = productApiSteps.verifyProductPricesMatch(
-                { name: secondProductName, price: secondProductApiPrice, id: 0, brand: "" },
+                { brand: "", id: 0, name: secondProductName, price: secondProductApiPrice },
                 secondCartItem!.price
             );
             const pricesMatch2Resolved = await pricesMatch2;

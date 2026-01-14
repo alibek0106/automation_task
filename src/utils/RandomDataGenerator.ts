@@ -146,7 +146,7 @@ export class RandomDataGenerator {
    * @param max Maximum value
    */
   static integer(min: number, max: number): number {
-    return faker.number.int({ min, max });
+    return faker.number.int({ max, min });
   }
 
   /**

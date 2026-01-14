@@ -1,10 +1,10 @@
-import { isolatedTest as test, expect } from "../../../src/fixtures";
+import { expect, isolatedTest as test } from '@fixtures/index';
 
 test.describe("TC02: User Login", () => {
     test("should login with registered user credentials", async ({
+        authedUser,
         homePage,
         loginPage,
-        authedUser,
     }) => {
         // Step 1: Navigate to homepage
         await test.step("Navigate to homepage", async () => {

@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 
 /**
  * NavigationMenu - Reusable component for global navigation header

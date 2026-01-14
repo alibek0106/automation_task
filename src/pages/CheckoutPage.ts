@@ -1,6 +1,5 @@
-import { Page, Locator, expect } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { BasePage } from "./BasePage";
-import { User } from "../models/UserModels";
 
 export class CheckoutPage extends BasePage {
     readonly deliveryAddressSection: Locator;
@@ -50,44 +49,27 @@ export class CheckoutPage extends BasePage {
     }
 
     /**
-     * Verify delivery address matches user data
+     * Get delivery address text for verification
      */
-    async verifyDeliveryAddress(user: User): Promise<void> {
-        const addressText = await this.deliveryAddressSection.textContent();
-
-        expect(addressText, "Delivery address should contain first name").toContain(user.firstName);
-        expect(addressText, "Delivery address should contain last name").toContain(user.lastName);
-        expect(addressText, "Delivery address should contain address1").toContain(user.address1);
-        expect(addressText, "Delivery address should contain city").toContain(user.city);
-        expect(addressText, "Delivery address should contain state").toContain(user.state);
-        expect(addressText, "Delivery address should contain country").toContain(user.country);
+    async getDeliveryAddressText(): Promise<string> {
+        const text = await this.deliveryAddressSection.textContent();
+        return text?.trim() || "";
     }
 
     /**
-     * Verify billing address matches user data
+     * Get billing address text for verification
      */
-    async verifyBillingAddress(user: User): Promise<void> {
-        const addressText = await this.billingAddressSection.textContent();
-
-        expect(addressText, "Billing address should contain first name").toContain(user.firstName);
-        expect(addressText, "Billing address should contain last name").toContain(user.lastName);
-        expect(addressText, "Billing address should contain address1").toContain(user.address1);
+    async getBillingAddressText(): Promise<string> {
+        const text = await this.billingAddressSection.textContent();
+        return text?.trim() || "";
     }
 
     /**
-     * Verify order details contain expected products
+     * Get order review text for verification
      */
-    async verifyOrderContainsProduct(productName: string): Promise<void> {
-        const orderText = await this.orderReviewTable.textContent();
-        const normalize = (value: string) =>
-            value.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
-
-        const normalizedOrder = normalize(orderText ?? "");
-        const normalizedName = normalize(productName);
-        expect(
-            normalizedOrder,
-            `Order should contain product: ${productName}`
-        ).toContain(normalizedName);
+    async getOrderReviewText(): Promise<string> {
+        const text = await this.orderReviewTable.textContent();
+        return text?.trim() || "";
     }
 
     /**

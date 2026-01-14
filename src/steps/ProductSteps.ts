@@ -1,7 +1,7 @@
 import { expect } from '@playwright/test';
-import { ProductsPage } from '../pages/ProductsPage';
-import { ProductDetailPage } from '../pages/ProductDetailPage';
-import { step } from '../utils/StepDecorator';
+import { ProductDetailPage } from '@pages/ProductDetailPage';
+import { ProductsPage } from '@pages/ProductsPage';
+import { step } from '@utils/StepDecorator';
 
 export class ProductSteps {
     constructor(
@@ -11,6 +11,7 @@ export class ProductSteps {
 
     @step('Verify search results visible')
     async verifySearchResultsVisible(): Promise<void> {
+        // Verify searched products heading is displayed after search
         await expect(
             this.productsPage.searchedProductsHeading,
             "Searched products heading should be visible"
@@ -19,6 +20,7 @@ export class ProductSteps {
 
     @step('Verify products list visible')
     async verifyProductsListVisible(): Promise<void> {
+        // Verify at least one product is visible on the products page
         await expect(
             this.productsPage.productItems.first(),
             "At least one product should be visible"

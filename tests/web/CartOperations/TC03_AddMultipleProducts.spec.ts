@@ -1,11 +1,11 @@
-import { test, expect } from "../../../src/fixtures";
+import { expect, test } from '@fixtures/index';
 
 test.describe("TC03: Add Multiple Products to Cart", () => {
     test("should add multiple products with different quantities and verify cart", async ({
-        homePage,
-        productsPage,
-        productDetailPage,
         cartPage,
+        homePage,
+        productDetailPage,
+        productsPage,
         productSteps,
     }) => {
         let firstProductName: string;

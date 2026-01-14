@@ -1,12 +1,12 @@
-import { isolatedTest as test, expect } from "../../../src/fixtures";
-import { DataFactory } from "../../../src/utils/DataFactory";
-import { User } from "../../../src/models/UserModels";
+import { expect, isolatedTest as test } from '@fixtures/index';
+import { User } from '@models/UserModels';
+import { DataFactory } from '@utils/DataFactory';
 
 test.describe("TC06-Hybrid: Complete End-to-End Purchase Flow (API Setup + Full Validation)", () => {
     let testUser: User;
     let userCreated = false;
 
-    test.beforeEach(async ({ userApiSteps, homePage, loginPage }) => {
+    test.beforeEach(async ({ homePage, loginPage, userApiSteps }) => {
         // Create user via API for faster setup
         const workerIndex = test.info().workerIndex;
         testUser = DataFactory.generateUser({ workerIndex });
@@ -30,15 +30,16 @@ test.describe("TC06-Hybrid: Complete End-to-End Purchase Flow (API Setup + Full 
     });
 
     test("should complete full checkout from product selection to order confirmation with API validation", async ({
-        userApiSteps,
-        homePage,
-        productsPage,
-        productDetailPage,
         cartPage,
         checkoutPage,
-        paymentPage,
+        checkoutSteps,
+        homePage,
         paymentDonePage,
+        paymentPage,
         productApiSteps,
+        productDetailPage,
+        productsPage,
+        userApiSteps,
     }) => {
         let firstProductName: string;
         let secondProductName: string;
@@ -128,7 +129,7 @@ test.describe("TC06-Hybrid: Complete End-to-End Purchase Flow (API Setup + Full 
             expect(firstCartItem, `Product "${firstProductName}" should be in cart`).toBeDefined();
             
             const pricesMatch1 = productApiSteps.verifyProductPricesMatch(
-                { name: firstProductName, price: firstProductApiPrice, id: 0, brand: "" },
+                { brand: "", id: 0, name: firstProductName, price: firstProductApiPrice },
                 firstCartItem!.price
             );
             const pricesMatch1Resolved = await pricesMatch1;
@@ -141,7 +142,7 @@ test.describe("TC06-Hybrid: Complete End-to-End Purchase Flow (API Setup + Full 
             expect(secondCartItem, `Product "${secondProductName}" should be in cart`).toBeDefined();
             
             const pricesMatch2 = productApiSteps.verifyProductPricesMatch(
-                { name: secondProductName, price: secondProductApiPrice, id: 0, brand: "" },
+                { brand: "", id: 0, name: secondProductName, price: secondProductApiPrice },
                 secondCartItem!.price
             );
             const pricesMatch2Resolved = await pricesMatch2;
@@ -167,55 +168,55 @@ test.describe("TC06-Hybrid: Complete End-to-End Purchase Flow (API Setup + Full 
         // Step 7: Verify delivery address matches API user address details
         await test.step("Verify delivery address matches API user details", async () => {
             const userDetail = await userApiSteps.verifyAndGetUserDetailByEmail(testUser.email);
-            await checkoutPage.verifyDeliveryAddress({
-                name: userDetail.user.name,
-                firstName: userDetail.user.first_name,
-                lastName: userDetail.user.last_name,
-                company: userDetail.user.company,
+            await checkoutSteps.verifyDeliveryAddress({
                 address1: userDetail.user.address1,
                 address2: userDetail.user.address2 || "",
-                country: userDetail.user.country,
-                state: userDetail.user.state,
-                city: userDetail.user.city,
-                zipcode: userDetail.user.zipcode,
-                mobileNumber: testUser.mobileNumber,
-                email: userDetail.user.email,
-                password: testUser.password,
-                title: userDetail.user.title as "Mr" | "Mrs",
                 birthDay: userDetail.user.birth_day,
                 birthMonth: userDetail.user.birth_month,
                 birthYear: userDetail.user.birth_year,
+                city: userDetail.user.city,
+                company: userDetail.user.company,
+                country: userDetail.user.country,
+                email: userDetail.user.email,
+                firstName: userDetail.user.first_name,
+                lastName: userDetail.user.last_name,
+                mobileNumber: testUser.mobileNumber,
+                name: userDetail.user.name,
+                password: testUser.password,
+                state: userDetail.user.state,
+                title: userDetail.user.title as "Mr" | "Mrs",
+                zipcode: userDetail.user.zipcode,
             });
         });
 
         // Step 8: Verify billing address matches API user address details
         await test.step("Verify billing address matches API user details", async () => {
             const userDetail = await userApiSteps.verifyAndGetUserDetailByEmail(testUser.email);
-            await checkoutPage.verifyBillingAddress({
-                name: userDetail.user.name,
-                firstName: userDetail.user.first_name,
-                lastName: userDetail.user.last_name,
-                company: userDetail.user.company,
+            await checkoutSteps.verifyBillingAddress({
                 address1: userDetail.user.address1,
                 address2: userDetail.user.address2 || "",
-                country: userDetail.user.country,
-                state: userDetail.user.state,
-                city: userDetail.user.city,
-                zipcode: userDetail.user.zipcode,
-                mobileNumber: testUser.mobileNumber,
-                email: userDetail.user.email,
-                password: testUser.password,
-                title: userDetail.user.title as "Mr" | "Mrs",
                 birthDay: userDetail.user.birth_day,
                 birthMonth: userDetail.user.birth_month,
                 birthYear: userDetail.user.birth_year,
+                city: userDetail.user.city,
+                company: userDetail.user.company,
+                country: userDetail.user.country,
+                email: userDetail.user.email,
+                firstName: userDetail.user.first_name,
+                lastName: userDetail.user.last_name,
+                mobileNumber: testUser.mobileNumber,
+                name: userDetail.user.name,
+                password: testUser.password,
+                state: userDetail.user.state,
+                title: userDetail.user.title as "Mr" | "Mrs",
+                zipcode: userDetail.user.zipcode,
             });
         });
 
         // Step 9: Verify order details (products, quantities, prices match API)
         await test.step("Verify order contains products", async () => {
-            await checkoutPage.verifyOrderContainsProduct(firstProductName);
-            await checkoutPage.verifyOrderContainsProduct(secondProductName);
+            await checkoutSteps.verifyOrderContainsProduct(firstProductName);
+            await checkoutSteps.verifyOrderContainsProduct(secondProductName);
         });
 
         // Step 10: Enter order comment

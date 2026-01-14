@@ -1,16 +1,17 @@
-import { test, expect } from "../../../src/fixtures";
-import { DataFactory } from "../../../src/utils/DataFactory";
+import { expect, test } from '@fixtures/index';
+import { DataFactory } from '@utils/DataFactory';
 
 test.describe("TC06: Complete End-to-End Purchase Flow", () => {
     test("should complete full checkout from product selection to order confirmation", async ({
-        homePage,
-        productsPage,
-        productDetailPage,
+        authedUser,
         cartPage,
         checkoutPage,
-        paymentPage,
+        checkoutSteps,
+        homePage,
         paymentDonePage,
-        authedUser,
+        paymentPage,
+        productDetailPage,
+        productsPage,
     }) => {
         let firstProductName: string;
         let secondProductName: string;
@@ -47,18 +48,18 @@ test.describe("TC06: Complete End-to-End Purchase Flow", () => {
 
         // Step 4: Verify delivery address
         await test.step("Verify delivery address is displayed correctly", async () => {
-            await checkoutPage.verifyDeliveryAddress(authedUser);
+            await checkoutSteps.verifyDeliveryAddress(authedUser);
         });
 
         // Step 5: Verify billing address
         await test.step("Verify billing address is displayed correctly", async () => {
-            await checkoutPage.verifyBillingAddress(authedUser);
+            await checkoutSteps.verifyBillingAddress(authedUser);
         });
 
         // Step 6: Verify order details
         await test.step("Verify order contains products", async () => {
-            await checkoutPage.verifyOrderContainsProduct(firstProductName);
-            await checkoutPage.verifyOrderContainsProduct(secondProductName);
+            await checkoutSteps.verifyOrderContainsProduct(firstProductName);
+            await checkoutSteps.verifyOrderContainsProduct(secondProductName);
         });
 
         // Step 7: Enter order comment

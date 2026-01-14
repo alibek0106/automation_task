@@ -1,6 +1,6 @@
 import { APIResponse } from '@playwright/test';
+import { Routes } from '@constants/Routes';
 import { ApiClient } from '../ApiClient';
-import { Routes } from '../../constants/Routes';
 
 export class SearchService extends ApiClient {
     async searchProduct(searchProduct: string): Promise<APIResponse> {

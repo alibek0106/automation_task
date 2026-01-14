@@ -1,17 +1,18 @@
-import { isolatedTest as test, expect } from "../../../src/fixtures";
-import { DataFactory } from "../../../src/utils/DataFactory";
+import { expect, isolatedTest as test } from '@fixtures/index';
+import { DataFactory } from '@utils/DataFactory';
 
 test.describe("TC23: Verify address details in checkout page", () => {
     test("should create account, add products, verify addresses match registration, then delete account", async ({
-        homePage,
-        loginPage,
-        signupPage,
         accountCreatedPage,
-        productsPage,
-        productDetailPage,
+        accountDeletedPage,
         cartPage,
         checkoutPage,
-        accountDeletedPage,
+        checkoutSteps,
+        homePage,
+        loginPage,
+        productDetailPage,
+        productsPage,
+        signupPage,
     }) => {
         // Generate unique user data for this test
         const workerIndex = test.info().workerIndex;
@@ -62,12 +63,12 @@ test.describe("TC23: Verify address details in checkout page", () => {
 
         // Step 12: Verify delivery address matches registration
         await test.step("Verify delivery address matches registration", async () => {
-            await checkoutPage.verifyDeliveryAddress(userData);
+            await checkoutSteps.verifyDeliveryAddress(userData);
         });
 
         // Step 13: Verify billing address matches registration
         await test.step("Verify billing address matches registration", async () => {
-            await checkoutPage.verifyBillingAddress(userData);
+            await checkoutSteps.verifyBillingAddress(userData);
         });
 
         // Step 14-15: Delete account and verify

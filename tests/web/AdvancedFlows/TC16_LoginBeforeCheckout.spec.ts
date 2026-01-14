@@ -1,19 +1,19 @@
-import { isolatedTest as test, expect } from "../../../src/fixtures";
-import { DataFactory } from "../../../src/utils/DataFactory";
+import { expect, isolatedTest as test } from '@fixtures/index';
+import { DataFactory } from '@utils/DataFactory';
 
 test.describe("TC16: Place Order - Login before Checkout", () => {
     test("should login with existing user, add products and complete checkout", async ({
-        homePage,
-        loginPage,
-        signupPage,
         accountCreatedPage,
-        productsPage,
-        productDetailPage,
+        accountDeletedPage,
         cartPage,
         checkoutPage,
-        paymentPage,
+        homePage,
+        loginPage,
         paymentDonePage,
-        accountDeletedPage,
+        paymentPage,
+        productDetailPage,
+        productsPage,
+        signupPage,
     }) => {
         const workerIndex = test.info().workerIndex;
         const userData = DataFactory.generateUser({ workerIndex });

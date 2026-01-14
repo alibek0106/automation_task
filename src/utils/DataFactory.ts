@@ -1,5 +1,5 @@
-import { User } from "../models/UserModels";
 import { PaymentDetails } from "../models/PaymentModels";
+import { User } from "../models/UserModels";
 import { RandomDataGenerator } from "./RandomDataGenerator";
 
 /**
@@ -18,25 +18,25 @@ export class DataFactory {
     const lastName = RandomDataGenerator.lastName();
 
     return {
-      name: `${firstName} ${lastName}`,
-      email: typeof options?.workerIndex === "number"
-        ? RandomDataGenerator.uniqueEmailForWorker(options.workerIndex, firstName, lastName)
-        : RandomDataGenerator.uniqueEmail(firstName, lastName),
-      password: RandomDataGenerator.password(10),
-      title: RandomDataGenerator.arrayElement(["Mr", "Mrs"]),
-      firstName: firstName,
-      lastName: lastName,
-      company: RandomDataGenerator.companyName(),
       address1: RandomDataGenerator.streetAddress(),
       address2: RandomDataGenerator.secondaryAddress(),
-      country: "United States", // Fixed for dropdown selection
-      state: RandomDataGenerator.state(),
-      city: RandomDataGenerator.city(),
-      zipcode: RandomDataGenerator.zipCode(),
-      mobileNumber: RandomDataGenerator.phoneNumber(),
       birthDay: String(RandomDataGenerator.integer(1, 28)),
       birthMonth: RandomDataGenerator.monthName(),
       birthYear: String(RandomDataGenerator.integer(1980, 2000)),
+      city: RandomDataGenerator.city(),
+      company: RandomDataGenerator.companyName(),
+      country: "United States",
+      email: typeof options?.workerIndex === "number"
+        ? RandomDataGenerator.uniqueEmailForWorker(options.workerIndex, firstName, lastName)
+        : RandomDataGenerator.uniqueEmail(firstName, lastName),
+      firstName, lastName,
+      mobileNumber: RandomDataGenerator.phoneNumber(),
+      name: `${firstName} ${lastName}`,
+      password: RandomDataGenerator.password(10),
+      // Fixed for dropdown selection
+      state: RandomDataGenerator.state(),
+      title: RandomDataGenerator.arrayElement(["Mr", "Mrs"]),
+      zipcode: RandomDataGenerator.zipCode(),
     };
   }
 
@@ -45,7 +45,6 @@ export class DataFactory {
    */
   static generatePaymentDetails(): PaymentDetails {
     return {
-      nameOnCard: RandomDataGenerator.fullName(),
       cardNumber: RandomDataGenerator.creditCardNumber(),
       cvc: RandomDataGenerator.creditCardCVV(),
       expiryMonth: RandomDataGenerator.paddedNumber(
@@ -53,6 +52,7 @@ export class DataFactory {
         2,
       ),
       expiryYear: String(RandomDataGenerator.integer(2025, 2030)),
+      nameOnCard: RandomDataGenerator.fullName(),
     };
   }
 

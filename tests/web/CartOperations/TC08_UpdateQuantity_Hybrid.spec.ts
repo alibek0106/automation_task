@@ -1,12 +1,12 @@
-import { isolatedTest as test, expect } from "../../../src/fixtures";
-import { DataFactory } from "../../../src/utils/DataFactory";
-import { User } from "../../../src/models/UserModels";
+import { expect, isolatedTest as test } from '@fixtures/index';
+import { User } from '@models/UserModels';
+import { DataFactory } from '@utils/DataFactory';
 
 test.describe("TC08-Hybrid: Update Product Quantity in Cart (API Setup)", () => {
     let testUser: User;
     let userCreated = false;
 
-    test.beforeEach(async ({ userApiSteps, homePage, loginPage }) => {
+    test.beforeEach(async ({ homePage, loginPage, userApiSteps }) => {
         // Create user via API for faster setup
         const workerIndex = test.info().workerIndex;
         testUser = DataFactory.generateUser({ workerIndex });
@@ -30,11 +30,11 @@ test.describe("TC08-Hybrid: Update Product Quantity in Cart (API Setup)", () => 
     });
 
     test("should update product quantities and verify calculations with API price validation", async ({
-        homePage,
-        productsPage,
-        productDetailPage,
         cartPage,
+        homePage,
         productApiSteps,
+        productDetailPage,
+        productsPage,
     }) => {
         let productName: string;
         let productPrice: string;

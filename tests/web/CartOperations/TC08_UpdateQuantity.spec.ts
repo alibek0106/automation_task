@@ -1,11 +1,11 @@
-import { test, expect } from "../../../src/fixtures";
+import { expect, test } from '@fixtures/index';
 
 test.describe("TC08: Update Product Quantity in Cart", () => {
     test("should update product quantities and verify calculations", async ({
-        homePage,
-        productsPage,
-        productDetailPage,
         cartPage,
+        homePage,
+        productDetailPage,
+        productsPage,
     }) => {
         let productName: string;
         let productPrice: string;

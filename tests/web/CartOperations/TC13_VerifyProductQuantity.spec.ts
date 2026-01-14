@@ -1,11 +1,11 @@
-import { test, expect } from "../../../src/fixtures";
+import { expect, test } from '@fixtures/index';
 
 test.describe("TC13: Verify Product quantity in Cart", () => {
     test("should verify exact quantity when product added with increased quantity", async ({
-        homePage,
-        productsPage,
-        productDetailPage,
         cartPage,
+        homePage,
+        productDetailPage,
+        productsPage,
     }) => {
         let productName: string;
         const targetQuantity = 4;

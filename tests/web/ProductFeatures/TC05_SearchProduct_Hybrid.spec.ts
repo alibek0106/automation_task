@@ -1,12 +1,12 @@
-import { isolatedTest as test, expect } from "../../../src/fixtures";
-import { TestData } from "../../../src/constants/TestData";
+import { TestData } from '@constants/TestData';
+import { expect, isolatedTest as test } from '@fixtures/index';
 
 test.describe("TC05-Hybrid: Search Product with API Validation", () => {
     test("should search for products via API and validate UI results match API", async ({
         homePage,
-        productsPage,
-        productDetailPage,
         productApiSteps,
+        productDetailPage,
+        productsPage,
         productSteps,
     }) => {
         const searchKeyword = TestData.SEARCH.VALID_TERM_2;
@@ -102,8 +102,8 @@ test.describe("TC05-Hybrid: Search Product with API Validation", () => {
 
     test("should show no results for non-existent product (API validation)", async ({
         homePage,
-        productsPage,
         productApiSteps,
+        productsPage,
     }) => {
         const invalidKeyword = TestData.SEARCH.INVALID_TERM;
 
