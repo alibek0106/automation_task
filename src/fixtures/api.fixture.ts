@@ -3,6 +3,7 @@ import { BrandApiSteps } from '@api/api-steps/BrandApiSteps';
 import { ProductApiSteps } from '@api/api-steps/ProductApiSteps';
 import { UserApiSteps } from '@api/api-steps/UserApiSteps';
 import { BrandService } from '@api/Services/BrandService';
+import { JsonPlaceholderService } from '@api/Services/JsonPlaceholderService';
 import { ProductService } from '@api/Services/ProductService';
 import { SearchService } from '@api/Services/SearchService';
 import { UserService } from '@api/Services/UserService';
@@ -10,6 +11,7 @@ import { UserService } from '@api/Services/UserService';
 export type ApiFixtures = {
     brandApiSteps: BrandApiSteps;
     brandService: BrandService;
+    jsonPlaceholderService: JsonPlaceholderService;
     productApiSteps: ProductApiSteps;
     productService: ProductService;
     searchService: SearchService;
@@ -38,5 +40,8 @@ export const apiFixtures = {
     },
     userService: async ({ request }: { request: APIRequestContext }, use: (s: UserService) => Promise<void>) => {
         await use(new UserService(request));
+    },
+    jsonPlaceholderService: async ({ request }: { request: APIRequestContext }, use: (s: JsonPlaceholderService) => Promise<void>) => {
+        await use(new JsonPlaceholderService(request));
     },
 };

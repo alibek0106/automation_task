@@ -9,6 +9,11 @@ export const Routes = {
         UPDATE_ACCOUNT: '/api/updateAccount',
         VERIFY_LOGIN: '/api/verifyLogin',
     },
+    JSONPLACEHOLDER: {
+        BASE_URL: 'https://jsonplaceholder.typicode.com',
+        POSTS: '/posts',
+        USERS: '/users',
+    },
     WEB: {
         ACCOUNT_CREATED: '/account_created',
         CHECKOUT: '/checkout',
