@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
-import { HomePage } from '../pages/HomePage';
-import { step } from '../utils/StepDecorator';
+import { HomePage } from '@pages/HomePage';
+import { step } from '@utils/StepDecorator';
 
 export class NavigationSteps {
     constructor(

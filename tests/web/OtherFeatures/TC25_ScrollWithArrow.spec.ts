@@ -1,4 +1,4 @@
-import { test, expect } from "../../../src/fixtures";
+import { expect, test } from '@fixtures/index';
 
 test.describe("TC25: Verify Scroll Up using Arrow button and Scroll Down", () => {
     test("should scroll down, verify subscription, scroll up with arrow, verify hero text", async ({
@@ -35,8 +35,10 @@ test.describe("TC25: Verify Scroll Up using Arrow button and Scroll Down", () =>
             await homePage.verifyFullFledgedTextVisible();
 
             // Verify we're actually at the top by checking if hero text is in viewport
-            const isInViewport = await homePage.isElementInViewport(homePage.fullFledgedText);
-            expect(isInViewport, "Hero text should be in viewport after scrolling up").toBe(true);
+            await expect(
+                homePage.fullFledgedText,
+                "Hero text should be in viewport after scrolling up"
+            ).toBeInViewport();
         });
     });
 });

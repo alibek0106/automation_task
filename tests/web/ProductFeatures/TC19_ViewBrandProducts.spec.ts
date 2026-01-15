@@ -1,4 +1,4 @@
-import { test, expect } from "../../../src/fixtures";
+import { expect, test } from '@fixtures/index';
 
 test.describe("TC19: View & Cart Brand Products", () => {
     test("should navigate through different brands and view their products", async ({

@@ -1,9 +1,9 @@
-import { Page, expect } from "@playwright/test";
+import { expect } from "@playwright/test";
+import { User } from "../models/UserModels";
+import { AccountCreatedPage } from "../pages/AccountCreatedPage";
 import { HomePage } from "../pages/HomePage";
 import { LoginPage } from "../pages/LoginPage";
 import { SignupPage } from "../pages/SignupPage";
-import { AccountCreatedPage } from "../pages/AccountCreatedPage";
-import { User } from "../models/UserModels";
 import { step } from "../utils/StepDecorator";
 
 export class RegistrationSteps {

@@ -1,6 +1,6 @@
-import { isolatedTest as test, expect } from "../../../src/fixtures";
-import { DataFactory } from "../../../src/utils/DataFactory";
-import { User } from "../../../src/models/UserModels";
+import { expect, isolatedTest as test } from '@fixtures/index';
+import { User } from '@models/UserModels';
+import { DataFactory } from '@utils/DataFactory';
 
 test.describe("TC02-Hybrid: Login with API-Created User", () => {
     let testUser: User;
@@ -20,7 +20,6 @@ test.describe("TC02-Hybrid: Login with API-Created User", () => {
     test("should login with API-created user credentials via UI", async ({
         homePage,
         loginPage,
-        authSteps,
     }) => {
         // Step 1: Navigate to homepage
         await test.step("Navigate to homepage", async () => {

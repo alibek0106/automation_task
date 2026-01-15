@@ -1,4 +1,4 @@
-import { Page, Locator, expect } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 import { NavigationMenu } from "../components/NavigationMenu";
 
 /**
@@ -46,13 +46,28 @@ export abstract class BasePage {
   /**
    * Click an element and wait for a URL match.
    * Uses configured navigationTimeout from Playwright config (no hardcoded timeouts).
+   *
+   * @remarks
+   * This method handles race conditions with ad overlays and hash changes by checking
+   * if navigation actually occurred before waiting for the URL pattern.
    */
   protected async clickAndWaitForURL(
     urlPattern: RegExp,
     click: () => Promise<unknown>,
   ): Promise<void> {
+    const currentUrl = this.page.url();
+
     await Promise.all([
-      this.page.waitForURL(urlPattern, { waitUntil: "domcontentloaded" }),
+      // Only wait for URL if we're expecting a navigation
+      this.page.waitForURL(
+        (url) => {
+          // Match the pattern AND ensure it's different from current URL
+          return (
+            urlPattern.test(url.toString()) && url.toString() !== currentUrl
+          );
+        },
+        { waitUntil: "domcontentloaded" },
+      ),
       click(),
     ]);
   }
@@ -61,7 +76,7 @@ export abstract class BasePage {
    * Wait for the page to load completely
    */
   async waitForLoadState(
-    state: "load" | "domcontentloaded" | "networkidle" = "load",
+    state: "domcontentloaded" | "load" | "networkidle" = "load",
   ): Promise<void> {
     await this.page.waitForLoadState(state);
   }
@@ -83,37 +98,5 @@ export abstract class BasePage {
     await expect(this.uniqueLocator, message).toBeVisible();
   }
 
-  /**
-   * Scroll to the bottom of the page
-   */
-  async scrollToBottom(): Promise<void> {
-    await this.page.waitForLoadState("domcontentloaded");
-    await this.page.evaluate(() => {
-      const scrollingElement = document.scrollingElement || document.documentElement;
-      window.scrollTo(0, scrollingElement.scrollHeight);
-    });
-  }
 
-  /**
-   * Scroll to the top of the page
-   */
-  async scrollToTop(): Promise<void> {
-    await this.page.waitForLoadState("domcontentloaded");
-    await this.page.evaluate(() => window.scrollTo(0, 0));
-  }
-
-  /**
-   * Check if an element is in the viewport
-   */
-  async isElementInViewport(locator: Locator): Promise<boolean> {
-    return locator.evaluate((element) => {
-      const rect = element.getBoundingClientRect();
-      return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-      );
-    });
-  }
 }

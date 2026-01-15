@@ -1,11 +1,11 @@
 import { expect } from '@playwright/test';
-import { HomePage } from '../pages/HomePage';
-import { LoginPage } from '../pages/LoginPage';
-import { SignupPage } from '../pages/SignupPage';
-import { AccountCreatedPage } from '../pages/AccountCreatedPage';
-import { AccountDeletedPage } from '../pages/AccountDeletedPage';
-import { User } from '../models/UserModels';
-import { step } from '../utils/StepDecorator';
+import { User } from '@models/UserModels';
+import { AccountCreatedPage } from '@pages/AccountCreatedPage';
+import { AccountDeletedPage } from '@pages/AccountDeletedPage';
+import { HomePage } from '@pages/HomePage';
+import { LoginPage } from '@pages/LoginPage';
+import { SignupPage } from '@pages/SignupPage';
+import { step } from '@utils/StepDecorator';
 
 /**
  * Reusable steps for authentication flows
@@ -28,6 +28,7 @@ export class AuthSteps {
         await this.loginPage.signup(userData.name, userData.email);
         await this.signupPage.fillAccountDetails(userData);
         await this.signupPage.clickCreateAccount();
+        // Verify account creation success message is visible
         await expect(this.accountCreatedPage.successMessage).toBeVisible();
         await this.accountCreatedPage.clickContinue();
         await this.homePage.verifyLoggedInVisible();
@@ -76,6 +77,7 @@ export class AuthSteps {
      */
     @step('Verify account created')
     async verifyAndContinue(): Promise<void> {
+        // Verify account creation success message is displayed
         await expect(this.accountCreatedPage.successMessage).toBeVisible();
         await this.accountCreatedPage.clickContinue();
     }

@@ -1,5 +1,5 @@
-import { test, expect } from "../../../src/fixtures";
-import { TestData } from "../../../src/constants/TestData";
+import { TestData } from '@constants/TestData';
+import { expect, test } from '@fixtures/index';
 
 test.describe("TC18: View Category Products", () => {
     test("should navigate through women and men categories and verify products", async ({

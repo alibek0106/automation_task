@@ -1,8 +1,8 @@
 import { expect } from '@playwright/test';
+import { StatusCode } from '@constants/StatusCode';
+import { Brand, BrandsListResponseSchema } from '@models/BrandModels';
+import { step } from '@utils/StepDecorator';
 import { BrandService } from '../Services/BrandService';
-import { Brand, BrandsListResponseSchema } from '../../models/BrandModels';
-import { StatusCode } from '../../constants/StatusCode';
-import { step } from '../../utils/StepDecorator';
 
 /**
  * BrandApiSteps - API operations for brand data

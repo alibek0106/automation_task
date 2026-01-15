@@ -1,4 +1,4 @@
-import { test, expect } from "../../../src/fixtures";
+import { expect, test } from '@fixtures/index';
 
 test.describe("TC07: User Logout Functionality", () => {
     test("should logout user and terminate session", async ({

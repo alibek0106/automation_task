@@ -2,28 +2,28 @@ import { z } from 'zod';
 
 // Product schema
 export const ProductSchema = z.object({
-    id: z.number(),
-    name: z.string(),
-    price: z.string(),
     brand: z.string(),
     category: z.object({
+        category: z.string(),
         usertype: z.object({
             usertype: z.string(),
         }).optional(),
-        category: z.string(),
     }).optional(),
+    id: z.number(),
+    name: z.string(),
+    price: z.string(),
 }).strict();
 
 // Products list response schema
 export const ProductsListResponseSchema = z.object({
-    responseCode: z.number(),
     products: z.array(ProductSchema),
+    responseCode: z.number(),
 }).strict();
 
 // Product detail response (for search)
 export const SearchProductResponseSchema = z.object({
-    responseCode: z.number(),
     products: z.array(ProductSchema),
+    responseCode: z.number(),
 }).strict();
 
 export type Product = z.infer<typeof ProductSchema>;

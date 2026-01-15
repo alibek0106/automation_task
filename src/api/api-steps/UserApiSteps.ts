@@ -1,10 +1,10 @@
 import { expect } from '@playwright/test';
+import { StatusCode } from '@constants/StatusCode';
+import { TestData } from '@constants/TestData';
+import { ApiResponseSchema, User, UserDetailResponse, UserDetailResponseSchema } from '@models/UserModels';
+import { retry, RetryableError } from '@utils/Retry';
+import { step } from '@utils/StepDecorator';
 import { UserService } from '../Services/UserService';
-import { User, ApiResponseSchema, UserDetailResponseSchema, UserDetailResponse } from '../../models/UserModels';
-import { StatusCode } from '../../constants/StatusCode';
-import { step } from '../../utils/StepDecorator';
-import { retry, RetryableError } from '../../utils/Retry';
-import { TestData } from '../../constants/TestData';
 
 /**
  * UserApiSteps - API operations for user management

@@ -1,64 +1,69 @@
-import { defineConfig, devices } from '@playwright/test';
-import dotenv from 'dotenv';
-import path from 'path';
+import { defineConfig, devices } from "@playwright/test";
+import dotenv from "dotenv";
+import path from "path";
+import { fileURLToPath } from "url";
 
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+dotenv.config({ path: path.resolve(__dirname, ".env") });
 
 /**
  * Get worker-specific storage state path
  * Each worker gets its own authenticated session to avoid conflicts
  */
 export function getWorkerStorageState(workerIndex: number): string {
-    return path.join(__dirname, `playwright/.auth/worker-${workerIndex}.json`);
+  return path.join(__dirname, `playwright/.auth/worker-${workerIndex}.json`);
 }
 
 /**
  * Get worker-specific user data path
  */
 export function getWorkerUserData(workerIndex: number): string {
-    return path.join(__dirname, `playwright/.auth/user-${workerIndex}.json`);
+  return path.join(__dirname, `playwright/.auth/user-${workerIndex}.json`);
 }
 
 export default defineConfig({
-    testDir: './tests',
-    timeout: 60_000,
-    fullyParallel: true,
-    forbidOnly: !!process.env.CI,
-    retries: process.env.CI ? 2 : 0,
-    workers: process.env.CI ? 4 : 4, // at least 4 workers
-    reporter: [['list'], ['html', { open: 'never' }]],
-    expect: {
-        timeout: 10_000,
+  expect: {
+    timeout: 10_000,
+  },
+  forbidOnly: !!process.env.CI,
+  fullyParallel: true,
+  projects: [
+    {
+      name: "setup",
+      testMatch: /global\.setup\.ts/,
     },
-    use: {
-        baseURL: process.env.BASE_URL || 'https://www.automationexercise.com',
-        trace: 'on-first-retry',
-        screenshot: 'only-on-failure',
-        video: 'retain-on-failure',
-        testIdAttribute: 'data-qa',
-        actionTimeout: 15_000,
-        navigationTimeout: 60_000,
+    {
+      name: "api",
+      testMatch: /.*\/api\/.*\.spec\.ts/,
+      use: {
+        baseURL: process.env.BASE_URL || "https://www.automationexercise.com",
+      },
     },
-    projects: [
-        {
-            name: 'setup',
-            testMatch: /global\.setup\.ts/,
-        },
-        {
-            name: 'api',
-            testMatch: /.*\/api\/.*\.spec\.ts/,
-            use: {
-                baseURL: process.env.BASE_URL || 'https://www.automationexercise.com',
-            },
-        },
-        {
-            name: 'chromium',
-            dependencies: ['setup'],
-            testMatch: /.*\/web\/.*\.spec\.ts/,
-            use: {
-                ...devices['Desktop Chrome'],
-                // Worker-specific storage state is loaded via auth.fixture.ts
-            },
-        },
-    ],
+    {
+      dependencies: ["setup"],
+      name: "chromium",
+      testMatch: /.*\/web\/.*\.spec\.ts/,
+      use: {
+        ...devices["Desktop Chrome"],
+        // Worker-specific storage state is loaded via auth.fixture.ts
+      },
+    },
+  ],
+  // at least 4 workers
+  reporter: [["list"], ["html", { open: "never" }]],
+  retries: process.env.CI ? 2 : 0,
+  testDir: "./tests",
+  timeout: 60_000,
+  use: {
+    actionTimeout: 15_000,
+    baseURL: process.env.BASE_URL || "https://www.automationexercise.com",
+    navigationTimeout: 60_000,
+    screenshot: "only-on-failure",
+    testIdAttribute: "data-qa",
+    trace: "on-first-retry",
+    video: "retain-on-failure",
+  },
+  workers: process.env.CI ? 4 : 4,
 });

@@ -29,11 +29,11 @@ expect.extend({
         const pass = actual === expected;
 
         return {
-            pass,
             message: () =>
                 pass
                     ? `Expected status code not to be ${expected}, but received ${actual}.`
                     : `Expected status code to be ${expected}, but received ${actual}.`,
+            pass,
         };
     },
 });

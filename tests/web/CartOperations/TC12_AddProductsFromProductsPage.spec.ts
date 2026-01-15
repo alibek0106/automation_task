@@ -1,15 +1,11 @@
-import { test, expect } from "../../../src/fixtures";
+import { expect, test } from '@fixtures/index';
 
 test.describe("TC12: Add Products in Cart", () => {
     test("should add multiple products from products page and verify cart", async ({
+        cartPage,
         homePage,
         productsPage,
-        productDetailPage,
-        cartPage,
     }) => {
-        let firstProductName: string;
-        let secondProductName: string;
-
         // Step 0: Clear cart first to ensure clean state
         await test.step("Clear cart if needed", async () => {
             await cartPage.goto();

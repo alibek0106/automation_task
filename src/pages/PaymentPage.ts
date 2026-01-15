@@ -1,6 +1,6 @@
-import { Page, Locator, expect } from "@playwright/test";
-import { BasePage } from "./BasePage";
+import { expect, Locator, Page } from "@playwright/test";
 import { PaymentDetails } from "../models/PaymentModels";
+import { BasePage } from "./BasePage";
 
 export class PaymentPage extends BasePage {
     readonly nameOnCardInput: Locator;

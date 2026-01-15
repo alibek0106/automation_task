@@ -1,6 +1,6 @@
-import { Page, Locator } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
+import { Routes } from '@constants/Routes';
 import { BasePage } from './BasePage';
-import { Routes } from '../constants/Routes';
 
 export class AccountCreatedPage extends BasePage {
     // Helper arrow function to reduce duplication for test ID locators

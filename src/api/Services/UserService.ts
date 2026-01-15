@@ -1,28 +1,28 @@
 import { APIResponse } from '@playwright/test';
+import { Routes } from '@constants/Routes';
+import { User } from '@models/UserModels';
 import { ApiClient } from '../ApiClient';
-import { User } from '../../models/UserModels';
-import { Routes } from '../../constants/Routes';
 
 export class UserService extends ApiClient {
     private toAccountForm(user: User): Record<string, string> {
         return {
-            name: user.name,
-            email: user.email,
-            password: user.password,
-            title: user.title,
+            address1: user.address1,
+            address2: user.address2 || '',
             birth_date: user.birthDay,
             birth_month: user.birthMonth,
             birth_year: user.birthYear,
+            city: user.city,
+            company: user.company,
+            country: user.country,
+            email: user.email,
             firstname: user.firstName,
             lastname: user.lastName,
-            company: user.company,
-            address1: user.address1,
-            address2: user.address2 || '',
-            country: user.country,
-            zipcode: user.zipcode,
-            state: user.state,
-            city: user.city,
             mobile_number: user.mobileNumber,
+            name: user.name,
+            password: user.password,
+            state: user.state,
+            title: user.title,
+            zipcode: user.zipcode,
         };
     }
 

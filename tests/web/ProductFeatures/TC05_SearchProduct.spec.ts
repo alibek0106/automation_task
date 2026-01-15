@@ -1,5 +1,5 @@
-import { test, expect } from "../../../src/fixtures";
-import { TestData } from "../../../src/constants/TestData";
+import { TestData } from '@constants/TestData';
+import { expect, test } from '@fixtures/index';
 
 test.describe("TC05: Search Product and Verify Results", () => {
     test("should search for products and verify relevant results", async ({

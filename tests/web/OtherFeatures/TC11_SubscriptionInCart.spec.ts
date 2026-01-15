@@ -1,42 +1,27 @@
-import { test, expect } from "../../../src/fixtures";
+import { test } from '@fixtures/index';
 
 test.describe("TC11: Verify Subscription in Cart page", () => {
     test("should allow subscription from cart page footer", async ({
-        homePage,
         cartPage,
+        homePage,
     }) => {
         const testEmail = `subscriber${Date.now()}@example.com`;
 
-        // Step 1-3: Navigate to home and verify
-        await test.step("Navigate to home page", async () => {
-            await homePage.goto();
-            await homePage.verifyPageOpened();
-        });
+        // Navigate to home and verify
+        await homePage.goto();
+        await homePage.verifyPageOpened();
 
-        // Step 4: Click Cart button
-        await test.step("Navigate to cart page", async () => {
-            await homePage.navigation.clickCart();
-            // Don't verify page opened - cart might be empty
-        });
+        // Navigate to cart page
+        await homePage.navigation.clickCart();
 
-        // Step 5: Scroll down to footer
-        await test.step("Scroll to footer", async () => {
-            await cartPage.scrollToBottom();
-        });
+        // Scroll to footer and verify subscription text
+        await cartPage.subscriptionEmailInput.scrollIntoViewIfNeeded();
+        await cartPage.verifySubscriptionVisible();
 
-        // Step 6: Verify 'SUBSCRIPTION' text
-        await test.step("Verify SUBSCRIPTION text is visible", async () => {
-            await cartPage.verifySubscriptionVisible();
-        });
+        // Subscribe with email
+        await cartPage.subscribeWithEmail(testEmail);
 
-        // Step 7: Enter email and click arrow button
-        await test.step("Subscribe with email", async () => {
-            await cartPage.subscribeWithEmail(testEmail);
-        });
-
-        // Step 8: Verify success message
-        await test.step("Verify subscription success message", async () => {
-            await cartPage.verifySubscriptionSuccess();
-        });
+        // Verify subscription success message
+        await cartPage.verifySubscriptionSuccess();
     });
 });

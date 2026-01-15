@@ -1,9 +1,8 @@
-import { Page } from '@playwright/test';
-import { HomePage } from '../pages/HomePage';
-import { ProductsPage } from '../pages/ProductsPage';
-import { ProductDetailPage } from '../pages/ProductDetailPage';
-import { CartPage } from '../pages/CartPage';
-import { step } from '../utils/StepDecorator';
+import { CartPage } from '@pages/CartPage';
+import { HomePage } from '@pages/HomePage';
+import { ProductDetailPage } from '@pages/ProductDetailPage';
+import { ProductsPage } from '@pages/ProductsPage';
+import { step } from '@utils/StepDecorator';
 
 /**
  * Reusable steps for cart operations

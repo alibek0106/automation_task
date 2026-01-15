@@ -1,11 +1,11 @@
 import { expect } from '@playwright/test';
+import { StatusCode } from '@constants/StatusCode';
+import { Product, ProductsListResponseSchema, SearchProductResponseSchema } from '@models/ProductModels';
+import { parsePriceToNumber as parsePrice, pricesMatch } from '@utils/PriceUtils';
+import { retry, RetryableError } from '@utils/Retry';
+import { step } from '@utils/StepDecorator';
 import { ProductService } from '../Services/ProductService';
 import { SearchService } from '../Services/SearchService';
-import { Product, ProductsListResponseSchema, SearchProductResponseSchema } from '../../models/ProductModels';
-import { StatusCode } from '../../constants/StatusCode';
-import { step } from '../../utils/StepDecorator';
-import { retry, RetryableError } from '../../utils/Retry';
-import { parsePriceToNumber as parsePrice, pricesMatch } from '../../utils/PriceUtils';
 
 /**
  * ProductApiSteps - API operations for product data

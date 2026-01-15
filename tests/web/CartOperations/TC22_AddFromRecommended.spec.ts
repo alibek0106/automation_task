@@ -1,9 +1,9 @@
-import { test, expect } from "../../../src/fixtures";
+import { expect, test } from '@fixtures/index';
 
 test.describe("TC22: Add to cart from Recommended items", () => {
     test("should add recommended product to cart and verify", async ({
-        homePage,
         cartPage,
+        homePage,
     }) => {
         // Step 1-2: Navigate to home
         await test.step("Navigate to home page", async () => {

@@ -1,12 +1,12 @@
-import { Page, Locator, expect } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 import { Routes } from "../constants/Routes";
 import { BasePage } from "./BasePage";
 
 export interface ContactFormData {
-    name: string;
     email: string;
-    subject: string;
     message: string;
+    name: string;
+    subject: string;
 }
 
 export class ContactUsPage extends BasePage {
@@ -30,22 +30,22 @@ export class ContactUsPage extends BasePage {
             .getByRole("heading", { name: /get in touch/i })
             .describe("Get in touch heading");
         this.nameInput = this.page
-            .locator("[data-qa='name']")
+            .getByTestId("name")
             .describe("Name input");
         this.emailInput = this.page
-            .locator("[data-qa='email']")
+            .getByTestId("email")
             .describe("Email input");
         this.subjectInput = this.page
-            .locator("[data-qa='subject']")
+            .getByTestId("subject")
             .describe("Subject input");
         this.messageTextarea = this.page
-            .locator("[data-qa='message']")
+            .getByTestId("message")
             .describe("Message textarea");
         this.fileUploadInput = this.page
             .locator("input[name='upload_file']")
             .describe("File upload input");
         this.submitButton = this.page
-            .locator("[data-qa='submit-button']")
+            .getByTestId("submit-button")
             .describe("Submit button");
         this.successMessage = this.page
             .locator(".status.alert.alert-success")
@@ -123,10 +123,10 @@ export class ContactUsPage extends BasePage {
      */
     async getFormValues(): Promise<ContactFormData> {
         return {
-            name: await this.nameInput.inputValue(),
             email: await this.emailInput.inputValue(),
-            subject: await this.subjectInput.inputValue(),
             message: await this.messageTextarea.inputValue(),
+            name: await this.nameInput.inputValue(),
+            subject: await this.subjectInput.inputValue(),
         };
     }
 }

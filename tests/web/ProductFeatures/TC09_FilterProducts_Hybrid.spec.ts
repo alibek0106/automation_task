@@ -1,8 +1,8 @@
-import { isolatedTest as test, expect } from "../../../src/fixtures";
-import { TestData } from "../../../src/constants/TestData";
+import { TestData } from '@constants/TestData';
+import { expect, isolatedTest as test } from '@fixtures/index';
 
 test.describe("TC09-Hybrid: Product Category and Brand Filtering with API Validation", () => {
-    test("should filter products by category", async ({ homePage, productsPage, productApiSteps, productSteps }) => {
+    test("should filter products by category", async ({ homePage, productsPage, productSteps }) => {
         const womenDressCategory = TestData.CATEGORIES.WOMEN_DRESS;
         const menJeansCategory = TestData.CATEGORIES.MEN_JEANS;
 
@@ -53,10 +53,10 @@ test.describe("TC09-Hybrid: Product Category and Brand Filtering with API Valida
     });
 
     test("should filter products by brand with API validation", async ({
-        homePage,
-        productsPage,
         brandApiSteps,
+        homePage,
         productApiSteps,
+        productsPage,
         productSteps,
     }) => {
         const poloBrand = TestData.BRANDS.POLO;

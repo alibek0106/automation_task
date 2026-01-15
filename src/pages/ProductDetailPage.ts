@@ -1,4 +1,4 @@
-import { Page, Locator, expect } from "@playwright/test";
+import { expect, Locator, Page } from "@playwright/test";
 import { BasePage } from "./BasePage";
 
 export class ProductDetailPage extends BasePage {
@@ -187,16 +187,16 @@ export class ProductDetailPage extends BasePage {
      * Get all product information
      */
     async getProductInfo(): Promise<{
+        availability: string;
+        category: string;
         name: string;
         price: string;
-        category: string;
-        availability: string;
     }> {
         return {
+            availability: await this.getProductAvailability(),
+            category: await this.getProductCategory(),
             name: await this.getProductName(),
             price: await this.getProductPrice(),
-            category: await this.getProductCategory(),
-            availability: await this.getProductAvailability(),
         };
     }
 }
