@@ -54,6 +54,7 @@ export default defineConfig({
   reporter: [
     ["list"],
     ['dot'],
+    ['github'],
     ["html", { open: "never" }],
     ["json", { outputFile: "test-reports/results.json" }],
     ["junit", { outputFile: "test-reports/junit-results.xml" }]
