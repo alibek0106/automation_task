@@ -1,51 +1,96 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { BasePage } from './BasePage';
-import { User } from '../models/UserModels';
+import { Locator, Page } from "@playwright/test";
+import { BasePage } from "./BasePage";
 
 export class CheckoutPage extends BasePage {
-  readonly deliveryAddressSection: Locator;
-  readonly billingAddressSection: Locator;
-  readonly orderReviewTable: Locator;
-  readonly commentTextarea: Locator;
-  readonly placeOrderButton: Locator;
+    readonly deliveryAddressSection: Locator;
+    readonly billingAddressSection: Locator;
+    readonly orderReviewTable: Locator;
+    readonly orderCommentTextarea: Locator;
+    readonly placeOrderButton: Locator;
+    readonly checkoutHeading: Locator;
+    readonly orderReviewRows: Locator;
+    readonly orderReviewTotalRow: Locator;
+    readonly totalAmountText: Locator;
 
-  constructor(page: Page) {
-    super(page);
-    this.deliveryAddressSection = page.locator('#address_delivery').describe('Delivery address section');
-    this.billingAddressSection = page.locator('#address_invoice').describe('Billing address section');
-    this.orderReviewTable = page.locator('table.table-condensed').describe('Order review table');
-    this.commentTextarea = page.locator('textarea[name="message"]').describe('Comment textarea');
-    this.placeOrderButton = page.getByRole('link', { name: 'Place Order' }).describe('Place order button');
-  }
+    constructor(page: Page) {
+        super(
+            page,
+            page.locator("#cart_info").describe("Order review table")
+        );
 
-  async verifyCheckoutPageVisible() {
-    await expect(this.deliveryAddressSection, 'Delivery address section should be visible').toBeVisible();
-    await expect(this.billingAddressSection, 'Billing address section should be visible').toBeVisible();
-  }
+        this.deliveryAddressSection = this.page
+            .locator("#address_delivery")
+            .describe("Delivery address section");
+        this.billingAddressSection = this.page
+            .locator("#address_invoice")
+            .describe("Billing address section");
+        this.orderReviewTable = this.page
+            .locator("#cart_info")
+            .describe("Order review table");
+        this.orderCommentTextarea = this.page
+            .locator("textarea.form-control")
+            .describe("Order comment textarea");
+        this.placeOrderButton = this.page
+            .getByRole("link", { name: /place order/i })
+            .describe("Place order button");
+        this.checkoutHeading = this.page
+            .getByRole("heading", { name: /review your order/i })
+            .describe("Checkout heading");
+        this.orderReviewRows = this.orderReviewTable
+            .locator("tr")
+            .describe("Order review rows");
+        this.orderReviewTotalRow = this.orderReviewRows
+            .last()
+            .describe("Order review total row");
+        this.totalAmountText = this.orderReviewTotalRow
+            .locator("p")
+            .last()
+            .describe("Total amount text");
+    }
 
-  async verifyAddressDetails(type: 'delivery' | 'billing', user: User) {
-    const section = type === 'delivery' ? this.deliveryAddressSection : this.billingAddressSection;
-    await expect(section, 'Address section should be visible').toBeVisible();
+    /**
+     * Get delivery address text for verification
+     */
+    async getDeliveryAddressText(): Promise<string> {
+        const text = await this.deliveryAddressSection.textContent();
+        return text?.trim() || "";
+    }
 
-    const text = await section.textContent();
-    if (!text) throw new Error(`${type} address section is empty`);
+    /**
+     * Get billing address text for verification
+     */
+    async getBillingAddressText(): Promise<string> {
+        const text = await this.billingAddressSection.textContent();
+        return text?.trim() || "";
+    }
 
-    // Verify key fields from flattened User model
-    expect(text, 'Address section should contain user first name').toContain(user.firstName);
-    expect(text, 'Address section should contain user last name').toContain(user.lastName);
-    expect(text, 'Address section should contain user address1').toContain(user.address1);
-    expect(text, 'Address section should contain user city').toContain(user.city);
-    expect(text, 'Address section should contain user state').toContain(user.state);
-    expect(text, 'Address section should contain user zipcode').toContain(user.zipcode);
-    expect(text, 'Address section should contain user country').toContain(user.country);
-    expect(text, 'Address section should contain user mobile number').toContain(user.mobileNumber);
-  }
+    /**
+     * Get order review text for verification
+     */
+    async getOrderReviewText(): Promise<string> {
+        const text = await this.orderReviewTable.textContent();
+        return text?.trim() || "";
+    }
 
-  async enterComment(comment: string) {
-    await this.commentTextarea.fill(comment);
-  }
+    /**
+     * Enter order comment
+     */
+    async enterComment(comment: string): Promise<void> {
+        await this.orderCommentTextarea.fill(comment);
+    }
 
-  async clickPlaceOrder() {
-    await this.placeOrderButton.click();
-  }
+    /**
+     * Click place order button
+     */
+    async clickPlaceOrder(): Promise<void> {
+        await this.placeOrderButton.click();
+    }
+
+    /**
+     * Get total amount from checkout
+     */
+    async getTotalAmount(): Promise<string> {
+        const totalText = await this.totalAmountText.textContent();
+        return totalText?.trim() || "";
+    }
 }

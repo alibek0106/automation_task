@@ -1,23 +1,20 @@
-import { Page, Locator } from '@playwright/test';
+import { expect, Locator, Page } from "@playwright/test";
+import { NavigationMenu } from "../components/NavigationMenu";
 
 /**
  * BasePage - Base class for all page objects
  * Provides common page reference and navigation
  */
 export abstract class BasePage {
-    readonly page: Page;
-    readonly subscriptionHeading: Locator;
-    readonly subscriptionEmailInput: Locator;
-    readonly subscriptionSubmitBtn: Locator;
-    readonly subscriptionSuccessMsg: Locator;
+  readonly page: Page;
+  readonly navigation: NavigationMenu;
+  readonly uniqueLocator?: Locator;
 
-    constructor(page: Page) {
-        this.page = page;
-        this.subscriptionHeading = page.getByRole('heading', { name: 'Subscription', level: 2 }).describe('Subscribtion heading');
-        this.subscriptionEmailInput = page.getByPlaceholder('Your email address').describe('Email Input Field');
-        this.subscriptionSubmitBtn = page.locator('#subscribe').describe('Subscribe button');
-        this.subscriptionSuccessMsg = page.getByText('You have been successfully subscribed!').describe('Subscription success message');
-    }
+  constructor(page: Page, uniqueLocator?: Locator) {
+    this.page = page;
+    this.navigation = new NavigationMenu(page);
+    this.uniqueLocator = uniqueLocator;
+  }
 
   /**
    * Navigate to a specific URL
@@ -26,36 +23,80 @@ export abstract class BasePage {
    */
   async goto(url: string): Promise<void> {
     await this.page.goto(url, {
-      waitUntil: 'load',
-      timeout: 60000 // 60 seconds timeout for slow-loading pages
+      // domcontentloaded is typically more stable/faster than full load for this site
+      waitUntil: "domcontentloaded",
     });
   }
 
-    /**
-     * Get current page URL
-     */
-    getUrl(): string {
-        return this.page.url();
-    }
+  /**
+   * Get current page URL
+   */
+  getUrl(): string {
+    return this.page.url();
+  }
 
   /**
    * Navigate back in history
    * Waits for DOM to be ready after navigation
    */
   async goBack(): Promise<void> {
-    await this.page.goBack({ waitUntil: 'domcontentloaded' });
+    await this.page.goBack({ waitUntil: "domcontentloaded" });
   }
 
-    /**
-     * Wait for the page to load completely
-     */
-    async waitForLoadState(state: 'load' | 'domcontentloaded' | 'networkidle' = 'load'): Promise<void> {
-        await this.page.waitForLoadState(state);
+  /**
+   * Click an element and wait for a URL match.
+   * Uses configured navigationTimeout from Playwright config (no hardcoded timeouts).
+   *
+   * @remarks
+   * This method handles race conditions with ad overlays and hash changes by checking
+   * if navigation actually occurred before waiting for the URL pattern.
+   */
+  protected async clickAndWaitForURL(
+    urlPattern: RegExp,
+    click: () => Promise<unknown>,
+  ): Promise<void> {
+    const currentUrl = this.page.url();
+
+    await Promise.all([
+      // Only wait for URL if we're expecting a navigation
+      this.page.waitForURL(
+        (url) => {
+          // Match the pattern AND ensure it's different from current URL
+          return (
+            urlPattern.test(url.toString()) && url.toString() !== currentUrl
+          );
+        },
+        { waitUntil: "domcontentloaded" },
+      ),
+      click(),
+    ]);
+  }
+
+  /**
+   * Wait for the page to load completely
+   */
+  async waitForLoadState(
+    state: "domcontentloaded" | "load" | "networkidle" = "load",
+  ): Promise<void> {
+    await this.page.waitForLoadState(state);
+  }
+
+  /**
+   * Verify that the page is opened by checking the unique locator
+   * @param customMessage Optional custom error message for the assertion
+   */
+  async verifyPageOpened(customMessage?: string): Promise<void> {
+    if (!this.uniqueLocator) {
+      throw new Error(
+        "Cannot verify page opened: uniqueLocator not defined in page object constructor",
+      );
     }
 
-    async performSubscription(email: string) {
-        await this.subscriptionHeading.scrollIntoViewIfNeeded();
-        await this.subscriptionEmailInput.fill(email);
-        await this.subscriptionSubmitBtn.click();
-    }
+    const message =
+      customMessage ||
+      `Page should be opened (unique locator should be visible)`;
+    await expect(this.uniqueLocator, message).toBeVisible();
+  }
+
+
 }

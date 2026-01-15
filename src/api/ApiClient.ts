@@ -3,7 +3,33 @@ import { APIRequestContext, APIResponse } from "@playwright/test";
 export class ApiClient {
     constructor(protected readonly request: APIRequestContext) { }
 
-    protected async post(url: string, data: Record<string, string | number | boolean>): Promise<APIResponse> {
-        return this.request.post(url, { form: data });
+    private static readonly DEFAULT_TIMEOUT_MS = 30_000;
+
+    protected async get(
+        url: string,
+        options?: Parameters<APIRequestContext["get"]>[1]
+    ): Promise<APIResponse> {
+        return this.request.get(url, { timeout: ApiClient.DEFAULT_TIMEOUT_MS, ...options });
+    }
+
+    protected async post(
+        url: string,
+        options?: Parameters<APIRequestContext["post"]>[1]
+    ): Promise<APIResponse> {
+        return this.request.post(url, { timeout: ApiClient.DEFAULT_TIMEOUT_MS, ...options });
+    }
+
+    protected async put(
+        url: string,
+        options?: Parameters<APIRequestContext["put"]>[1]
+    ): Promise<APIResponse> {
+        return this.request.put(url, { timeout: ApiClient.DEFAULT_TIMEOUT_MS, ...options });
+    }
+
+    protected async delete(
+        url: string,
+        options?: Parameters<APIRequestContext["delete"]>[1]
+    ): Promise<APIResponse> {
+        return this.request.delete(url, { timeout: ApiClient.DEFAULT_TIMEOUT_MS, ...options });
     }
 }

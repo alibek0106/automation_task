@@ -1,8 +1,9 @@
-import { Page, Locator } from '@playwright/test';
-import { User } from '../models/UserModels';
+import { Locator, Page } from '@playwright/test';
+import { User } from '@models/UserModels';
 import { BasePage } from './BasePage';
 
 export class SignupPage extends BasePage {
+    readonly accountInfoHeading: Locator;
     readonly titleMr: Locator;
     readonly titleMrs: Locator;
     readonly password: Locator;
@@ -22,35 +23,45 @@ export class SignupPage extends BasePage {
     readonly zipcode: Locator;
     readonly mobile: Locator;
     readonly createAccountBtn: Locator;
-    readonly accountInfoHeading: Locator;
 
     constructor(page: Page) {
         super(page);
-        this.accountInfoHeading = page.getByText('Enter Account Information').describe('Account Info Heading');
-        this.titleMr = page.getByLabel('Mr.').describe('Title Mr');
-        this.titleMrs = page.getByLabel('Mrs.').describe('Title Mrs');
-        this.password = page.locator('[data-qa="password"]').describe('Password input');
-        this.daySelect = page.locator('[data-qa="days"]').describe('Day select');
-        this.monthSelect = page.locator('[data-qa="months"]').describe('Month select');
-        this.yearSelect = page.locator('[data-qa="years"]').describe('Year select');
-        this.newsletterCheck = page.getByLabel('Sign up for our newsletter!').describe('Newsletter check');
-        this.offersCheck = page.getByLabel('Receive special offers from our partners!').describe('Offers check');
-        this.firstName = page.locator('[data-qa="first_name"]').describe('First name input');
-        this.lastName = page.locator('[data-qa="last_name"]').describe('Last name input');
-        this.company = page.locator('[data-qa="company"]').describe('Company input');
-        this.address1 = page.locator('[data-qa="address"]').describe('Address input');
-        this.address2 = page.locator('[data-qa="address2"]').describe('Secondary Address input');
-        this.country = page.locator('[data-qa="country"]').describe('Country select');
-        this.state = page.locator('[data-qa="state"]').describe('State input');
-        this.city = page.locator('[data-qa="city"]').describe('City input');
-        this.zipcode = page.locator('[data-qa="zipcode"]').describe('Zipcode input');
-        this.mobile = page.locator('[data-qa="mobile_number"]').describe('Mobile input');
-        this.createAccountBtn = page.locator('[data-qa="create-account"]').describe('Create account button');
+
+        // POM best-practice: initialize locators in constructor (Playwright docs)
+        this.accountInfoHeading = this.page
+            .getByText('Enter Account Information')
+            .describe('Account Info Heading');
+        this.titleMr = this.page.getByLabel('Mr.').describe('Title Mr');
+        this.titleMrs = this.page.getByLabel('Mrs.').describe('Title Mrs');
+        this.password = this.page.getByTestId('password').describe('Password input');
+        this.daySelect = this.page.getByTestId('days').describe('Day select');
+        this.monthSelect = this.page.getByTestId('months').describe('Month select');
+        this.yearSelect = this.page.getByTestId('years').describe('Year select');
+        this.newsletterCheck = this.page
+            .getByLabel('Sign up for our newsletter!')
+            .describe('Newsletter check');
+        this.offersCheck = this.page
+            .getByLabel('Receive special offers from our partners!')
+            .describe('Offers check');
+        this.firstName = this.page.getByTestId('first_name').describe('First name input');
+        this.lastName = this.page.getByTestId('last_name').describe('Last name input');
+        this.company = this.page.getByTestId('company').describe('Company input');
+        this.address1 = this.page.getByTestId('address').describe('Address input');
+        this.address2 = this.page.getByTestId('address2').describe('Secondary Address input');
+        this.country = this.page.getByTestId('country').describe('Country select');
+        this.state = this.page.getByTestId('state').describe('State input');
+        this.city = this.page.getByTestId('city').describe('City input');
+        this.zipcode = this.page.getByTestId('zipcode').describe('Zipcode input');
+        this.mobile = this.page.getByTestId('mobile_number').describe('Mobile input');
+        this.createAccountBtn = this.page.getByTestId('create-account').describe('Create account button');
     }
 
     async fillAccountDetails(user: User) {
-        if (user.title === 'Mr') await this.titleMr.check();
-        else await this.titleMrs.check();
+        if (user.title === 'Mr') {
+            await this.titleMr.check();
+        } else {
+            await this.titleMrs.check();
+        }
 
         await this.password.fill(user.password);
         await this.daySelect.selectOption(user.birthDay);
@@ -62,7 +73,9 @@ export class SignupPage extends BasePage {
         await this.lastName.fill(user.lastName);
         await this.company.fill(user.company);
         await this.address1.fill(user.address1);
-        if (user.address2) await this.address2.fill(user.address2);
+        if (user.address2) {
+            await this.address2.fill(user.address2);
+        }
         await this.country.selectOption(user.country);
         await this.state.fill(user.state);
         await this.city.fill(user.city);
@@ -70,7 +83,7 @@ export class SignupPage extends BasePage {
         await this.mobile.fill(user.mobileNumber);
     }
 
-    async submit() {
+    async clickCreateAccount() {
         await this.createAccountBtn.click();
     }
 }

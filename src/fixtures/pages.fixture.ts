@@ -1,48 +1,40 @@
 import { Page } from '@playwright/test';
-import { HomePage } from '../pages/HomePage';
-import { LoginPage } from '../pages/LoginPage';
-import { SignupPage } from '../pages/SignupPage';
-import { AccountCreatedPage } from '../pages/AccountCreatedPage';
-import { AccountDeletedPage } from '../pages/AccountDeletedPage';
-import { ProductsPage } from '../pages/ProductsPage';
-import { ProductDetailsPage } from '../pages/ProductDetailsPage';
-import { CartPage } from '../pages/CartPage';
-import { CheckoutPage } from '../pages/CheckoutPage';
-import { PaymentPage } from '../pages/PaymentPage';
-import { ContactPage } from '../pages/ContactPage';
+import { NavigationMenu } from '@components/NavigationMenu';
+import { AccountCreatedPage } from '@pages/AccountCreatedPage';
+import { AccountDeletedPage } from '@pages/AccountDeletedPage';
+import { CartPage } from '@pages/CartPage';
+import { CheckoutPage } from '@pages/CheckoutPage';
+import { ContactUsPage } from '@pages/ContactUsPage';
+import { HomePage } from '@pages/HomePage';
+import { LoginPage } from '@pages/LoginPage';
+import { PaymentDonePage } from '@pages/PaymentDonePage';
+import { PaymentPage } from '@pages/PaymentPage';
+import { ProductDetailPage } from '@pages/ProductDetailPage';
+import { ProductsPage } from '@pages/ProductsPage';
+import { SignupPage } from '@pages/SignupPage';
 
 export type PageFixtures = {
-  homePage: HomePage;
-  loginPage: LoginPage;
-  signupPage: SignupPage;
   accountCreatedPage: AccountCreatedPage;
-  productsPage: ProductsPage;
-  productDetailsPage: ProductDetailsPage;
+  accountDeletedPage: AccountDeletedPage;
   cartPage: CartPage;
   checkoutPage: CheckoutPage;
+  contactUsPage: ContactUsPage;
+  homePage: HomePage;
+  loginPage: LoginPage;
+  navigation: NavigationMenu;
+  paymentDonePage: PaymentDonePage;
   paymentPage: PaymentPage;
-  contactPage: ContactPage;
-  accountDeletedPage: AccountDeletedPage;
+  productDetailPage: ProductDetailPage;
+  productsPage: ProductsPage;
+  signupPage: SignupPage;
 };
 
 export const pageFixtures = {
-  homePage: async ({ page }: { page: Page }, use: (p: HomePage) => Promise<void>) => {
-    await use(new HomePage(page));
-  },
-  loginPage: async ({ page }: { page: Page }, use: (p: LoginPage) => Promise<void>) => {
-    await use(new LoginPage(page));
-  },
-  signupPage: async ({ page }: { page: Page }, use: (p: SignupPage) => Promise<void>) => {
-    await use(new SignupPage(page));
-  },
   accountCreatedPage: async ({ page }: { page: Page }, use: (p: AccountCreatedPage) => Promise<void>) => {
     await use(new AccountCreatedPage(page));
   },
-  productsPage: async ({ page }: { page: Page }, use: (p: ProductsPage) => Promise<void>) => {
-    await use(new ProductsPage(page));
-  },
-  productDetailsPage: async ({ page }: { page: Page }, use: (p: ProductDetailsPage) => Promise<void>) => {
-    await use(new ProductDetailsPage(page));
+  accountDeletedPage: async ({ page }: { page: Page }, use: (p: AccountDeletedPage) => Promise<void>) => {
+    await use(new AccountDeletedPage(page));
   },
   cartPage: async ({ page }: { page: Page }, use: (p: CartPage) => Promise<void>) => {
     await use(new CartPage(page));
@@ -50,13 +42,31 @@ export const pageFixtures = {
   checkoutPage: async ({ page }: { page: Page }, use: (p: CheckoutPage) => Promise<void>) => {
     await use(new CheckoutPage(page));
   },
+  contactUsPage: async ({ page }: { page: Page }, use: (p: ContactUsPage) => Promise<void>) => {
+    await use(new ContactUsPage(page));
+  },
+  homePage: async ({ navigation, page }: { navigation: NavigationMenu; page: Page }, use: (p: HomePage) => Promise<void>) => {
+    await use(new HomePage(page, navigation));
+  },
+  loginPage: async ({ page }: { page: Page }, use: (p: LoginPage) => Promise<void>) => {
+    await use(new LoginPage(page));
+  },
+  navigation: async ({ page }: { page: Page }, use: (n: NavigationMenu) => Promise<void>) => {
+    await use(new NavigationMenu(page));
+  },
+  paymentDonePage: async ({ page }: { page: Page }, use: (p: PaymentDonePage) => Promise<void>) => {
+    await use(new PaymentDonePage(page));
+  },
   paymentPage: async ({ page }: { page: Page }, use: (p: PaymentPage) => Promise<void>) => {
     await use(new PaymentPage(page));
   },
-  contactPage: async ({ page }: { page: Page }, use: (p: ContactPage) => Promise<void>) => {
-    await use(new ContactPage(page));
+  productDetailPage: async ({ page }: { page: Page }, use: (p: ProductDetailPage) => Promise<void>) => {
+    await use(new ProductDetailPage(page));
   },
-  accountDeletedPage: async ({ page }: { page: Page }, use: (p: AccountDeletedPage) => Promise<void>) => {
-    await use(new AccountDeletedPage(page));
+  productsPage: async ({ page }: { page: Page }, use: (p: ProductsPage) => Promise<void>) => {
+    await use(new ProductsPage(page));
+  },
+  signupPage: async ({ page }: { page: Page }, use: (p: SignupPage) => Promise<void>) => {
+    await use(new SignupPage(page));
   },
 };

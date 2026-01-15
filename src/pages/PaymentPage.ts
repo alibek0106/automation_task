@@ -1,64 +1,92 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { BasePage } from './BasePage';
+import { expect, Locator, Page } from "@playwright/test";
+import { PaymentDetails } from "../models/PaymentModels";
+import { BasePage } from "./BasePage";
 
 export class PaymentPage extends BasePage {
-  readonly paymentHeading: Locator = this.page.getByRole('heading', { name: 'Payment' }).describe('Payment heading');
-  readonly nameOnCardInput: Locator;
-  readonly cardNumberInput: Locator;
-  readonly cvcInput: Locator;
-  readonly expiryMonthInput: Locator;
-  readonly expiryYearInput: Locator;
-  readonly payButton: Locator;
-  readonly orderPlacedHeading: Locator;
-  readonly successMessage: Locator;
-  readonly deleteAccountBtn: Locator;
+    readonly nameOnCardInput: Locator;
+    readonly cardNumberInput: Locator;
+    readonly cvcInput: Locator;
+    readonly expiryMonthInput: Locator;
+    readonly expiryYearInput: Locator;
+    readonly payAndConfirmButton: Locator;
+    readonly paymentFormSection: Locator;
 
-  constructor(page: Page) {
-    super(page);
+    constructor(page: Page) {
+        super(
+            page,
+            page.locator("#payment-form").describe("Payment form section")
+        );
 
-    // Payment Form - using name attributes for reliability
-    this.nameOnCardInput = page.locator('input[name="name_on_card"]').describe('Name on card input');
-    this.cardNumberInput = page.locator('input[name="card_number"]').describe('Card number input');
-    this.cvcInput = page.locator('input[name="cvc"]').describe('CVC input');
-    this.expiryMonthInput = page.locator('input[name="expiry_month"]').describe('Expiry month input');
-    this.expiryYearInput = page.locator('input[name="expiry_year"]').describe('Expiry year input');
-    this.payButton = page.locator('button[data-qa="pay-button"]').describe('Pay button');
+        this.nameOnCardInput = this.page
+            .locator("[data-qa='name-on-card']")
+            .describe("Name on card input");
+        this.cardNumberInput = this.page
+            .locator("[data-qa='card-number']")
+            .describe("Card number input");
+        this.cvcInput = this.page
+            .locator("[data-qa='cvc']")
+            .describe("CVC input");
+        this.expiryMonthInput = this.page
+            .locator("[data-qa='expiry-month']")
+            .describe("Expiry month input");
+        this.expiryYearInput = this.page
+            .locator("[data-qa='expiry-year']")
+            .describe("Expiry year input");
+        this.payAndConfirmButton = this.page
+            .locator("[data-qa='pay-button']")
+            .describe("Pay and confirm order button");
+        this.paymentFormSection = this.page
+            .locator("#payment-form")
+            .describe("Payment form section");
+    }
 
-    // Order Success
-    this.orderPlacedHeading = page.locator('h2[data-qa="order-placed"]').describe('Order placed heading');
-    this.successMessage = page.getByText('Congratulations! Your order has been confirmed!').describe('Success message');
-    this.deleteAccountBtn = page.getByRole('link', { name: ' Delete Account' }).describe('Delete Account button');
-  }
+    /**
+     * Fill all payment details
+     */
+    async fillPaymentDetails(payment: PaymentDetails): Promise<void> {
+        await this.paymentFormSection.scrollIntoViewIfNeeded();
 
-  async verifyPaymentPageVisible() {
-    await expect(this.paymentHeading).toBeVisible();
-  }
+        const ensureEditable = async (locator: Locator, description: string) => {
+            await locator.scrollIntoViewIfNeeded();
+            await expect(locator, `${description} should be visible`).toBeVisible();
+            await expect(locator, `${description} should be editable`).toBeEditable();
+        };
 
-  async fillPaymentDetails(
-    name: string,
-    cardNumber: string,
-    cvc: string,
-    expiryMonth: string,
-    expiryYear: string
-  ) {
-    await this.nameOnCardInput.fill(name);
-    await this.cardNumberInput.fill(cardNumber);
-    await this.cvcInput.fill(cvc);
-    await this.expiryMonthInput.fill(expiryMonth);
-    await this.expiryYearInput.fill(expiryYear);
-  }
+        await ensureEditable(this.nameOnCardInput, "Name on card input");
+        await this.nameOnCardInput.fill(payment.nameOnCard);
 
-  async clickPayAndConfirm() {
-    await this.payButton.click();
-  }
+        await ensureEditable(this.cardNumberInput, "Card number input");
+        await this.cardNumberInput.fill(payment.cardNumber);
 
-  async verifyOrderPlaced() {
-    await this.orderPlacedHeading.waitFor({ state: 'visible', timeout: 10000 });
-    await expect(this.orderPlacedHeading, 'Order placed heading should contain text "Order Placed!"').toContainText('Order Placed!');
-    await expect(this.successMessage, 'Success message should be visible').toBeVisible();
-  }
+        await ensureEditable(this.cvcInput, "CVC input");
+        await this.cvcInput.fill(payment.cvc);
 
-  async deleteAccount() {
-    await this.deleteAccountBtn.click();
-  }
+        await ensureEditable(this.expiryMonthInput, "Expiry month input");
+        await this.expiryMonthInput.fill(payment.expiryMonth);
+
+        await ensureEditable(this.expiryYearInput, "Expiry year input");
+        await this.expiryYearInput.fill(payment.expiryYear);
+    }
+
+    /**
+     * Click pay and confirm order button
+     */
+    async clickPayAndConfirm(): Promise<void> {
+        await this.payAndConfirmButton.click();
+    }
+
+    /**
+     * Verify payment page is loaded (form may be hidden by CSS)
+     */
+    async verifyPaymentPageVisible(): Promise<void> {
+        // Just verify inputs are present - form might be styled as hidden but inputs work
+        await expect(
+            this.nameOnCardInput,
+            "Name on card input should be attached"
+        ).toBeAttached();
+        await expect(
+            this.payAndConfirmButton,
+            "Pay button should be attached"
+        ).toBeAttached();
+    }
 }

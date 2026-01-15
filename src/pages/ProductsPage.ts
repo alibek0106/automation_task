@@ -1,159 +1,231 @@
-import { Page, Locator, expect } from '@playwright/test';
-import { Routes } from '../constants/Routes';
-import { BasePage } from './BasePage';
+import { expect, Locator, Page } from "@playwright/test";
+import { Routes } from "../constants/Routes";
+import { BasePage } from "./BasePage";
 
 export class ProductsPage extends BasePage {
-  // Navigation & Actions
-  readonly productsNavLink: Locator;
-  readonly continueShoppingBtn: Locator;
-  readonly viewCartLink: Locator;
-
-  // Search
   readonly searchInput: Locator;
   readonly searchButton: Locator;
-  readonly allProductsHeading: Locator;
   readonly searchedProductsHeading: Locator;
-
-  // Product Cards
-  readonly productCards: Locator;
+  readonly productsList: Locator;
   readonly productItems: Locator;
-
-  // Sidebar - Categories & Brands
   readonly categorySidebar: Locator;
   readonly brandsSidebar: Locator;
+  readonly viewCartModal: Locator;
+  readonly continueShoppingButton: Locator;
+  readonly viewCartButton: Locator;
+  readonly categoryTitleHeading = (expectedTitle: string): Locator =>
+    this.page
+      .getByRole("heading", { name: new RegExp(expectedTitle, "i") })
+      .describe(`Category title heading: "${expectedTitle}"`);
+  readonly brandTitleHeading = (brandName: string): Locator =>
+    this.page
+      .getByRole("heading", { name: new RegExp(`brand.*${brandName}`, "i") })
+      .describe(`Brand title heading contains: "${brandName}"`);
+
+  // Selectors for dynamic locators used in methods
+  private readonly addToCartSelector = ".add-to-cart";
+  private readonly modalContentSelector = ".modal-content";
+  private readonly productInfoNameSelector = ".productinfo p";
+  private readonly productInfoPriceSelector = ".productinfo h2";
+  private readonly categoryProductsLinkSelector =
+    "a[href*='category_products']";
 
   constructor(page: Page) {
-    super(page);
+    super(
+      page,
+      page
+        .getByRole("heading", { name: /all products/i })
+        .describe("All Products heading"),
+    );
 
-    // Navigation
-    this.productsNavLink = page.getByRole('link', { name: 'Products' }).describe('Products Navigation Link');
-    this.continueShoppingBtn = page.getByRole('button', { name: 'Continue Shopping' }).describe('Continue Shopping Button');
-    this.viewCartLink = page.getByText(' Cart', { exact: true }).describe('View Cart Link');
-
-    // Headings - using role for better semantics
-    this.allProductsHeading = page.getByRole('heading', { name: 'All Products' }).describe('All Products Heading');
-    this.searchedProductsHeading = page.getByRole('heading', { name: 'Searched Products' }).describe('Searched Products Heading');
-
-    // Search
-    this.searchInput = page.locator('input#search_product').describe('Search Input');
-    this.searchButton = page.locator('button#submit_search').describe('Search Button');
-
-    // Products
-    this.productCards = page.locator('.product-image-wrapper').describe('Product Cards');
-    this.productItems = page.locator('.features_items .col-sm-4').describe('Product Items');
-
-    // Sidebar
-    this.categorySidebar = page.locator('#accordian').describe('Category Sidebar');
-    this.brandsSidebar = page.locator('.brands_products').describe('Brands Sidebar');
+    this.searchInput = this.page
+      .locator("#search_product")
+      .describe("Search product input");
+    this.searchButton = this.page
+      .locator("#submit_search")
+      .describe("Search submit button");
+    this.searchedProductsHeading = this.page
+      .getByRole("heading", { name: /searched products/i })
+      .describe("Searched Products heading");
+    this.productsList = this.page
+      .locator(".features_items")
+      .describe("Products list container");
+    this.productItems = this.productsList
+      .locator(".col-sm-4")
+      .describe("Individual product items");
+    this.categorySidebar = this.page
+      .locator(".left-sidebar .panel-group")
+      .describe("Category sidebar");
+    this.brandsSidebar = this.page
+      .locator(".brands_products")
+      .describe("Brands sidebar");
+    this.viewCartModal = this.page
+      .locator(this.modalContentSelector)
+      .describe("View cart modal");
+    this.continueShoppingButton = this.viewCartModal
+      .getByRole("button", { name: /continue shopping/i })
+      .describe("Continue shopping button");
+    this.viewCartButton = this.viewCartModal
+      .getByRole("link", { name: /view cart/i })
+      .describe("View cart button in modal");
   }
 
   async goto() {
     await super.goto(Routes.WEB.PRODUCTS);
   }
 
-  async navigateToProducts() {
-    await this.productsNavLink.click();
-    await this.waitForLoadState('domcontentloaded');
-  }
-
-  async verifyAllProductsVisible() {
-    await expect(this.allProductsHeading, 'All products heading should be visible').toBeVisible();
-    await expect(this.productItems.first(), 'First product item should be visible').toBeVisible();
-  }
-
-  async verifySearchBoxVisible() {
-    await expect(this.searchInput, 'Search input should be visible').toBeVisible();
-  }
-
-  async searchProduct(productName: string) {
-    await this.searchInput.fill(productName);
+  /**
+   * Search for products by keyword
+   */
+  async search(keyword: string): Promise<void> {
+    await this.searchInput.fill(keyword);
     await this.searchButton.click();
-    // Wait for search results to load by ensuring the heading is present
-    await this.searchedProductsHeading.waitFor({ state: 'visible', timeout: 10000 });
   }
 
-  async verifySearchedProductsVisible() {
-    await expect(this.searchedProductsHeading, 'Searched products heading should be visible').toBeVisible();
+  /**
+   * Verify search results heading is visible
+   */
+  async verifySearchResultsVisible(): Promise<void> {
+    await expect(
+      this.searchedProductsHeading,
+      "Searched products heading should be visible",
+    ).toBeVisible();
   }
 
-  async verifyProductListContains(searchTerm: string) {
-    await this.productItems.first().waitFor({ state: 'visible' });
+  /**
+   * Get all visible product names from search/listing
+   */
+  async getProductNames(): Promise<string[]> {
+    const names: string[] = [];
     const count = await this.productItems.count();
-    expect(count, 'Product list should contain at least one item').toBeGreaterThan(0);
 
-    // Check first few items to ensure relevance
-    for (let i = 0; i < Math.min(count, 3); i++) {
-      const productCard = this.productItems.nth(i);
-      await expect(productCard, 'Product card should contain search term').toContainText(searchTerm, { ignoreCase: true });
+    for (let i = 0; i < count; i++) {
+      const productName = await this.productItems
+        .nth(i)
+        .locator(this.productInfoNameSelector)
+        .textContent();
+      if (productName) {
+        names.push(productName.trim());
+      }
     }
+
+    return names;
   }
 
-  async verifyProductCardDetails() {
-    const firstProduct = this.productItems.first();
-    await expect(firstProduct.locator('.productinfo img'), 'Product image should be visible').toBeVisible();
-    await expect(firstProduct.locator('.productinfo h2'), 'Product name should be visible').toBeVisible();
-    await expect(firstProduct.locator('.productinfo p'), 'Product price should be visible').toBeVisible();
-    await expect(firstProduct.locator('.choose a'), 'Product action buttons should be visible').toBeVisible();
+  /**
+   * Get product count
+   */
+  async getProductCount(): Promise<number> {
+    return this.productItems.count();
   }
 
-  async clickFirstViewProduct() {
-    await this.productItems.first().locator('.choose a').click();
+  /**
+   * Click on "View Product" for a specific product by index
+   *
+   * @remarks
+   * This method handles potential ad overlays by using force click as a fallback
+   * and ensuring the element is visible before clicking.
+   */
+  async clickViewProduct(index: number): Promise<void> {
+    const viewProductLink = this.productItems
+      .nth(index)
+      .getByRole("link", { name: /view product/i });
+
+    // Ensure the product is visible and scroll it into view
+    await viewProductLink.scrollIntoViewIfNeeded();
+
+    // Try regular click first, then force click if needed (handles ad overlays)
+    await this.clickAndWaitForURL(/\/product_details\//, async () => {
+      try {
+        await viewProductLink.click({ timeout: 5000 });
+      } catch (error) {
+        // If regular click fails (e.g., due to overlay), force the click
+        console.error(error)
+        await viewProductLink.click({ force: true });
+      }
+    });
   }
 
-  async selectCategory(categoryName: string, subCategoryName: string) {
-    const categoryLink = this.categorySidebar.locator(`.panel-heading a[href="#${categoryName}"]`);
-    await categoryLink.click();
+  /**
+   * Add product to cart directly from listing (hover + click)
+   */
+  async addProductToCart(index: number): Promise<void> {
+    const product = this.productItems.nth(index);
+    await product.hover();
+    await product.locator(this.addToCartSelector).first().click();
+    // Modal visibility is automatically ensured by Playwright's auto-waiting
+    // when interacting with modal buttons in follow-up actions
+  }
 
-    const subCategoryLink = this.categorySidebar.locator(`#${categoryName} a:has-text("${subCategoryName}")`);
+  /**
+   * Click Continue Shopping button from modal
+   */
+  async clickContinueShopping(): Promise<void> {
+    // Playwright auto-waits for button visibility (including parent modal)
+    await this.continueShoppingButton.click();
+  }
+
+  /**
+   * Click View Cart button from modal
+   */
+  async clickViewCart(): Promise<void> {
+    // Playwright auto-waits for button visibility (including parent modal)
+    await this.viewCartButton.click();
+  }
+
+  /**
+   * Select a category from sidebar
+   * @param mainCategory - e.g., "Women", "Men", "Kids"
+   * @param subCategory - e.g., "Dress", "Tops", "Jeans"
+   */
+  async selectCategory(
+    mainCategory: string,
+    subCategory: string,
+  ): Promise<void> {
+    // Click main category to expand if needed - use first() to avoid strict mode
+    const mainCategoryLink = this.categorySidebar
+      .getByRole("link")
+      .filter({ hasText: new RegExp(`^\\s*${mainCategory}\\s*$`) })
+      .first();
+    await mainCategoryLink.click();
+
+    // Click subcategory
+    // Scope to the left sidebar category links to avoid strict-mode collisions with ads/popups.
+    const subCategoryLink = this.categorySidebar
+      .locator(this.categoryProductsLinkSelector)
+      .filter({ hasText: new RegExp(subCategory, "i") })
+      .first();
     await subCategoryLink.click();
   }
 
-  async verifyCategoryTitle(title: string) {
-    const heading = this.page.locator('h2.title');
-    await expect(heading, 'Category title should contain expected text').toContainText(title, { ignoreCase: true });
+  /**
+   * Select a brand from sidebar
+   */
+  async selectBrand(brandName: string): Promise<void> {
+    await this.brandsSidebar
+      .getByRole("link", { name: new RegExp(brandName, "i") })
+      .click();
   }
 
-  async selectBrand(brandName: string) {
-    const brandLink = this.brandsSidebar.locator('li a').filter({ hasText: brandName });
-    await brandLink.click();
+  /**
+   * Verify category title is displayed
+   */
+  async verifyCategoryTitleVisible(expectedTitle: string): Promise<void> {
+    await expect(this.categoryTitleHeading(expectedTitle)).toBeVisible();
   }
 
-  async addProductToCart(index: number) {
-    const product = this.productItems.nth(index);
-    await product.hover();
-    await product.locator('.productinfo a.add-to-cart').click();
-
-    // Handle the modal
-    await this.continueShoppingBtn.waitFor({ state: 'visible' });
-    await this.continueShoppingBtn.click();
+  async verifyBrandTitleVisible(brandName: string): Promise<void> {
+    await expect(this.brandTitleHeading(brandName)).toBeVisible();
   }
 
-  async viewProductByName(productName: string) {
-    const card = this.productCards.filter({ hasText: productName });
-    const viewLink = card.getByRole('link', { name: 'View Product' });
-    await viewLink.click();
-  }
-
-  async navigateToCart() {
-    await this.viewCartLink.click();
-  }
-
-  async verifyCategorySidebarVisible() {
-    await expect(this.categorySidebar, 'Category sidebar should be visible').toBeVisible();
-    await expect(this.page.getByText('Category', { exact: true }), 'Category text should be visible').toBeVisible();
-  }
-
-  async verifyBrandsSidebarVisible() {
-    await expect(this.brandsSidebar, 'Brands sidebar should be visible').toBeVisible();
-    await expect(this.page.getByText('Brands', { exact: true }), 'Brands text should be visible').toBeVisible();
-  }
-
-  async getProductCount(): Promise<number> {
-    return await this.productItems.count();
-  }
-
-  async verifyProductCountGreaterThan(min: number) {
-    const count = await this.getProductCount();
-    expect(count, 'Product count should be greater than expected').toBeGreaterThan(min);
+  /**
+   * Get product price by index
+   */
+  async getProductPrice(index: number): Promise<string> {
+    const priceText = await this.productItems
+      .nth(index)
+      .locator(this.productInfoPriceSelector)
+      .textContent();
+    return priceText?.trim() || "";
   }
 }
