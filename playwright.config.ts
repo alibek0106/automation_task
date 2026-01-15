@@ -6,7 +6,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.resolve(__dirname, ".env") });
+dotenv.config({ path: path.resolve(__dirname, ".env"), quiet: true });
 
 /**
  * Get worker-specific storage state path
@@ -47,12 +47,17 @@ export default defineConfig({
       testMatch: /.*\/web\/.*\.spec\.ts/,
       use: {
         ...devices["Desktop Chrome"],
-        // Worker-specific storage state is loaded via auth.fixture.ts
       },
     },
   ],
-  // at least 4 workers
-  reporter: [["list"], ["html", { open: "never" }]],
+
+  reporter: [
+    ["list"],
+    ['dot'],
+    ["html", { open: "never" }],
+    ["json", { outputFile: "test-reports/results.json" }],
+    ["junit", { outputFile: "test-reports/junit-results.xml" }]
+  ],
   retries: process.env.CI ? 2 : 0,
   testDir: "./tests",
   timeout: 60_000,
